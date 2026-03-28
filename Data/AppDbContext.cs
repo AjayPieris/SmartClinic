@@ -112,7 +112,7 @@ public class AppDbContext : DbContext
             // xmin is a system column that increments on every row update.
             // EF Core checks this value during SaveChanges and throws
             // DbUpdateConcurrencyException if it changed since we last read.
-            entity.UseXminAsConcurrencyToken();
+            entity.Property<uint>("Version").IsRowVersion();
         });
 
         // =====================================================================
