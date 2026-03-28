@@ -14,7 +14,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using SmartClinic.API.Data;
 using SmartClinic.API.Middleware;
 using SmartClinic.API.Services;

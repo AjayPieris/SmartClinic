@@ -104,7 +104,7 @@ public class AppointmentsController : ControllerBase
                 id, request.Status, GetCurrentUserId(), GetCurrentUserRole());
             return Ok(result);
         }
-        catch (UnauthorizedAccessException ex)
+        catch (UnauthorizedAccessException)
         {
             return Forbid();
         }

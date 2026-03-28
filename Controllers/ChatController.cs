@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartClinic.API.DTOs.Chat;
 using SmartClinic.API.Services.Interfaces;
+using SmartClinic.API.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace SmartClinic.API.Controllers;
 
@@ -56,7 +58,7 @@ public class ChatController : ControllerBase
             // 201 Created — the message is now in the DB and Pusher was triggered
             return CreatedAtAction(nameof(SendMessage), new { id = result.Id }, result);
         }
-        catch (UnauthorizedAccessException ex)
+        catch (UnauthorizedAccessException)
         {
             // Sender is not a participant of this appointment
             return Forbid();
@@ -91,7 +93,7 @@ public class ChatController : ControllerBase
         {
             var pagination = new ChatHistoryRequestDto
             {
-                PageSize  = pageSize,
+                PageSize = pageSize,
                 OlderThan = olderThan,
             };
 
