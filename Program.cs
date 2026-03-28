@@ -168,6 +168,12 @@ builder.Services.AddScoped<IDocumentService, DocumentService>();
 // Middleware pipeline — ORDER IS CRITICAL
 app.UseMiddleware<GlobalExceptionMiddleware>(); // 1. Catch all exceptions first
 
+// Pusher client is stateless and thread-safe — Singleton is correct here
+builder.Services.AddSingleton<IPusherService, PusherService>();
+
+// ChatService uses DbContext (scoped) so it must also be scoped
+builder.Services.AddScoped<IChatService, ChatService>();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
