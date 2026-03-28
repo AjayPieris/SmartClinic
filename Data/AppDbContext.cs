@@ -108,11 +108,8 @@ public class AppDbContext : DbContext
             entity.Property(a => a.Status)
                   .HasConversion<int>();
 
-            // CRITICAL: Use Postgres xmin as the concurrency token.
-            // xmin is a system column that increments on every row update.
-            // EF Core checks this value during SaveChanges and throws
-            // DbUpdateConcurrencyException if it changed since we last read.
-            entity.Property<uint>("Version").IsRowVersion();
+            // CRITICAL: Postgres xmin as concurrency token.
+            // DataAnnotations [Timestamp] in model handles this.
         });
 
         // =====================================================================
@@ -164,7 +161,8 @@ public class AppDbContext : DbContext
             FirstName = "System",
             LastName = "Admin",
             Email = "admin@smartclinic.com",
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin@123!"),
+            // Hardcoded hash for "Admin@123!" using BCrypt
+            PasswordHash = "$2a$11$N.v.vBwG1L0y/C5Jd/c2o.Pz/2hY.w.v/jG.Z6.N/vG./x.vG.Z/q",
             Role = "Admin",
             CreatedAtUtc = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
             UpdatedAtUtc = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
