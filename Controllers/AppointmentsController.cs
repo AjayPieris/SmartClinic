@@ -117,3 +117,29 @@ public class AppointmentsController : ControllerBase
 
 // Inline DTO for the PATCH status endpoint
 public record UpdateStatusRequestDto(string Status);
+
+[HttpPatch("{id:guid}/notes")]
+[Authorize(Roles = "Doctor")]
+public async Task<IActionResult> UpdateNotes(Guid id, [FromBody] UpdateNotesRequestDto request)
+{
+    var appointment = await _db.Appointments
+        .Include(a => a.DoctorProfile)
+        .FirstOrDefaultAsync(a => a.Id == id);
+
+    if (appointment is null)
+        return NotFound(new { message = "Appointment not found." });
+
+    // Verify the requesting doctor owns this appointment
+    var doctorUserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    if (appointment.DoctorProfile.UserId != doctorUserId)
+        return Forbid();
+
+    appointment.DoctorNotes  = request.Notes?.Trim();
+    appointment.UpdatedAtUtc = DateTime.UtcNow;
+
+    await _db.SaveChangesAsync();
+    return NoContent(); // 204 — success with no body
+}
+
+// Inline DTO for the notes endpoint
+public record UpdateNotesRequestDto(string? Notes);

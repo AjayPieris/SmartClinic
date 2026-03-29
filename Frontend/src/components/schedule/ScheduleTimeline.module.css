@@ -1,0 +1,186 @@
+.timeline {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ── Grid layout ─────────────────────────────────────────────────────────── */
+.grid {
+  display: flex;
+  position: relative;
+}
+
+/* Left hour label column */
+.hourLabels {
+  display: flex;
+  flex-direction: column;
+  width: 60px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--color-border);
+  background: var(--color-bg);
+}
+
+.hourLabel {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 6px 10px 0 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-text-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  position: relative;
+}
+
+/* Right lane for lines + blocks */
+.hourLines {
+  flex: 1;
+  position: relative;
+  overflow: visible;
+}
+
+/* Horizontal hour divider lines */
+.hourLine {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--color-border);
+  opacity: 0.6;
+}
+
+/* ── Now indicator ───────────────────────────────────────────────────────── */
+.nowLine {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--color-danger);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+}
+
+.nowDot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  background: var(--color-danger);
+  margin-left: -5px;
+  flex-shrink: 0;
+}
+
+/* ── Appointment blocks ──────────────────────────────────────────────────── */
+.block {
+  position: absolute;
+  left: var(--space-2);
+  right: var(--space-2);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  text-align: left;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: all var(--transition);
+  overflow: hidden;
+  z-index: 5;
+}
+
+.block:hover { filter: brightness(0.95); transform: translateX(1px); }
+
+/* Status colour themes */
+.blockPending {
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+
+.blockConfirmed {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.blockCompleted {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.blockCancelled {
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+/* Extra opacity for cancelled — clearly de-emphasised */
+.blockCancelledOpacity { opacity: 0.55; }
+
+/* Selected block — elevated ring */
+.blockSelected {
+  box-shadow: 0 0 0 2.5px var(--color-primary);
+  z-index: 6;
+}
+
+.blockTime {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+.blockName {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.telehealthBadge {
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-info);
+  margin-top: 2px;
+}
+
+/* ── Empty state ─────────────────────────────────────────────────────────── */
+.emptyState {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+  gap: var(--space-1);
+  pointer-events: none;
+}
+
+.emptyHint {
+  font-size: 0.875rem;
+  color: var(--color-text-subtle);
+}
+
+/* ── Skeleton ────────────────────────────────────────────────────────────── */
+.skeletonWrap {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.skeleton {
+  border-radius: var(--radius-md);
+  background: var(--color-border);
+  opacity: 0.45;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: 0.3; }
+  50%       { opacity: 0.6; }
+}

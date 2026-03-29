@@ -1,0 +1,74 @@
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.pageHeader { text-align: center; }
+
+.pageTitle {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--color-text);
+  margin-bottom: var(--space-1);
+}
+
+.pageSubtitle {
+  font-size: 1rem;
+  color: var(--color-text-muted);
+}
+
+.errorBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: var(--color-danger);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  font-size: 0.9rem;
+}
+
+.errorDismiss {
+  font-size: 1.2rem;
+  color: var(--color-danger);
+  opacity: 0.7;
+  padding: 0 var(--space-1);
+}
+
+.errorDismiss:hover { opacity: 1; }
+
+.stepContent {
+  min-height: 300px;
+}
+
+.dateSlotLayout {
+  display: flex;
+  justify-content: center;
+}
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  cursor: pointer;
+  transition: all var(--transition);
+  align-self: flex-start;
+}
+
+.backBtn:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.backBtn:disabled { opacity: 0.5; cursor: not-allowed; }

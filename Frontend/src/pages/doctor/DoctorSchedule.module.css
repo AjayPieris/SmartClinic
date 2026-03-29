@@ -1,0 +1,74 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.pageHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.pageTitle {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--color-text);
+  flex: 1;
+}
+
+.errorBanner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: var(--color-danger);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-4);
+  font-size: 0.875rem;
+}
+
+.errorDismiss {
+  font-size: 1.1rem;
+  color: var(--color-danger);
+  opacity: 0.7;
+}
+
+.errorDismiss:hover { opacity: 1; }
+
+/* Two-column grid */
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: var(--space-5);
+  align-items: start;
+}
+
+.leftCol {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  /* Sticky timeline so it stays in view while scrolling the page */
+  position: sticky;
+  top: calc(64px + var(--space-4)); /* 64px = NavBar height */
+}
+
+.rightCol {
+  position: sticky;
+  top: calc(64px + var(--space-4));
+}
+
+/* Stack vertically on narrow viewports */
+@media (max-width: 768px) {
+  .columns {
+    grid-template-columns: 1fr;
+  }
+
+  .leftCol, .rightCol {
+    position: static;
+  }
+}
