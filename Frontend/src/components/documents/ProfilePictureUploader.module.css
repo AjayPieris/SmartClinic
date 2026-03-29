@@ -1,0 +1,107 @@
+.wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+/* Avatar button wrapper */
+.avatarBtn {
+  position: relative;
+  width: 88px; height: 88px;
+  border-radius: var(--radius-full);
+  overflow: visible;
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.avatarBtn:disabled { cursor: not-allowed; }
+
+.avatar {
+  width: 88px; height: 88px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+  border: 3px solid var(--color-border);
+  display: block;
+}
+
+.avatarFallback {
+  width: 88px; height: 88px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  font-size: 2rem;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  border: 3px solid var(--color-border);
+  text-transform: uppercase;
+}
+
+/* Camera overlay — appears on hover */
+.overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-full);
+  background: rgba(15,23,42,0.45);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+
+.avatarBtn:hover:not(:disabled) .overlay { opacity: 1; }
+
+/* Circular progress ring */
+.progressRing {
+  position: absolute;
+  inset: -4px;
+  border-radius: var(--radius-full);
+}
+
+.ringsvg {
+  width: 100%; height: 100%;
+  transform: rotate(-90deg);
+}
+
+.ringTrack {
+  fill: none;
+  stroke: rgba(79,70,229,0.2);
+  stroke-width: 3;
+}
+
+.ringBar {
+  fill: none;
+  stroke: var(--color-primary);
+  stroke-width: 3;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 200ms ease;
+}
+
+/* Text meta */
+.meta { display: flex; flex-direction: column; gap: var(--space-1); }
+
+.changeLink {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: left;
+  transition: color var(--transition);
+}
+
+.changeLink:hover:not(:disabled) { color: var(--color-primary-dark); }
+.changeLink:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.hint {
+  font-size: 0.78rem;
+  color: var(--color-text-subtle);
+}
+
+.error {
+  font-size: 0.78rem;
+  color: var(--color-danger);
+}
