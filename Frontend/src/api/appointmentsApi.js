@@ -37,3 +37,23 @@ export const updateAppointmentStatusApi = async (appointmentId, status) => {
   );
   return response.data;
 };
+
+export const getDoctorsApi = async () => {
+  const response = await axiosInstance.get('/doctors');
+  return response.data;
+};
+
+/**
+ * Fetch booked (non-cancelled) appointments for a specific doctor on a date.
+ * Used by generateSlots() to subtract already-booked windows from availability.
+ * @param {string} doctorProfileId
+ * @param {string} dateIso — "YYYY-MM-DD" in local time, converted to UTC range server-side
+ * @returns {Promise<AppointmentResponseDto[]>}
+ */
+export const getDoctorBookedSlotsApi = async (doctorProfileId, dateIso) => {
+  const response = await axiosInstance.get(
+    `/doctors/${doctorProfileId}/booked-slots`,
+    { params: { date: dateIso } }
+  );
+  return response.data;
+};
