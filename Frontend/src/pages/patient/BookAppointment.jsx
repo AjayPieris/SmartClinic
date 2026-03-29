@@ -1,0 +1,1 @@
+export default function BookAppointment() { return <div>Book Appointment</div>; }

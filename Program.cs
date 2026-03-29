@@ -75,8 +75,10 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins(
                 "http://localhost:5173",  // Vite default dev port
+                "http://localhost:5174",  // Vite fallback port
                 "http://localhost:3000"   // CRA fallback
               )
+              .SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost")
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
@@ -104,19 +106,18 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-// =============================================================================
-// BUILD & MIDDLEWARE PIPELINE
-// =============================================================================
-var app = builder.Build();
+// Register the Cloudinary service (singleton — one Cloudinary client instance)
+// Singleton is appropriate here because Cloudinary is stateless and thread-safe
+builder.Services.AddSingleton<ICloudinaryService, CloudinaryService>();
 
-// --- Apply pending EF Core migrations automatically on startup ---
-// In production you'd run `dotnet ef database update` in your CI/CD pipeline.
-// For development, auto-migrate saves a manual step.
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    await db.Database.MigrateAsync();
-}
+// Register the Document service (scoped — one per request, uses scoped DbContext)
+builder.Services.AddScoped<IDocumentService, DocumentService>();
+
+// Pusher client is stateless and thread-safe — Singleton is correct here
+builder.Services.AddSingleton<IPusherService, PusherService>();
+
+// ChatService uses DbContext (scoped) so it must also be scoped
+builder.Services.AddScoped<IChatService, ChatService>();
 
 builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
 {
@@ -133,21 +134,22 @@ builder.WebHost.ConfigureKestrel(options =>
     options.Limits.MaxRequestBodySize = 10 * 1024 * 1024; // 10 MB
 });
 
-// Register the Cloudinary service (singleton — one Cloudinary client instance)
-// Singleton is appropriate here because Cloudinary is stateless and thread-safe
-builder.Services.AddSingleton<ICloudinaryService, CloudinaryService>();
+// =============================================================================
+// BUILD & MIDDLEWARE PIPELINE
+// =============================================================================
+var app = builder.Build();
 
-// Register the Document service (scoped — one per request, uses scoped DbContext)
-builder.Services.AddScoped<IDocumentService, DocumentService>();
+// --- Apply pending EF Core migrations automatically on startup ---
+// In production you'd run `dotnet ef database update` in your CI/CD pipeline.
+// For development, auto-migrate saves a manual step.
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await db.Database.MigrateAsync();
+}
 
 // Middleware pipeline — ORDER IS CRITICAL
 app.UseMiddleware<GlobalExceptionMiddleware>(); // 1. Catch all exceptions first
-
-// Pusher client is stateless and thread-safe — Singleton is correct here
-builder.Services.AddSingleton<IPusherService, PusherService>();
-
-// ChatService uses DbContext (scoped) so it must also be scoped
-builder.Services.AddScoped<IChatService, ChatService>();
 
 if (app.Environment.IsDevelopment())
 {

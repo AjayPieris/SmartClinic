@@ -1,17 +1,16 @@
-
-import { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import { loginApi } from '../../api/authApi';
-import styles from './AuthPage.module.css';
+import { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import { loginApi } from "../../api/authApi";
+import styles from "./AuthPage.module.css";
 
 export default function LoginPage() {
   const { login, isAuthenticated, user } = useAuth();
   const location = useLocation();
-  const navigate  = useNavigate();
+  const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({ email: '', password: '' });
-  const [error,    setError]    = useState('');
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // If somehow already authenticated (e.g. navigated to /login directly),
@@ -19,24 +18,24 @@ export default function LoginPage() {
   useEffect(() => {
     if (isAuthenticated && user) {
       const roleRoutes = {
-        Patient: '/patient/appointments',
-        Doctor:  '/doctor/schedule',
-        Admin:   '/admin/users',
+        Patient: "/patient/appointments",
+        Doctor: "/doctor/schedule",
+        Admin: "/admin/users",
       };
-      navigate(roleRoutes[user.role] ?? '/', { replace: true });
+      navigate(roleRoutes[user.role] ?? "/", { replace: true });
     }
   }, [isAuthenticated, user, navigate]);
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     // Clear the error when the user starts typing again
-    if (error) setError('');
+    if (error) setError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setError('');
+    setError("");
 
     try {
       const authResponse = await loginApi(formData);
@@ -46,16 +45,20 @@ export default function LoginPage() {
 
       // If user was sent to /login from a protected route, go back there
       const intendedDestination = location.state?.from?.pathname;
-      if (intendedDestination && intendedDestination !== '/login') {
+      if (intendedDestination && intendedDestination !== "/login") {
         navigate(intendedDestination, { replace: true });
       }
       // Otherwise login() handles the navigation to their dashboard
     } catch (err) {
-      // The API returns { message: string } on 401
-      setError(
-        err.response?.data?.message ??
-        'Unable to sign in. Please check your connection and try again.'
-      );
+      if (err.response?.data?.errors) {
+        const validationErrors = Object.values(err.response.data.errors).flat();
+        setError(validationErrors[0] || "Invalid email or password.");
+      } else {
+        setError(
+          err.response?.data?.message ??
+            "Unable to sign in. Please check your connection and try again.",
+        );
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -64,7 +67,6 @@ export default function LoginPage() {
   return (
     <div className={styles.authPage}>
       <div className={styles.authCard}>
-
         {/* Brand logo / heading */}
         <div className={styles.authHeader}>
           <h1 className={`brand-heading ${styles.brandLogo}`}>SmartClinic</h1>
@@ -79,9 +81,10 @@ export default function LoginPage() {
         )}
 
         <form onSubmit={handleSubmit} noValidate>
-
           <div className={styles.formGroup}>
-            <label htmlFor="email" className={styles.label}>Email address</label>
+            <label htmlFor="email" className={styles.label}>
+              Email address
+            </label>
             <input
               id="email"
               name="email"
@@ -97,7 +100,9 @@ export default function LoginPage() {
           </div>
 
           <div className={styles.formGroup}>
-            <label htmlFor="password" className={styles.label}>Password</label>
+            <label htmlFor="password" className={styles.label}>
+              Password
+            </label>
             <input
               id="password"
               name="password"
@@ -120,16 +125,13 @@ export default function LoginPage() {
             {isSubmitting ? (
               <span className={styles.btnSpinner} aria-hidden="true" />
             ) : null}
-            {isSubmitting ? 'Signing in…' : 'Sign in'}
+            {isSubmitting ? "Signing in…" : "Sign in"}
           </button>
-
         </form>
 
         <p className={styles.authFooter}>
-          Don't have an account?{' '}
-          <Link to="/register">Create one</Link>
+          Don't have an account? <Link to="/register">Create one</Link>
         </p>
-
       </div>
     </div>
   );

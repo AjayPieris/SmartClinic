@@ -1,0 +1,1 @@
+export default function DoctorSchedule() { return <div>Doctor Schedule</div>; }

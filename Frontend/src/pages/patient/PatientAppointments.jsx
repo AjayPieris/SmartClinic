@@ -1,0 +1,1 @@
+export default function PatientAppointments() { return <div>Patient Appointments</div>; }

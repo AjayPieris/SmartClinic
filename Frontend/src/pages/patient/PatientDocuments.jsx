@@ -1,0 +1,1 @@
+export default function PatientDocuments() { return <div>Patient Documents</div>; }

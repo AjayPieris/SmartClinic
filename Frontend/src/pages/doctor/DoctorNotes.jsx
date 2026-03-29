@@ -1,0 +1,1 @@
+export default function DoctorNotes() { return <div>Doctor Notes</div>; }
