@@ -9,9 +9,9 @@
 // display (PDFs open inline, images open in a new tab).
 // =============================================================================
 
-import { format } from 'date-fns';
-import { getFileMeta } from '../../utils/fileValidation';
-import styles from './DocumentCard.module.css';
+import { format } from "date-fns";
+import { getFileMeta } from "../../utils/fileValidation";
+import styles from "./DocumentCard.module.css";
 
 export default function DocumentCard({ document, onDelete }) {
   const { label, colorClass } = getFileMeta(document.contentType);
@@ -19,10 +19,11 @@ export default function DocumentCard({ document, onDelete }) {
 
   return (
     <div className={styles.card}>
-
       {/* File type badge */}
-      <div className={`${styles.typeBadge} ${styles[colorClass]}`}
-        aria-label={`File type: ${label}`}>
+      <div
+        className={`${styles.typeBadge} ${styles[colorClass]}`}
+        aria-label={`File type: ${label}`}
+      >
         {label}
       </div>
 
@@ -32,18 +33,18 @@ export default function DocumentCard({ document, onDelete }) {
         <p className={styles.docMeta}>
           <span>{document.fileSizeFormatted}</span>
           <span className={styles.metaDot}>·</span>
-          <span>
-            {format(uploadDate, 'MMM d, yyyy')}
-          </span>
+          <span>{format(uploadDate, "MMM d, yyyy")}</span>
           <span className={styles.metaDot}>·</span>
-          <span>{document.contentType.split('/')[1]?.toUpperCase() ?? label}</span>
+          <span>
+            {document.contentType.split("/")[1]?.toUpperCase() ?? label}
+          </span>
         </p>
       </div>
 
       {/* Actions */}
       <div className={styles.actions}>
         {/* Open / download */}
-        
+        <a
           href={document.cloudinaryUrl}
           target="_blank"
           rel="noopener noreferrer"
@@ -51,12 +52,19 @@ export default function DocumentCard({ document, onDelete }) {
           aria-label={`Open ${document.documentName}`}
         >
           {/* External link icon */}
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" strokeWidth="2.5"
-            strokeLinecap="round" strokeLinejoin="round">
-            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-            <polyline points="15 3 21 3 21 9"/>
-            <line x1="10" y1="14" x2="21" y2="3"/>
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+            <polyline points="15 3 21 3 21 9" />
+            <line x1="10" y1="14" x2="21" y2="3" />
           </svg>
           Open
         </a>
@@ -68,19 +76,25 @@ export default function DocumentCard({ document, onDelete }) {
           aria-label={`Delete ${document.documentName}`}
         >
           {/* Trash icon */}
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" strokeWidth="2.5"
-            strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="3 6 5 6 21 6"/>
-            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-            <path d="M10 11v6"/>
-            <path d="M14 11v6"/>
-            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polyline points="3 6 5 6 21 6" />
+            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+            <path d="M10 11v6" />
+            <path d="M14 11v6" />
+            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
           </svg>
           Delete
         </button>
       </div>
-
     </div>
   );
 }
