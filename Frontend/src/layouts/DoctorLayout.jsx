@@ -1,2 +1,14 @@
 import { Outlet } from 'react-router-dom';
-export default function DoctorLayout() { return <div><nav>Doctor Navigation</nav><main><Outlet /></main></div>; }
+import NavBar from '../components/NavBar';
+import styles from './Layout.module.css';
+
+export default function DoctorLayout() {
+  return (
+    <div className={styles.shell}>
+      <NavBar />
+      <main className={styles.main}>
+        <Outlet />
+      </main>
+    </div>
+  );
+}

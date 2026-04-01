@@ -13,11 +13,9 @@ import axiosInstance from './axiosInstance';
  * @returns {Promise<MedicalDocumentDto>}
  */
 export const uploadDocumentApi = async (formData) => {
-  const response = await axiosInstance.post('/documents/upload', formData, {
-    // Passing FormData — Axios detects this and sets multipart/form-data
-    // with the correct boundary automatically. Do NOT manually set Content-Type here.
-    headers: { 'Content-Type': 'multipart/form-data' },
-  });
+  // Passing FormData — Axios detects this and sets multipart/form-data
+  // with the correct boundary automatically. Do NOT manually set Content-Type.
+  const response = await axiosInstance.post('/documents/upload', formData);
   return response.data;
 };
 
@@ -38,8 +36,7 @@ export const deleteDocumentApi = async (documentId) => {
  * @returns {Promise<{ profilePictureUrl: string }>}
  */
 export const uploadProfilePictureApi = async (formData) => {
-  const response = await axiosInstance.post('/documents/profile-picture', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-  });
+  // Let Axios set the Content-Type with correct boundary automatically
+  const response = await axiosInstance.post('/documents/profile-picture', formData);
   return response.data;
 };

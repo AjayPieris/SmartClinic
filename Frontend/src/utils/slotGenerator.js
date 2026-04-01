@@ -48,9 +48,9 @@ export function generateSlots(
   if (!Array.isArray(availability) || availability.length === 0) return [];
 
   // ── 2. Find the availability window for this day of week ─────────────────
-  // Date.getDay() returns 0 (Sun) – 6 (Sat), matching our dayOfWeek field
+  // Date.getDay() returns 0 (Sun) – 6 (Sat), matching our DayOfWeek field
   const dayOfWeek = selectedDate.getDay();
-  const window = availability.find((w) => w.dayOfWeek === dayOfWeek);
+  const window = availability.find((w) => w.DayOfWeek === dayOfWeek);
 
   // Doctor doesn't work on this day
   if (!window) return [];
@@ -58,8 +58,8 @@ export function generateSlots(
   // ── 3. Parse window start/end as UTC times on the selected date ───────────
   // availabilityJson stores times as "HH:MM" strings in UTC.
   // We construct full UTC Date objects by combining with the selected date.
-  const [startHour, startMin] = window.startTime.split(':').map(Number);
-  const [endHour,   endMin  ] = window.endTime.split(':').map(Number);
+  const [startHour, startMin] = window.StartTime.split(':').map(Number);
+  const [endHour,   endMin  ] = window.EndTime.split(':').map(Number);
 
   // Build UTC timestamps for the window boundaries on the selected date
   const windowStart = new Date(Date.UTC(

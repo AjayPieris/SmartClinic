@@ -1,110 +1,96 @@
 .page {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-5);
-  max-width: 1100px;
+  max-width: 600px;
   margin: 0 auto;
-}
-
-.pageHeader { display: flex; justify-content: space-between; align-items: flex-start; }
-
-.pageTitle {
-  font-size: 1.6rem;
-  font-weight: 800;
-  color: var(--color-text);
-  margin-bottom: var(--space-1);
-}
-
-.pageSubtitle {
-  font-size: 0.95rem;
-  color: var(--color-text-muted);
-}
-
-/* Banners */
-.successBanner {
-  display: flex; align-items: center; justify-content: space-between;
-  background: #d1fae5; border: 1px solid #6ee7b7;
-  color: #065f46; border-radius: var(--radius-md);
-  padding: var(--space-3) var(--space-5);
-  font-weight: 500; font-size: 0.9rem;
-}
-
-.errorBanner {
-  display: flex; align-items: center; justify-content: space-between;
-  background: #fef2f2; border: 1px solid #fecaca;
-  color: var(--color-danger); border-radius: var(--radius-md);
-  padding: var(--space-3) var(--space-5);
-  font-size: 0.875rem;
-}
-
-.successBanner button,
-.errorBanner button {
-  font-size: 1.2rem; opacity: 0.7; cursor: pointer;
-  transition: opacity var(--transition);
-}
-
-.successBanner button:hover,
-.errorBanner button:hover { opacity: 1; }
-
-/* Two-column grid */
-.columns {
-  display: grid;
-  grid-template-columns: 1fr 300px;
-  gap: var(--space-6);
-  align-items: start;
-}
-
-.leftCol { display: flex; flex-direction: column; gap: var(--space-4); }
-
-.rightCol {
-  position: sticky;
-  top: calc(64px + var(--space-4));
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-6);
 }
 
-/* Save button below preview panel */
-.saveBtnBottom {
+.formCard {
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.label {
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--space-2);
+  display: block;
+}
+
+.hint {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin-top: var(--space-2);
+}
+
+.daysSection {
+  display: flex;
+  flex-direction: column;
+}
+
+.daysList {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.dayRow {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  width: 100%;
+  justify-content: space-between;
   padding: var(--space-3) var(--space-4);
-  background: var(--color-primary);
-  color: #ffffff;
-  border-radius: var(--radius-md);
-  font-size: 0.9rem;
-  font-weight: 700;
+  background: var(--color-surface);
+}
+
+.dayRow + .dayRow {
+  border-top: 1px solid var(--color-border);
+}
+
+.activeDay {
+  background: var(--color-primary-light);
+}
+
+.dayToggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
   cursor: pointer;
-  transition: background var(--transition), opacity var(--transition);
-}
-
-.saveBtnBottom:hover:not(:disabled) { background: var(--color-primary-dark); }
-
-.saveBtnBottom:disabled { opacity: 0.5; cursor: not-allowed; }
-
-.saveBtnSpinner {
-  width: 14px; height: 14px;
-  border: 2px solid rgba(255,255,255,0.4);
-  border-top-color: #fff;
-  border-radius: var(--radius-full);
-  animation: spin 0.7s linear infinite;
-  display: inline-block;
-}
-
-@keyframes spin { to { transform: rotate(360deg); } }
-
-.savedNote {
-  font-size: 0.78rem;
-  color: var(--color-success);
-  text-align: center;
   font-weight: 500;
+  width: 140px;
 }
 
-/* Stack on mobile */
-@media (max-width: 768px) {
-  .columns { grid-template-columns: 1fr; }
-  .rightCol { position: static; }
+.dayToggle input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+}
+
+.timeInputs {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.timeInputs input {
+  padding: var(--space-1) var(--space-2);
+  width: auto;
+  min-width: 110px;
+}
+
+.unavailableText {
+  color: var(--color-text-subtle);
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--space-6);
 }

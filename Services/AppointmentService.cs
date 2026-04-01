@@ -50,6 +50,7 @@ public class AppointmentService : IAppointmentService
 
         // Load PatientProfile for the requesting user
         var patientProfile = await _db.PatientProfiles
+            .Include(p => p.User)
             .FirstOrDefaultAsync(p => p.UserId == patientUserId)
             ?? throw new KeyNotFoundException("Patient profile not found.");
 

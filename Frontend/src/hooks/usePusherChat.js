@@ -28,12 +28,17 @@ export default function usePusherChat(appointmentId, onNewMessage) {
     const channel = pusherClient.subscribe(channelName);
     channelRef.current = channel;
 
-    // Bind the "new-message" event — this name must match the constant
-    // in ChatService.cs: private const string NewMessageEvent = "new-message";
     channel.bind('new-message', (data) => {
       // data is the ChatMessageDto deserialized from Pusher's JSON payload.
-      // Pass it directly to the ChatBox callback.
-      onNewMessage(data);
+      // Normalize keys to camelCase because the .NET Pusher SDK uses Newtonsoft.Json
+      // and serializes properties as PascalCase by default, unlike System.Text.Json.
+      const normalizedData = Object.keys(data).reduce((acc, key) => {
+        const camelKey = key.charAt(0).toLowerCase() + key.slice(1);
+        acc[camelKey] = data[key];
+        return acc;
+      }, {});
+      
+      onNewMessage(normalizedData);
     });
 
     // Connection state logging (dev only) — helps diagnose subscribe issues

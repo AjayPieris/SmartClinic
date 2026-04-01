@@ -1,166 +1,144 @@
-// =============================================================================
-// src/pages/doctor/DoctorNotes.jsx
-//
-// A focused notes editor for a single appointment.
-// Auto-saves on a 2-second debounce after the doctor stops typing.
-// Also has an explicit Save button for peace of mind.
-//
-// Route: /doctor/notes/:appointmentId
-// =============================================================================
-
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { getMyScheduleApi, updateAppointmentStatusApi } from '../../api/appointmentsApi';
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { getMyScheduleApi } from '../../api/appointmentsApi';
+import { useAuth } from '../../context/AuthContext';
 import axiosInstance from '../../api/axiosInstance';
 import styles from './DoctorNotes.module.css';
 
 export default function DoctorNotes() {
-  const { appointmentId } = useParams();
+  const { appointmentId: id } = useParams();
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   const [appointment, setAppointment] = useState(null);
-  const [notes,       setNotes]       = useState('');
-  const [isLoading,   setIsLoading]   = useState(true);
-  const [isSaving,    setIsSaving]    = useState(false);
-  const [lastSaved,   setLastSaved]   = useState(null);
-  const [error,       setError]       = useState('');
+  const [notes, setNotes] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [message, setMessage] = useState({ text: '', type: '' });
 
-  const debounceRef = useRef(null);
-
-  // ── Load appointment ────────────────────────────────────────────────────
   useEffect(() => {
-    const load = async () => {
-      try {
-        const all  = await getMyScheduleApi();
-        const appt = all.find((a) => a.id === appointmentId);
-        if (appt) {
-          setAppointment(appt);
-          setNotes(appt.doctorNotes ?? '');
+    // 1. Fetch the appointment to verify ownership and load existing notes
+    // In a real app we'd have a specific GET /appointments/{id} endpoint.
+    // Here we reuse getMyScheduleApi and filter locally.
+    getMyScheduleApi()
+      .then((appts) => {
+        const target = appts.find(a => a.id === id);
+        if (target) {
+          setAppointment(target);
+          setNotes(target.doctorNotes || '');
+        } else {
+          setMessage({ text: 'Appointment not found or unauthorized.', type: 'error' });
         }
-      } catch {
-        setError('Could not load appointment.');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    load();
-  }, [appointmentId]);
+      })
+      .catch(() => setMessage({ text: 'Could not load appointment details.', type: 'error' }))
+      .finally(() => setIsLoading(false));
+  }, [id, user.userId]);
 
-  // ── Save notes ──────────────────────────────────────────────────────────
-  const saveNotes = useCallback(async (text) => {
+  const showMessage = (text, type) => {
+    setMessage({ text, type });
+    setTimeout(() => setMessage({ text: '', type: '' }), 4000);
+  };
+
+  const handleSave = async (e) => {
+    e.preventDefault();
     setIsSaving(true);
-    setError('');
+    setMessage({ text: '', type: '' });
+
     try {
-      // PATCH the doctor notes field on the appointment.
-      // We add a dedicated endpoint here — add to AppointmentsController:
-      //   PATCH /api/appointments/{id}/notes  body: { notes: string }
-      await axiosInstance.patch(`/appointments/${appointmentId}/notes`, {
-        notes: text,
+      // Backend expects PATCH with { notes: "..." } and returns 204 NoContent
+      await axiosInstance.patch(`/appointments/${id}/notes`, {
+        notes: notes
       });
-      setLastSaved(new Date());
-    } catch {
-      setError('Auto-save failed. Please save manually.');
+      setAppointment(prev => ({ ...prev, doctorNotes: notes }));
+      showMessage('Medical notes saved successfully.', 'success');
+    } catch (err) {
+      showMessage(err.response?.data?.message || 'Failed to save notes.', 'error');
     } finally {
       setIsSaving(false);
     }
-  }, [appointmentId]);
-
-  // ── Debounced auto-save ─────────────────────────────────────────────────
-  const handleNotesChange = (e) => {
-    const value = e.target.value;
-    setNotes(value);
-
-    // Clear any pending debounce timer
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-
-    // Schedule auto-save 2 seconds after last keystroke
-    debounceRef.current = setTimeout(() => {
-      saveNotes(value);
-    }, 2000);
   };
 
-  // Cleanup debounce on unmount
-  useEffect(() => () => {
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-  }, []);
-
   if (isLoading) {
-    return <div className="screen-center"><div className="spinner" /></div>;
+    return (
+      <div className={styles.page}>
+        <div className="skeleton" style={{ width: '40%', height: 28, marginBottom: 16 }} />
+        <div className="skeleton card" style={{ height: 300 }} />
+      </div>
+    );
   }
 
   if (!appointment) {
     return (
-      <div style={{ padding: '2rem', color: 'var(--color-text-muted)' }}>
-        <p>Appointment not found.</p>
-        <Link to="/doctor/schedule">← Back to schedule</Link>
+      <div className={styles.page}>
+         <div className="error-banner">
+           <span>{message.text}</span>
+         </div>
+         <button className="btn-secondary" onClick={() => navigate(-1)} style={{ alignSelf: 'flex-start' }}>
+           ← Go back
+         </button>
       </div>
     );
   }
 
   return (
     <div className={styles.page}>
-
-      {/* Header */}
       <div className={styles.header}>
-        <Link to="/doctor/schedule" className={styles.backLink}>
-          ← Back to schedule
-        </Link>
-        <div>
-          <h1 className={styles.title}>Medical notes</h1>
-          <p className={styles.subtitle}>
-            {appointment.patientFullName} ·{' '}
-            {new Date(appointment.startTimeUtc).toLocaleDateString(undefined, {
-              dateStyle: 'medium',
-            })}
-          </p>
-        </div>
+        <button onClick={() => navigate(-1)} className={styles.backBtn}>
+          ← Back
+        </button>
+        <h1 className="page-title">Medical Notes</h1>
       </div>
 
-      {/* Error */}
-      {error && (
-        <div className={styles.errorBanner} role="alert">
-          {error}
-          <button onClick={() => setError('')} style={{ marginLeft: '1rem', opacity: 0.7 }}>×</button>
+      {message.text && (
+        <div className={message.type === 'error' ? 'error-banner' : 'success-banner'}>
+          {message.text}
         </div>
       )}
 
-      {/* Notes textarea */}
-      <div className={styles.editorWrap}>
-        <textarea
-          className={styles.editor}
-          value={notes}
-          onChange={handleNotesChange}
-          placeholder="Write your clinical notes here…&#10;&#10;• Chief complaint&#10;• Examination findings&#10;• Assessment&#10;• Plan"
-          aria-label="Doctor notes"
-          spellCheck
-        />
-
-        {/* Save status bar */}
-        <div className={styles.saveBar}>
-          <span className={styles.saveStatus}>
-            {isSaving && 'Saving…'}
-            {!isSaving && lastSaved && (
-              `Saved at ${lastSaved.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
-            )}
-            {!isSaving && !lastSaved && 'Unsaved changes will auto-save'}
+      <div className={`card ${styles.consultationContext}`}>
+        <div className={styles.contextRow}>
+          <span className={styles.contextLabel}>Patient</span>
+          <span className={styles.contextValue}>{appointment.patientFullName}</span>
+        </div>
+        <div className={styles.contextRow}>
+          <span className={styles.contextLabel}>Date</span>
+          <span className={styles.contextValue}>
+            {new Date(appointment.startTimeUtc).toLocaleString(undefined, {
+              dateStyle: 'medium', timeStyle: 'short'
+            })}
           </span>
-          <button
-            className={styles.saveBtn}
-            onClick={() => saveNotes(notes)}
-            disabled={isSaving}
-          >
-            {isSaving ? 'Saving…' : 'Save notes'}
-          </button>
+        </div>
+        <div className={styles.contextRow}>
+          <span className={styles.contextLabel}>Patient Reason</span>
+          <span className={styles.contextValue}>
+            {appointment.patientReason || 'Not provided'}
+          </span>
         </div>
       </div>
 
-      {/* Quick patient summary sidebar info */}
-      <div className={styles.patientMeta}>
-        <p className={styles.metaLabel}>Reason for visit</p>
-        <p className={styles.metaValue}>
-          {appointment.patientReason || 'Not specified'}
-        </p>
-      </div>
+      <form onSubmit={handleSave} className={`card ${styles.notesForm}`}>
+        <div className={styles.formGroup}>
+          <label htmlFor="notesInput" className={styles.label}>
+            Clinical notes
+          </label>
+          <textarea
+            id="notesInput"
+            className="input"
+            rows={10}
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="Enter symptoms, diagnosis, prescription details, etc..."
+            required
+            spellCheck="false"
+          />
+        </div>
 
+        <div className={styles.footer}>
+          <button type="submit" className="btn-primary" disabled={isSaving}>
+            {isSaving ? 'Saving...' : 'Save securely'}
+          </button>
+        </div>
+      </form>
     </div>
   );
 }

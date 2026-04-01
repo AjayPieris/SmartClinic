@@ -1,27 +1,18 @@
 /* =============================================================================
-   index.css — Global design tokens and resets.
-
-   Design decisions:
-   - CSS custom properties for the entire color system so theming is trivial
-   - Outfit for ALL body/UI text
-   - Nunito (heavy) for brand headings, logo, primary titles
-   - No component-level CSS files — each component gets a co-located .module.css
-     (added in later phases). This file is layout-global only.
+   index.css — Global design tokens, resets, and utility classes.
 ============================================================================= */
-
-/* ── Google Fonts are loaded via index.html <link> tags ─────────────────── */
 
 /* ── Design tokens ──────────────────────────────────────────────────────── */
 :root {
   /* Brand palette */
-  --color-primary:        #4f46e5; /* indigo-600 — primary actions */
-  --color-primary-dark:   #4338ca; /* indigo-700 — hover state     */
-  --color-primary-light:  #eef2ff; /* indigo-50  — subtle bg tint  */
+  --color-primary:        #4f46e5;
+  --color-primary-dark:   #4338ca;
+  --color-primary-light:  #eef2ff;
 
-  /* Role accent colours — used in dashboard headers and badges */
-  --color-patient:  #0f766e; /* teal-700   */
-  --color-doctor:   #7c3aed; /* violet-700 */
-  --color-admin:    #b45309; /* amber-700  */
+  /* Role accent colours */
+  --color-patient:  #0f766e;
+  --color-doctor:   #7c3aed;
+  --color-admin:    #b45309;
 
   /* Neutrals */
   --color-bg:           #f8fafc;
@@ -39,7 +30,7 @@
 
   /* Typography */
   --font-body:  'Outfit', system-ui, sans-serif;
-  --font-brand: 'Nunito', system-ui, sans-serif;  /* swap to 'Nano Banana' if licensed */
+  --font-brand: 'Nunito', system-ui, sans-serif;
 
   /* Spacing scale (8px base) */
   --space-1: 0.25rem;
@@ -48,6 +39,7 @@
   --space-4: 1rem;
   --space-6: 1.5rem;
   --space-8: 2rem;
+  --space-10: 2.5rem;
   --space-12: 3rem;
   --space-16: 4rem;
 
@@ -89,8 +81,6 @@ body {
 }
 
 /* ── Typography helpers ─────────────────────────────────────────────────── */
-
-/* Brand heading — apply to logo text, page titles, hero headings */
 .brand-heading {
   font-family: var(--font-brand);
   font-weight: 800;
@@ -130,9 +120,7 @@ input, textarea, select {
   font-size: 1rem;
 }
 
-/* ── Utility classes ────────────────────────────────────────────────────── */
-
-/* Loading spinner — used by ProtectedRoute while auth state hydrates */
+/* ── Loading spinner ────────────────────────────────────────────────────── */
 .spinner {
   width: 2rem;
   height: 2rem;
@@ -153,7 +141,32 @@ input, textarea, select {
   min-height: 100vh;
 }
 
-/* Role badge pill — used in nav and user cards */
+/* ── Skeleton shimmer ───────────────────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { opacity: 0.3; }
+  50%  { opacity: 0.55; }
+  100% { opacity: 0.3; }
+}
+
+.skeleton {
+  background: var(--color-border);
+  border-radius: var(--radius-md);
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+.skeleton-text {
+  height: 0.875rem;
+  margin-bottom: 0.5rem;
+  background: var(--color-border);
+  border-radius: var(--radius-sm);
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+.skeleton-text.short { width: 40%; }
+.skeleton-text.medium { width: 65%; }
+.skeleton-text.long { width: 90%; }
+
+/* ── Role badge pill ────────────────────────────────────────────────────── */
 .role-badge {
   display: inline-flex;
   align-items: center;
@@ -167,3 +180,216 @@ input, textarea, select {
 .role-badge.patient { background: #ccfbf1; color: var(--color-patient); }
 .role-badge.doctor  { background: #ede9fe; color: var(--color-doctor);  }
 .role-badge.admin   { background: #fef3c7; color: var(--color-admin);   }
+
+/* ── Appointment status pills ───────────────────────────────────────────── */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.7rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  letter-spacing: 0.01em;
+}
+
+.status-pill.pending   { background: #fef3c7; color: #92400e; }
+.status-pill.confirmed { background: #dbeafe; color: #1e40af; }
+.status-pill.completed { background: #d1fae5; color: #065f46; }
+.status-pill.cancelled { background: #fee2e2; color: #991b1b; }
+
+/* ── Error banner ───────────────────────────────────────────────────────── */
+.error-banner {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: var(--color-danger);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.error-banner button {
+  font-size: 1.2rem;
+  color: var(--color-danger);
+  opacity: 0.6;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.error-banner button:hover { opacity: 1; }
+
+/* ── Success banner ─────────────────────────────────────────────────────── */
+.success-banner {
+  background: #d1fae5;
+  border: 1px solid #6ee7b7;
+  color: #065f46;
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.success-banner button {
+  font-size: 1.2rem;
+  color: #065f46;
+  opacity: 0.6;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.success-banner button:hover { opacity: 1; }
+
+/* ── Card ───────────────────────────────────────────────────────────────── */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ── Primary button ─────────────────────────────────────────────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  background: var(--color-primary);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background var(--transition), opacity var(--transition);
+  text-decoration: none;
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-dark);
+  text-decoration: none;
+  color: #ffffff;
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Secondary button ───────────────────────────────────────────────────── */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-decoration: none;
+}
+
+.btn-secondary:hover {
+  border-color: var(--color-text-muted);
+  background: var(--color-bg);
+  text-decoration: none;
+}
+
+/* ── Danger button ──────────────────────────────────────────────────────── */
+.btn-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  background: var(--color-danger);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.btn-danger:hover { background: #b91c1c; }
+
+/* ── Standard input ─────────────────────────────────────────────────────── */
+.input {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  color: var(--color-text);
+  background: var(--color-surface);
+  transition: border-color var(--transition), box-shadow var(--transition);
+  outline: none;
+}
+
+.input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: var(--color-bg);
+}
+
+/* ── Empty state ────────────────────────────────────────────────────────── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-12) var(--space-6);
+  text-align: center;
+}
+
+.empty-state svg {
+  width: 64px;
+  height: 64px;
+  color: var(--color-text-subtle);
+  margin-bottom: var(--space-4);
+  opacity: 0.5;
+}
+
+.empty-state p {
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  max-width: 320px;
+}
+
+.empty-state p + p {
+  margin-top: var(--space-2);
+}
+
+/* ── Page typography ────────────────────────────────────────────────────── */
+.page-title {
+  font-family: var(--font-brand);
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+}
+
+.page-subtitle {
+  font-size: 0.925rem;
+  color: var(--color-text-muted);
+  margin-top: var(--space-1);
+}

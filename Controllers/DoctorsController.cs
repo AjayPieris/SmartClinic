@@ -39,7 +39,7 @@ public class DoctorsController : ControllerBase
                 d.Bio,
                 d.ConsultationDurationMinutes,
                 d.AvailabilityJson,
-                FullName = $"{d.User.FirstName} {d.User.LastName}",
+                FullName = d.User.FirstName + " " + d.User.LastName,
                 d.User.ProfilePictureUrl,
                 d.User.Email,
             })
@@ -157,7 +157,7 @@ public class DoctorsController : ControllerBase
             profile.Bio,
             profile.ConsultationDurationMinutes,
             profile.AvailabilityJson,
-            FullName = $"{profile.User.FirstName} {profile.User.LastName}",
+            FullName = profile.User.FirstName + " " + profile.User.LastName,
             profile.User.ProfilePictureUrl,
             profile.User.Email,
         });

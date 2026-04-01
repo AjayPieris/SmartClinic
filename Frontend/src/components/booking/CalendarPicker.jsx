@@ -38,7 +38,7 @@ export default function CalendarPicker({
   const availableDays = useMemo(() => {
     try {
       const parsed = JSON.parse(availabilityJson);
-      return new Set(parsed.map((w) => w.dayOfWeek));
+      return new Set(parsed.map((w) => w.DayOfWeek));
     } catch {
       return new Set();
     }
