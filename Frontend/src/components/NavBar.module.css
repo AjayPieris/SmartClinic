@@ -112,3 +112,40 @@
   color: var(--color-danger);
   background: #fef2f2;
 }
+
+/* ── Mobile Responsiveness ──────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .navInner {
+    flex-wrap: wrap;
+    height: auto;
+    padding: var(--space-3) var(--space-4);
+    gap: var(--space-4);
+  }
+  
+  .navLinks {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: var(--space-2);
+    /* Hide scrollbar for cleaner look */
+    -ms-overflow-style: none;  
+    scrollbar-width: none;  
+  }
+  
+  .navLinks::-webkit-scrollbar {
+    display: none;
+  }
+
+  .navUser {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .userName {
+    display: none;
+  }
+  .logoutBtn {
+    padding: var(--space-2);
+  }
+}

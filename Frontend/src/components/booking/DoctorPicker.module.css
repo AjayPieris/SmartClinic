@@ -131,3 +131,26 @@
   color: var(--color-text-muted);
   padding: var(--space-8);
 }
+
+/* ── Mobile Responsiveness ──────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .card {
+    padding: var(--space-3);
+    gap: var(--space-3);
+  }
+  
+  .avatar {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .avatarFallback {
+    width: 48px;
+    height: 48px;
+    font-size: 1.2rem;
+  }
+}
