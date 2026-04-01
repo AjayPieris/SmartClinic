@@ -27,6 +27,17 @@ public class DoctorProfile
     // Stored as TEXT in Postgres — flexible, no extra migration on schema change.
     public string AvailabilityJson { get; set; } = "[]";
 
+    // ── Doctor Verification ──────────────────────────────────────────────
+    // Admin must approve a doctor before they can see patients.
+    // Doctor submits a document URL (license/certificate) at registration.
+    public VerificationStatus VerificationStatus { get; set; } = VerificationStatus.Pending;
+    public string? VerificationDocumentUrl { get; set; }
+    public string? RejectionReason { get; set; }
+    public DateTime? VerifiedAtUtc { get; set; }
+
+    // Convenience computed property — NOT mapped to DB
+    public bool IsVerified => VerificationStatus == VerificationStatus.Approved;
+
     // -------------------------------------------------------------------------
     // Navigation properties
     // -------------------------------------------------------------------------

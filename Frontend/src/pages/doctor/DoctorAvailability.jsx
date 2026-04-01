@@ -21,10 +21,13 @@ export default function DoctorAvailability() {
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState({ text: '', type: '' });
 
+  const [verificationStatus, setVerificationStatus] = useState(null);
+
   useEffect(() => {
     // Flatten loaded json into local schedule state
     getMyDoctorProfileApi()
       .then((profile) => {
+        setVerificationStatus(profile.verificationStatus);
         setDuration(profile.consultationDurationMinutes || 30);
         const parsed = JSON.parse(profile.availabilityJson || '[]');
         const map = {};
@@ -104,7 +107,16 @@ export default function DoctorAvailability() {
         </div>
       )}
 
-      <form onSubmit={handleSave} className={`card ${styles.formCard}`}>
+      {verificationStatus !== 'Approved' && (
+        <div className="card" style={{ padding: 'var(--space-6)', border: '1px solid var(--color-warning)', background: '#fffbeb', marginBottom: 'var(--space-6)' }}>
+          <h3 style={{ color: '#b45309', margin: '0 0 8px 0' }}>Account Not Verified</h3>
+          <p style={{ margin: 0, color: 'var(--color-text-muted)' }}>
+            You cannot set your availability schedule until an administrator approves your account. Please wait for verification.
+          </p>
+        </div>
+      )}
+
+      <form onSubmit={handleSave} className={`card ${styles.formCard}`} style={{ opacity: verificationStatus !== 'Approved' ? 0.6 : 1, pointerEvents: verificationStatus !== 'Approved' ? 'none' : 'auto' }}>
         <div className={styles.durationSection}>
           <label className={styles.label}>Consultation Duration (minutes)</label>
           <select

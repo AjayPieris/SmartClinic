@@ -14,4 +14,9 @@ public class AdminUserListDto
     public string? ProfilePictureUrl { get; set; }
     public DateTime CreatedAtUtc { get; set; }
     public bool IsActive { get; set; }
+
+    // Doctor-specific fields (null for patients/admins)
+    public string? Specialization { get; set; }
+    public string? VerificationStatus { get; set; }
+    public bool? IsVerified { get; set; }
 }

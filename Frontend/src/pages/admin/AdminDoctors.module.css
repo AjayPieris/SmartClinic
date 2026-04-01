@@ -1,0 +1,310 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding-bottom: var(--space-12);
+}
+
+/* ── Tabs ───────────────────────────────────────────────────────────── */
+.tabs {
+  display: flex;
+  gap: var(--space-6);
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: var(--space-2);
+}
+
+.tabBtn {
+  padding: var(--space-3) var(--space-2);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  border-bottom: 2px solid transparent;
+  transition: all var(--transition);
+  position: relative;
+}
+
+.tabBtn:hover {
+  color: var(--color-text);
+}
+
+.tabBtn.active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+.badge {
+  background: var(--color-warning);
+  color: white;
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  border-radius: var(--radius-full);
+  margin-left: var(--space-2);
+  font-weight: 700;
+}
+
+/* ── Pending Cards List ─────────────────────────────────────────────── */
+.pendingList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.doctorCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6);
+  align-items: flex-start;
+}
+
+.cardHeader {
+  display: flex;
+  gap: var(--space-4);
+  align-items: center;
+  flex: 1;
+  min-width: 250px;
+}
+
+.avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+  border: 1px solid var(--color-border);
+}
+
+.avatarFallback {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.25rem;
+  text-transform: uppercase;
+}
+
+.doctorInfo h3 {
+  font-size: 1.1rem;
+  margin-bottom: var(--space-1);
+}
+
+.doctorMeta {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+/* ── Verification Section ────────────────────────────────────────────── */
+.verificationSection {
+  flex: 1.5;
+  min-width: 300px;
+  background: var(--color-bg);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--color-border);
+}
+
+.sectionTitle {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-3);
+}
+
+.docLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-primary);
+  font-weight: 500;
+  text-decoration: none;
+  background: var(--color-primary-light);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-3);
+  transition: background var(--transition);
+}
+
+.docLink:hover {
+  background: #e0e7ff;
+}
+
+.docLink svg {
+  width: 18px;
+  height: 18px;
+}
+
+.rejectDetails {
+  margin-top: var(--space-3);
+  animation: fadeIn 0.3s ease;
+}
+
+.rejectTextarea {
+  width: 100%;
+  padding: var(--space-3);
+  border: 1px solid var(--color-danger);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-2);
+  font-size: 0.9rem;
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* ── Card Actions ───────────────────────────────────────────────────── */
+.cardActions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 140px;
+}
+
+.approveBtn {
+  background: var(--color-success);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  transition: opacity var(--transition);
+  border: none;
+  cursor: pointer;
+}
+
+.approveBtn:hover { opacity: 0.9; }
+
+.rejectBtn {
+  background: var(--color-surface);
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  transition: all var(--transition);
+  cursor: pointer;
+}
+
+.rejectBtn:hover {
+  background: #fef2f2;
+}
+
+/* ── All Doctors Table ──────────────────────────────────────────────── */
+.tableCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  min-width: 800px;
+}
+
+.table th {
+  background: var(--color-bg);
+  padding: var(--space-3) var(--space-4);
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.table td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+
+.userCell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.smallAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+  border: 1px solid var(--color-border);
+}
+
+.smallAvatarFallback {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.userName {
+  font-weight: 600;
+  color: var(--color-text);
+  font-size: 0.95rem;
+}
+
+.userEmail {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.verifiedBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  background: var(--color-primary);
+  color: white;
+  border-radius: var(--radius-full);
+  margin-left: var(--space-1);
+  vertical-align: middle;
+}
+
+.verifiedBadge svg {
+  width: 10px;
+  height: 10px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}

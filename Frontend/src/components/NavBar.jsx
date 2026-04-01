@@ -17,7 +17,7 @@ const NAV_LINKS = {
   ],
   Admin: [
     { to: '/admin/users',    label: 'Users'    },
-    { to: '/admin/settings', label: 'Settings' },
+    { to: '/admin/doctors',  label: 'Doctors'  },
   ],
 };
 

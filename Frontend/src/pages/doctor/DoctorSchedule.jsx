@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getMyScheduleApi, updateAppointmentStatusApi } from '../../api/appointmentsApi';
+import { getMyDoctorProfileApi } from '../../api/doctorsApi';
 import { useAuth } from '../../context/AuthContext';
 import { Link } from 'react-router-dom';
 import styles from './DoctorSchedule.module.css';
@@ -7,6 +8,7 @@ import styles from './DoctorSchedule.module.css';
 export default function DoctorSchedule() {
   const { user } = useAuth();
   const [appointments, setAppointments] = useState([]);
+  const [verificationStatus, setVerificationStatus] = useState(null);
   const [isLoading,    setIsLoading]    = useState(true);
   const [error,        setError]        = useState('');
 
@@ -14,10 +16,16 @@ export default function DoctorSchedule() {
     // Only fetch if logged in as a doctor
     if (!user || user.role !== 'Doctor') return;
 
-    getMyScheduleApi()
-      .then(setAppointments)
-      .catch((err) => setError(err.response?.data?.message || 'Could not load your schedule.'))
-      .finally(() => setIsLoading(false));
+    Promise.all([
+      getMyDoctorProfileApi(),
+      getMyScheduleApi()
+    ])
+    .then(([profile, schedule]) => {
+      setVerificationStatus(profile.verificationStatus);
+      setAppointments(schedule);
+    })
+    .catch((err) => setError(err.response?.data?.message || 'Could not load your schedule.'))
+    .finally(() => setIsLoading(false));
   }, [user]);
 
   const handleStatusChange = async (appointmentId, newStatus) => {
@@ -59,7 +67,14 @@ export default function DoctorSchedule() {
         </div>
       )}
 
-      {appointments.length === 0 && !error ? (
+      {verificationStatus !== 'Approved' ? (
+        <div className="card" style={{ padding: 'var(--space-6)', border: '1px solid var(--color-warning)', background: '#fffbeb', marginTop: 'var(--space-6)' }}>
+          <h3 style={{ color: '#b45309', margin: '0 0 8px 0' }}>Account Not Verified</h3>
+          <p style={{ margin: 0, color: 'var(--color-text-muted)' }}>
+            Your account must be verified by an administrator before you can receive and manage appointments.
+          </p>
+        </div>
+      ) : appointments.length === 0 && !error ? (
         <div className="empty-state card">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-2.25-6.5h.008v.008H18.75V10.5Z" />

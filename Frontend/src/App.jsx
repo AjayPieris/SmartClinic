@@ -31,7 +31,7 @@ const DoctorProfile      = lazy(() => import('./pages/doctor/DoctorProfile'));
 
 // ── Admin pages ───────────────────────────────────────────────────
 const AdminUsers    = lazy(() => import('./pages/admin/AdminUsers'));
-const AdminSettings = lazy(() => import('./pages/admin/AdminSettings'));
+const AdminDoctors  = lazy(() => import('./pages/admin/AdminDoctors'));
 
 // ── Loading Spinner ───────────────────────────────────────────────
 function SuspenseFallback() {
@@ -107,7 +107,7 @@ export default function App() {
         >
           <Route index element={<Navigate to="users" replace />} />
           <Route path="users" element={<AdminUsers />} />
-          <Route path="settings" element={<AdminSettings />} />
+          <Route path="doctors" element={<AdminDoctors />} />
         </Route>
 
         {/* ── 404 ───────────────────────────────────────────────── */}

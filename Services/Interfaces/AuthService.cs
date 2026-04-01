@@ -77,6 +77,7 @@ public class AuthService : IAuthService
                 UserId = user.Id,
                 Specialization = request.Specialization?.Trim() ?? string.Empty,
                 LicenseNumber = request.LicenseNumber?.Trim() ?? string.Empty,
+                VerificationDocumentUrl = request.VerificationDocumentUrl?.Trim()
             };
             _db.DoctorProfiles.Add(doctorProfile);
         }

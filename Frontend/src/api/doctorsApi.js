@@ -32,3 +32,14 @@ export const saveAvailabilityApi = async (
     consultationDurationMinutes,
   });
 };
+
+/**
+ * Submit verification document URL.
+ * @param {string} documentUrl 
+ */
+export const submitVerificationDocumentApi = async (documentUrl) => {
+  const response = await axiosInstance.patch('/doctors/me/verification-document', {
+    documentUrl
+  });
+  return response.data;
+};

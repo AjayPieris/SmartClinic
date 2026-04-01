@@ -65,3 +65,55 @@
   background: #e0e7ff;
   text-decoration: none;
 }
+
+.availCta:hover span:last-child {
+  transform: translateX(4px);
+}
+
+/* ── Verification Submit Form ───────────────────────────────────────── */
+.submitDocForm {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  align-items: center;
+}
+
+.docInput {
+  flex: 1;
+  height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  background: white;
+}
+
+.docInput:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+.submitBtn {
+  height: 44px;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 0 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background var(--transition);
+  white-space: nowrap;
+}
+
+.submitBtn:hover {
+  background: var(--color-primary-dark);
+}
+
+.submitBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

@@ -30,7 +30,13 @@ public class RegisterRequestDto
     [Required]
     public string Role { get; set; } = "Patient"; // "Patient" | "Doctor"
 
-    // Doctor-only fields — ignored if Role == "Patient"
+    [MaxLength(200, ErrorMessage = "Specialization cannot exceed 200 characters.")]
     public string? Specialization { get; set; }
+
+    [MaxLength(100, ErrorMessage = "License number cannot exceed 100 characters.")]
     public string? LicenseNumber { get; set; }
+
+    [Url(ErrorMessage = "Please provide a valid URL for the verification document.")]
+    [MaxLength(1000, ErrorMessage = "Document URL cannot exceed 1000 characters.")]
+    public string? VerificationDocumentUrl { get; set; }
 }

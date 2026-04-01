@@ -64,6 +64,14 @@ public class AppDbContext : DbContext
 
             entity.Property(d => d.Specialization).HasMaxLength(200);
             entity.Property(d => d.LicenseNumber).HasMaxLength(100);
+            entity.Property(d => d.VerificationDocumentUrl).HasMaxLength(1000);
+            entity.Property(d => d.RejectionReason).HasMaxLength(1000);
+
+            // Map VerificationStatus enum to its integer value in the DB
+            entity.Property(d => d.VerificationStatus).HasConversion<int>();
+
+            // IsVerified is a computed C# property — not a DB column
+            entity.Ignore(d => d.IsVerified);
         });
 
         // =====================================================================

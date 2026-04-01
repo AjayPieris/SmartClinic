@@ -42,6 +42,7 @@ public class DoctorsController : ControllerBase
                 FullName = d.User.FirstName + " " + d.User.LastName,
                 d.User.ProfilePictureUrl,
                 d.User.Email,
+                IsVerified = d.VerificationStatus == Data.Models.VerificationStatus.Approved
             })
             .OrderBy(d => d.FullName)
             .ToListAsync();
@@ -160,7 +161,29 @@ public class DoctorsController : ControllerBase
             FullName = profile.User.FirstName + " " + profile.User.LastName,
             profile.User.ProfilePictureUrl,
             profile.User.Email,
+            VerificationStatus = profile.VerificationStatus.ToString(),
+            profile.VerificationDocumentUrl,
+            profile.RejectionReason
         });
+    }
+
+    // PATCH /api/doctors/me/verification-document
+    [HttpPatch("me/verification-document")]
+    [Authorize(Roles = "Doctor")]
+    public async Task<IActionResult> SubmitVerificationDocument([FromBody] DTOs.Doctors.SubmitVerificationDocumentDto request)
+    {
+        var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var profile = await _db.DoctorProfiles.FirstOrDefaultAsync(d => d.UserId == userId);
+
+        if (profile is null) return NotFound();
+
+        profile.VerificationDocumentUrl = request.DocumentUrl;
+        profile.VerificationStatus = Data.Models.VerificationStatus.Pending;
+        profile.RejectionReason = null; // Clear previous rejection reasons
+
+        await _db.SaveChangesAsync();
+
+        return Ok(new { message = "Verification document submitted successfully. Pending admin approval." });
     }
 
     // DTOs
