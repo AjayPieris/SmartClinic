@@ -1,42 +1,39 @@
-
-
 import { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
 import ProtectedRoute from './components/guards/ProtectedRoute';
-import RoleGuard      from './components/guards/RoleGuard';
+import RoleGuard from './components/guards/RoleGuard';
 
-// Public pages — always in the main bundle (small, always needed)
-import LoginPage      from './pages/auth/LoginPage';
-import RegisterPage   from './pages/auth/RegisterPage';
+// Public pages
+import LoginPage from './pages/auth/LoginPage';
+import RegisterPage from './pages/auth/RegisterPage';
 import UnauthorizedPage from './pages/UnauthorizedPage';
-import NotFoundPage   from './pages/NotFoundPage';
+import NotFoundPage from './pages/NotFoundPage';
 
-// ── Lazy-loaded dashboard layouts (code-split per role) ──────────────────
-// Each layout renders a role-specific <Outlet> with nested child routes
+// ── Lazy-loaded layouts ───────────────────────────────────────────
 const PatientLayout = lazy(() => import('./layouts/PatientLayout'));
 const DoctorLayout  = lazy(() => import('./layouts/DoctorLayout'));
 const AdminLayout   = lazy(() => import('./layouts/AdminLayout'));
 
-// ── Lazy-loaded page components ───────────────────────────────────────────
-// Patient pages
+// ── Patient pages ─────────────────────────────────────────────────
 const PatientAppointments = lazy(() => import('./pages/patient/PatientAppointments'));
 const BookAppointment     = lazy(() => import('./pages/patient/BookAppointment'));
 const PatientChat         = lazy(() => import('./pages/patient/PatientChat'));
 const PatientDocuments    = lazy(() => import('./pages/patient/PatientDocuments'));
 const PatientProfile      = lazy(() => import('./pages/patient/PatientProfile'));
 
-// Doctor pages
-const DoctorSchedule = lazy(() => import('./pages/doctor/DoctorSchedule'));
-const DoctorChat     = lazy(() => import('./pages/doctor/DoctorChat'));
-const DoctorNotes    = lazy(() => import('./pages/doctor/DoctorNotes'));
-const DoctorProfile  = lazy(() => import('./pages/doctor/DoctorProfile'));
+// ── Doctor pages ──────────────────────────────────────────────────
+const DoctorSchedule     = lazy(() => import('./pages/doctor/DoctorSchedule'));
+const DoctorAvailability = lazy(() => import('./pages/doctor/DoctorAvailability')); // ✅ ADDED
+const DoctorChat         = lazy(() => import('./pages/doctor/DoctorChat'));
+const DoctorNotes        = lazy(() => import('./pages/doctor/DoctorNotes'));
+const DoctorProfile      = lazy(() => import('./pages/doctor/DoctorProfile'));
 
-// Admin pages
+// ── Admin pages ───────────────────────────────────────────────────
 const AdminUsers    = lazy(() => import('./pages/admin/AdminUsers'));
 const AdminSettings = lazy(() => import('./pages/admin/AdminSettings'));
 
-// ── Lazy loading fallback — reuse the same spinner from index.css ─────────
+// ── Loading Spinner ───────────────────────────────────────────────
 function SuspenseFallback() {
   return (
     <div className="screen-center">
@@ -51,15 +48,15 @@ export default function App() {
     <Suspense fallback={<SuspenseFallback />}>
       <Routes>
 
-        {/* ── Public routes ─────────────────────────────────────────────── */}
-        <Route path="/login"        element={<LoginPage />} />
-        <Route path="/register"     element={<RegisterPage />} />
+        {/* ── Public routes ───────────────────────────────────────── */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
         <Route path="/unauthorized" element={<UnauthorizedPage />} />
 
-        {/* ── Root redirect — send / to /login (guard redirects to dashboard if authed) */}
+        {/* Root redirect */}
         <Route path="/" element={<Navigate to="/login" replace />} />
 
-        {/* ── Patient routes ────────────────────────────────────────────── */}
+        {/* ── Patient routes ─────────────────────────────────────── */}
         <Route
           path="/patient"
           element={
@@ -70,16 +67,15 @@ export default function App() {
             </ProtectedRoute>
           }
         >
-          {/* /patient → redirect to /patient/appointments */}
           <Route index element={<Navigate to="appointments" replace />} />
           <Route path="appointments" element={<PatientAppointments />} />
-          <Route path="book"         element={<BookAppointment />} />
+          <Route path="book" element={<BookAppointment />} />
           <Route path="chat/:appointmentId" element={<PatientChat />} />
-          <Route path="documents"    element={<PatientDocuments />} />
-          <Route path="profile"      element={<PatientProfile />} />
+          <Route path="documents" element={<PatientDocuments />} />
+          <Route path="profile" element={<PatientProfile />} />
         </Route>
 
-        {/* ── Doctor routes ─────────────────────────────────────────────── */}
+        {/* ── Doctor routes ─────────────────────────────────────── */}
         <Route
           path="/doctor"
           element={
@@ -91,13 +87,14 @@ export default function App() {
           }
         >
           <Route index element={<Navigate to="schedule" replace />} />
-          <Route path="schedule"          element={<DoctorSchedule />} />
+          <Route path="schedule" element={<DoctorSchedule />} />
+          <Route path="availability" element={<DoctorAvailability />} /> {/* ✅ ADDED */}
           <Route path="chat/:appointmentId" element={<DoctorChat />} />
           <Route path="notes/:appointmentId" element={<DoctorNotes />} />
-          <Route path="profile"           element={<DoctorProfile />} />
+          <Route path="profile" element={<DoctorProfile />} />
         </Route>
 
-        {/* ── Admin routes ──────────────────────────────────────────────── */}
+        {/* ── Admin routes ──────────────────────────────────────── */}
         <Route
           path="/admin"
           element={
@@ -109,11 +106,11 @@ export default function App() {
           }
         >
           <Route index element={<Navigate to="users" replace />} />
-          <Route path="users"    element={<AdminUsers />} />
+          <Route path="users" element={<AdminUsers />} />
           <Route path="settings" element={<AdminSettings />} />
         </Route>
 
-        {/* ── 404 catch-all ─────────────────────────────────────────────── */}
+        {/* ── 404 ───────────────────────────────────────────────── */}
         <Route path="*" element={<NotFoundPage />} />
 
       </Routes>

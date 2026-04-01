@@ -1,0 +1,151 @@
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-lg);
+  border: 1.5px solid var(--color-border);
+  background: var(--color-surface);
+  transition: border-color var(--transition), background var(--transition);
+  flex-wrap: wrap;
+}
+
+/* Enabled day — highlight border */
+.rowEnabled {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+/* Disabled day — muted */
+.rowDisabled { opacity: 0.65; }
+
+/* ── Day info (toggle + name) ────────────────────────────────────────────── */
+.dayInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 140px;
+}
+
+/* Toggle switch */
+.toggleWrap {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.toggleInput {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggleTrack {
+  display: block;
+  width: 40px;
+  height: 22px;
+  background: var(--color-border);
+  border-radius: var(--radius-full);
+  transition: background var(--transition);
+  position: relative;
+}
+
+.toggleInput:checked + .toggleTrack {
+  background: var(--color-primary);
+}
+
+.toggleThumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-full);
+  background: #ffffff;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition);
+}
+
+.toggleInput:checked + .toggleTrack .toggleThumb {
+  transform: translateX(18px);
+}
+
+/* Focus ring for keyboard users */
+.toggleInput:focus-visible + .toggleTrack {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.dayName {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  min-width: 90px;
+  transition: color var(--transition);
+}
+
+.dayNameActive { color: var(--color-primary); }
+
+/* ── Time row ────────────────────────────────────────────────────────────── */
+.timeRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex: 1;
+  flex-wrap: wrap;
+}
+
+.timeSelect {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background: var(--color-surface);
+  cursor: pointer;
+  outline: none;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  min-width: 110px;
+}
+
+.timeSelect:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
+}
+
+.timeSelectError { border-color: var(--color-danger) !important; }
+
+.timeSep {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+/* Slot count badge */
+.slotBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  background: #dbeafe;
+  color: #1e40af;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Inline validation error */
+.inlineError {
+  font-size: 0.78rem;
+  color: var(--color-danger);
+  font-weight: 500;
+}
+
+/* Unavailable label (disabled state) */
+.unavailableLabel {
+  font-size: 0.82rem;
+  color: var(--color-text-subtle);
+  font-style: italic;
+}

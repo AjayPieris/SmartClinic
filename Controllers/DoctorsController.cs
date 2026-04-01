@@ -1,7 +1,5 @@
 // =============================================================================
-// DoctorsController.cs — Public-ish endpoints for browsing doctors.
-// GET /api/doctors           — list all active doctors (patients need this)
-// GET /api/doctors/{id}/booked-slots — slots already taken on a given date
+// DoctorsController.cs
 // =============================================================================
 
 using Microsoft.AspNetCore.Authorization;
@@ -9,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SmartClinic.API.Data;
 using SmartClinic.API.Data.Models;
+
+using System.Security.Claims;
+using System.Text.Json;
 
 namespace SmartClinic.API.Controllers;
 
@@ -22,8 +23,6 @@ public class DoctorsController : ControllerBase
     public DoctorsController(AppDbContext db) => _db = db;
 
     // GET /api/doctors
-    // Returns every active doctor with their profile and availability.
-    // Patients use this to populate the DoctorPicker step.
     [HttpGet]
     [Authorize(Roles = "Patient,Admin")]
     public async Task<IActionResult> GetAllDoctors()
@@ -39,7 +38,7 @@ public class DoctorsController : ControllerBase
                 d.LicenseNumber,
                 d.Bio,
                 d.ConsultationDurationMinutes,
-                d.AvailabilityJson,    // Sent as-is; React parses it
+                d.AvailabilityJson,
                 FullName = $"{d.User.FirstName} {d.User.LastName}",
                 d.User.ProfilePictureUrl,
                 d.User.Email,
@@ -50,18 +49,14 @@ public class DoctorsController : ControllerBase
         return Ok(doctors);
     }
 
-    // GET /api/doctors/{id}/booked-slots?date=2025-03-22
-    // Returns non-cancelled appointments for this doctor on the given UTC date.
-    // Used by the React slot generator to subtract booked windows.
+    // GET /api/doctors/{id}/booked-slots
     [HttpGet("{id:guid}/booked-slots")]
     [Authorize(Roles = "Patient,Admin")]
     public async Task<IActionResult> GetBookedSlots(Guid id, [FromQuery] string date)
     {
-        // Parse the date string and build a UTC day range
         if (!DateOnly.TryParse(date, out var parsedDate))
             return BadRequest(new { message = "Invalid date format. Use YYYY-MM-DD." });
 
-        // Build UTC range for the calendar day
         var dayStart = parsedDate.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc);
         var dayEnd   = parsedDate.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc);
 
@@ -77,4 +72,106 @@ public class DoctorsController : ControllerBase
 
         return Ok(booked);
     }
+
+    // PATCH /api/doctors/availability
+    [HttpPatch("availability")]
+    [Authorize(Roles = "Doctor")]
+    public async Task<IActionResult> UpdateAvailability(
+        [FromBody] UpdateAvailabilityDto request)
+    {
+        var userId = Guid.Parse(
+            User.FindFirstValue(ClaimTypes.NameIdentifier)
+                ?? throw new InvalidOperationException("User ID claim missing."));
+
+        var profile = await _db.DoctorProfiles
+            .FirstOrDefaultAsync(d => d.UserId == userId);
+
+        if (profile is null)
+            return NotFound(new { message = "Doctor profile not found." });
+
+        try
+        {
+            var parsed = JsonSerializer.Deserialize<List<AvailabilityWindowDto>>(
+                request.AvailabilityJson);
+
+            if (parsed is null)
+                return BadRequest(new { message = "Invalid availability format." });
+
+            foreach (var window in parsed)
+            {
+                if (!TimeOnly.TryParse(window.StartTime, out var start) ||
+                    !TimeOnly.TryParse(window.EndTime, out var end))
+                    return BadRequest(new
+                    {
+                        message = $"Invalid time format in window for day {window.DayOfWeek}."
+                    });
+
+                if (end <= start)
+                    return BadRequest(new
+                    {
+                        message = $"End time must be after start time for day {window.DayOfWeek}."
+                    });
+            }
+
+            if (request.ConsultationDurationMinutes < 5 ||
+                request.ConsultationDurationMinutes > 240 ||
+                request.ConsultationDurationMinutes % 5 != 0)
+                return BadRequest(new
+                {
+                    message = "Consultation duration must be between 5 and 240 minutes, in multiples of 5."
+                });
+        }
+        catch (JsonException)
+        {
+            return BadRequest(new { message = "Malformed availability JSON." });
+        }
+
+        profile.AvailabilityJson = request.AvailabilityJson;
+        profile.ConsultationDurationMinutes = request.ConsultationDurationMinutes;
+
+        await _db.SaveChangesAsync();
+
+        return NoContent();
+    }
+
+    // GET /api/doctors/me
+    [HttpGet("me")]
+    [Authorize(Roles = "Doctor")]
+    public async Task<IActionResult> GetMyProfile()
+    {
+        var userId = Guid.Parse(
+            User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        var profile = await _db.DoctorProfiles
+            .AsNoTracking()
+            .Include(d => d.User)
+            .FirstOrDefaultAsync(d => d.UserId == userId);
+
+        if (profile is null) return NotFound();
+
+        return Ok(new
+        {
+            profile.Id,
+            profile.Specialization,
+            profile.LicenseNumber,
+            profile.Bio,
+            profile.ConsultationDurationMinutes,
+            profile.AvailabilityJson,
+            FullName = $"{profile.User.FirstName} {profile.User.LastName}",
+            profile.User.ProfilePictureUrl,
+            profile.User.Email,
+        });
+    }
+
+    // DTOs
+    public record UpdateAvailabilityDto(
+        string AvailabilityJson,
+        int ConsultationDurationMinutes
+    );
+
+    public record AvailabilityWindowDto(
+        int DayOfWeek,
+        string StartTime,
+        string EndTime
+    );
 }

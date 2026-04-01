@@ -1,5 +1,3 @@
-
-
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import styles from './NavBar.module.css';
@@ -13,8 +11,9 @@ const NAV_LINKS = {
     { to: '/patient/profile',      label: 'Profile'         },
   ],
   Doctor: [
-    { to: '/doctor/schedule', label: 'Schedule'  },
-    { to: '/doctor/profile',  label: 'Profile'   },
+    { to: '/doctor/schedule',     label: 'Schedule'     },
+    { to: '/doctor/availability', label: 'Availability' }, // ✅ Added
+    { to: '/doctor/profile',      label: 'Profile'      },
   ],
   Admin: [
     { to: '/admin/users',    label: 'Users'    },
@@ -34,7 +33,7 @@ export default function NavBar() {
     <header className={styles.navbar}>
       <div className={styles.navInner}>
 
-        {/* Brand logo — Nunito heavy via .brand-heading global class */}
+        {/* Brand logo */}
         <button
           className={`brand-heading ${styles.brandBtn}`}
           onClick={() => navigate(`/${user.role.toLowerCase()}`)}
@@ -60,6 +59,7 @@ export default function NavBar() {
 
         {/* User info + logout */}
         <div className={styles.navUser}>
+
           {/* Profile avatar */}
           {user.profilePictureUrl ? (
             <img
@@ -89,6 +89,7 @@ export default function NavBar() {
           >
             Sign out
           </button>
+
         </div>
 
       </div>
