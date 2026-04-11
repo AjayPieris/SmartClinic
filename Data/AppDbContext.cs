@@ -27,6 +27,7 @@ public class AppDbContext : DbContext
     public DbSet<Appointment> Appointments => Set<Appointment>();
     public DbSet<ChatMessage> ChatMessages => Set<ChatMessage>();
     public DbSet<MedicalDocument> MedicalDocuments => Set<MedicalDocument>();
+    public DbSet<Notification> Notifications => Set<Notification>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -156,6 +157,22 @@ public class AppDbContext : DbContext
 
             entity.Property(m => m.CloudinaryUrl).HasMaxLength(1000);
             entity.Property(m => m.DocumentName).HasMaxLength(500);
+        });
+
+        // =====================================================================
+        // Notification
+        // =====================================================================
+        modelBuilder.Entity<Notification>(entity =>
+        {
+            entity.HasKey(n => n.Id);
+
+            entity.HasOne(n => n.User)
+                  .WithMany()
+                  .HasForeignKey(n => n.UserId)
+                  .OnDelete(DeleteBehavior.Cascade);
+                  
+            entity.Property(n => n.Title).IsRequired().HasMaxLength(255);
+            entity.Property(n => n.Type).IsRequired().HasMaxLength(50);
         });
 
         // =====================================================================

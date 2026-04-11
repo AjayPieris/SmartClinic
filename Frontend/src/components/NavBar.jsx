@@ -1,7 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import styles from './NavBar.module.css';
+
+import useNotifications from '../hooks/useNotifications';
+import NotificationPanel from './notifications/NotificationPanel';
+import ChatDrawer from './chat/ChatDrawer';
 
 import smartClinicLogo from '../assets/SmartClinicLogo.png';
 
@@ -45,11 +49,28 @@ const NAV_LINKS = {
     { to: '/admin/doctors',  label: 'Doctors',  short: 'Doctors' },
   ],
 };
-
 export default function NavBar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [chatDrawerOpen, setChatDrawerOpen] = useState(false);
+  const [chatDrawerApptId, setChatDrawerApptId] = useState(null);
+
+  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
+
+  // Listen for open-chat-drawer event
+  useEffect(() => {
+    const handleOpenChat = (e) => {
+      if (e.detail?.appointmentId) {
+        setChatDrawerApptId(e.detail.appointmentId);
+      }
+      setChatDrawerOpen(true);
+    };
+
+    window.addEventListener('open-chat-drawer', handleOpenChat);
+    return () => window.removeEventListener('open-chat-drawer', handleOpenChat);
+  }, []);
 
   if (!user) return null; 
 
@@ -87,38 +108,76 @@ export default function NavBar() {
             ))}
           </nav>
 
-          {/* User info + logout */}
-          <div className={styles.navUser}>
-            <div className={styles.userMeta}>
-              <span className={styles.userName}>
-                {user.firstName} {user.lastName}
-              </span>
-              <span className={`role-badge ${user.role.toLowerCase()}`} style={{ fontSize: '0.65rem', padding: '2px 6px', marginTop: '2px' }}>
-                {user.role}
-              </span>
+          {/* Actions: Notifications + Chat + User */}
+          <div className={styles.navActions}>
+            
+            {/* Notification Bell */}
+            <div className={styles.panelWrapper}>
+              <button 
+                className={styles.iconBtn} 
+                onClick={() => setNotifOpen(!notifOpen)}
+                aria-label="Notifications"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                {unreadCount > 0 && <span className={styles.badge}>{unreadCount > 9 ? '9+' : unreadCount}</span>}
+              </button>
+              
+              {notifOpen && (
+                <NotificationPanel 
+                  notifications={notifications}
+                  unreadCount={unreadCount}
+                  markAsRead={markAsRead}
+                  markAllAsRead={markAllAsRead}
+                  onClose={() => setNotifOpen(false)}
+                />
+              )}
             </div>
 
-            {/* Profile avatar */}
-            {user.profilePictureUrl ? (
-              <img
-                src={user.profilePictureUrl}
-                alt={`${user.firstName}'s avatar`}
-                className={styles.avatar}
-              />
-            ) : (
-              <div className={styles.avatarFallback} aria-hidden="true">
-                {user.firstName[0]}{user.lastName[0]}
-              </div>
-            )}
+            {/* Chat button placeholder (Will connect when we build ChatDrawer) */}
+            <div className={styles.panelWrapper}>
+              <button 
+                className={styles.iconBtn} 
+                onClick={() => window.dispatchEvent(new CustomEvent('open-chat-drawer'))}
+                aria-label="Chat"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                <span className={styles.badge} style={{display: 'none'}}>0</span>
+              </button>
+            </div>
 
-            <button
-              onClick={logout}
-              className={styles.logoutBtn}
-              aria-label="Sign out"
-              title="Sign Out"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-            </button>
+            {/* User info + logout */}
+            <div className={styles.navUser}>
+              <div className={styles.userMeta}>
+                <span className={styles.userName}>
+                  {user.firstName} {user.lastName}
+                </span>
+                <span className={`role-badge ${user.role.toLowerCase()}`} style={{ fontSize: '0.65rem', padding: '2px 6px', marginTop: '2px' }}>
+                  {user.role}
+                </span>
+              </div>
+
+              {/* Profile avatar */}
+              {user.profilePictureUrl ? (
+                <img
+                  src={user.profilePictureUrl}
+                  alt={`${user.firstName}'s avatar`}
+                  className={styles.avatar}
+                />
+              ) : (
+                <div className={styles.avatarFallback} aria-hidden="true">
+                  {user.firstName[0]}{user.lastName[0]}
+                </div>
+              )}
+
+              <button
+                onClick={logout}
+                className={styles.logoutBtn}
+                aria-label="Sign out"
+                title="Sign Out"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+              </button>
+            </div>
           </div>
 
           {/* Mobile hamburger */}
@@ -193,6 +252,16 @@ export default function NavBar() {
           </NavLink>
         ))}
       </nav>
+      
+      {/* ═══ Chat Drawer ═══ */}
+      <ChatDrawer 
+        isOpen={chatDrawerOpen} 
+        onClose={() => {
+          setChatDrawerOpen(false);
+          setChatDrawerApptId(null);
+        }} 
+        initialAppointmentId={chatDrawerApptId} 
+      />
     </>
   );
 }

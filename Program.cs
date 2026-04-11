@@ -119,6 +119,9 @@ builder.Services.AddSingleton<IPusherService, PusherService>();
 // ChatService uses DbContext (scoped) so it must also be scoped
 builder.Services.AddScoped<IChatService, ChatService>();
 
+// NotificationService for backend triggers and read state
+builder.Services.AddScoped<INotificationService, NotificationService>();
+
 builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
 {
     // 10 MB max body size for form parsing

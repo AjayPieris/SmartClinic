@@ -1,0 +1,257 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: flex-end;
+  pointer-events: auto; /* Required to block clicks outside */
+}
+
+.backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: fadeIn 0.3s ease;
+}
+
+.drawer {
+  position: relative;
+  width: 900px;
+  max-width: 100vw;
+  height: 100vh;
+  background: var(--color-bg);
+  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+  display: flex;
+  animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1; /* Above backdrop */
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+/* Sidebar (Contacts) */
+.sidebar {
+  width: 320px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+}
+
+.sidebarHeader {
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.sidebarTitle {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-text);
+  margin: 0;
+  font-family: var(--font-brand);
+}
+
+.closeBtn {
+  font-size: 1.5rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 4px;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.closeBtn:hover {
+  color: var(--color-danger);
+}
+
+.contactList {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+.contactItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 4px;
+}
+
+.contactItem:hover {
+  background: var(--color-bg);
+}
+
+.activeContact {
+  background: var(--color-primary-light);
+}
+
+.activeContact:hover {
+  background: var(--color-primary-light);
+}
+
+.contactAvatar, .contactAvatarFallback {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.contactAvatarFallback {
+  background: linear-gradient(135deg, var(--color-primary), #0ea5e9);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.contactInfo {
+  flex: 1;
+  min-width: 0; /* for text truncation */
+}
+
+.contactName {
+  margin: 0 0 2px 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.contactStatus {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.noContacts {
+  text-align: center;
+  color: var(--color-text-muted);
+  padding: 20px;
+  font-size: 0.9rem;
+}
+
+.skeletonWrap {
+  padding: 8px;
+}
+
+/* Chat Area */
+.chatArea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg); /* Use base bg so ChatBox fits cleanly */
+  position: relative;
+  min-width: 0; /* Important for flex child */
+}
+
+/* Redefine ChatBox internal heights because ChatBox has min-heights */
+.chatWrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  /* Override the default ChatBox page-like margin since it's now in a drawer */
+  padding: 0;
+}
+
+.chatWrapper > div {
+  margin: 0;
+  border-radius: 0;
+  border-top: none;
+  border-bottom: none;
+  border-right: none;
+}
+
+.noSelection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-subtle);
+}
+
+.noSelectionIcon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.03);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.mobileBackBtn {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--color-surface);
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  z-index: 2;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .drawer {
+    width: 100vw;
+  }
+  
+  .sidebar {
+    width: 100vw;
+  }
+  
+  .sidebarHiddenMobile {
+    display: none;
+  }
+  
+  .chatHiddenMobile {
+    display: none;
+  }
+  
+  .mobileBackBtn {
+    display: flex;
+  }
+  
+  .chatArea {
+    width: 100vw;
+  }
+}

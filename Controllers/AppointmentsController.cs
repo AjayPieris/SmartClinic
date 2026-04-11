@@ -26,11 +26,13 @@ public class AppointmentsController : ControllerBase
 {
     private readonly IAppointmentService _appointmentService;
     private readonly AppDbContext _db;
+    private readonly INotificationService _notificationService;
 
-    public AppointmentsController(IAppointmentService appointmentService, AppDbContext db)
+    public AppointmentsController(IAppointmentService appointmentService, AppDbContext db, INotificationService notificationService)
     {
         _appointmentService = appointmentService;
         _db = db;
+        _notificationService = notificationService;
     }
 
     // Helper: extract the authenticated user's ID from JWT claims
@@ -106,6 +108,41 @@ public class AppointmentsController : ControllerBase
         {
             var result = await _appointmentService.UpdateStatusAsync(
                 id, request.Status, GetCurrentUserId(), GetCurrentUserRole());
+
+            // --- Notification Trigger ---
+            var appointment = await _db.Appointments
+                .Include(a => a.DoctorProfile)
+                .Include(a => a.PatientProfile)
+                .FirstOrDefaultAsync(a => a.Id == id);
+            
+            if (appointment != null)
+            {
+                var currentUserId = GetCurrentUserId();
+                var opponentUserId = currentUserId == appointment.DoctorProfile.UserId 
+                    ? appointment.PatientProfile.UserId 
+                    : appointment.DoctorProfile.UserId;
+
+                var title = request.Status switch
+                {
+                    "Confirmed" => "Appointment Confirmed",
+                    "Cancelled" => "Appointment Cancelled",
+                    "Completed" => "Appointment Completed",
+                    _ => $"Appointment status: {request.Status}"
+                };
+
+                var dateStr = result.StartTimeUtc.ToLocalTime().ToString("MMM dd, yyyy");
+                var msg = request.Status switch
+                {
+                    "Confirmed" => $"Your appointment on {dateStr} has been confirmed.",
+                    "Cancelled" => $"Your appointment on {dateStr} was cancelled.",
+                    "Completed" => $"Dr. {result.DoctorFullName} completed your appointment on {dateStr}.",
+                    _ => $"Status changed to {request.Status}."
+                };
+
+                await _notificationService.CreateNotificationAsync(
+                    opponentUserId, title, msg, "Appointment", id);
+            }
+
             return Ok(result);
         }
         catch (UnauthorizedAccessException)

@@ -28,15 +28,17 @@ public class ChatService : IChatService
     private readonly AppDbContext _db;
     private readonly IPusherService _pusher;
     private readonly ILogger<ChatService> _logger;
+    private readonly INotificationService _notificationService;
 
     // Pusher event name — must exactly match what pusher-js subscribes to in React
     private const string NewMessageEvent = "new-message";
 
-    public ChatService(AppDbContext db, IPusherService pusher, ILogger<ChatService> logger)
+    public ChatService(AppDbContext db, IPusherService pusher, ILogger<ChatService> logger, INotificationService notificationService)
     {
         _db = db;
         _pusher = pusher;
         _logger = logger;
+        _notificationService = notificationService;
     }
 
     // -------------------------------------------------------------------------
@@ -118,6 +120,15 @@ public class ChatService : IChatService
         // so they both receive the event simultaneously.
         var channelName = $"appointment-{request.AppointmentId}-chat";
         await _pusher.TriggerAsync(channelName, NewMessageEvent, messageDto);
+
+        // --- Notification Trigger ---
+        var recipientUserId = isDoctorParticipant ? appointment.PatientProfile.UserId : appointment.DoctorProfile.UserId;
+        await _notificationService.CreateNotificationAsync(
+            recipientUserId, 
+            $"New message from {senderUser.FirstName}", 
+            request.MessageText.Length > 50 ? request.MessageText[..47] + "..." : request.MessageText,
+            "Message", 
+            request.AppointmentId);
 
         // Return the DTO to the HTTP caller (the sender gets it as 201 Created)
         return messageDto;
