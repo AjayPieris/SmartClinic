@@ -70,3 +70,26 @@
   font-weight: 500;
   max-width: 300px;
 }
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .list {
+    padding: 20px;
+    border-radius: 22px;
+    gap: 12px;
+  }
+
+  .skeletonList { padding: 20px; border-radius: 22px; }
+
+  .emptyState {
+    padding: 48px 20px;
+    border-radius: 22px;
+  }
+
+  .listHeader { font-size: 1.1rem; }
+}
+
+@media (max-width: 480px) {
+  .list { padding: 16px; border-radius: 18px; }
+  .emptyState { padding: 36px 16px; border-radius: 18px; }
+}

@@ -105,3 +105,44 @@
   color: var(--color-text-muted); 
   font-weight: 700;
 }
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .progress {
+    padding: 16px;
+    border-radius: 18px;
+  }
+
+  .connector { margin: 0 6px; height: 3px; }
+
+  .step { min-width: 44px; gap: 6px; }
+  .stepCircle { width: 32px; height: 32px; font-size: 0.85rem; }
+  .stepLabel { font-size: 0.65rem; }
+}
+
+@media (max-width: 480px) {
+  .progress { padding: 12px 10px; border-radius: 16px; gap: 0; }
+  
+  .connector { margin: 0 4px; height: 2px; }
+  
+  .step { min-width: 30px; gap: 4px; }
+  .stepCircle { width: 28px; height: 28px; font-size: 0.8rem; }
+  
+  /* Hide text for inactive steps to prevent squishing the line */
+  .step:not(.stepActive) .stepLabel {
+    display: none;
+  }
+  
+  /* Make the active label absolute so it doesn't break flex layout */
+  .stepActive {
+    position: relative;
+    padding-bottom: 20px;
+  }
+  
+  .stepActive .stepLabel {
+    position: absolute;
+    bottom: 0;
+    font-size: 0.6rem;
+    white-space: nowrap;
+  }
+}

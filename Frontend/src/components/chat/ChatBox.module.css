@@ -1,9 +1,9 @@
 .chatBox {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  flex: 1; /* Replace height: 100% to let it grow correctly inside chatPage */
   min-height: 500px;
-  max-height: 750px;
+  max-height: 80vh;
   background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
@@ -414,4 +414,33 @@
   font-size: 0.75rem;
   font-weight: 600;
   color: rgba(0,0,0,0.5);
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .chatBox {
+    height: auto;
+    flex: 1;
+    min-height: 0; /* Let it shrink to fit viewport */
+    border-radius: 16px;
+  }
+
+  .chatHeader { padding: 10px 16px; min-height: 50px; }
+
+  .headerAvatar { width: 36px; height: 36px; }
+  .headerAvatarFallback { width: 36px; height: 36px; font-size: 1rem; }
+  
+  .headerTitle { font-size: 0.95rem; }
+
+  .messageList { padding: 16px 12px; }
+
+  .inputArea { padding: 10px 12px; gap: 8px; min-height: 60px; }
+
+  .textInput { padding: 10px 16px; font-size: 0.9rem; }
+
+  .sendBtn { width: 44px; height: 44px; }
+}
+
+@media (max-width: 480px) {
+  .chatBox { border-radius: 12px; }
 }

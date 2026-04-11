@@ -136,3 +136,34 @@
   background: linear-gradient(135deg, var(--color-primary) 0%, #0284c7 100%);
   transform: translateY(-6px);
 }
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .strip {
+    padding: 10px 12px;
+    border-radius: 20px;
+    gap: 8px;
+  }
+
+  .navBtn { width: 36px; height: 36px; }
+
+  .days { gap: 4px; }
+
+  .dayPill {
+    padding: 10px 4px;
+    border-radius: 14px;
+  }
+
+  .dayNum { font-size: 1.2rem; }
+  .dayTop { font-size: 0.68rem; letter-spacing: 0.5px; }
+
+  .dot { width: 20px; height: 20px; font-size: 0.6rem; }
+}
+
+@media (max-width: 480px) {
+  .strip { padding: 8px; border-radius: 16px; }
+  .navBtn { width: 32px; height: 32px; }
+  .dayPill { padding: 8px 2px; border-radius: 12px; }
+  .dayNum { font-size: 1rem; }
+  .dayTop { font-size: 0.6rem; }
+}

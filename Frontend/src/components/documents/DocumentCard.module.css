@@ -114,6 +114,26 @@
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
 }
 
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .card {
+    gap: 14px;
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .typeBadge { width: 46px; height: 46px; border-radius: 10px; }
+
+  .docName { font-size: 0.95rem; }
+  .docMeta { font-size: 0.75rem; }
+
+  .openBtn, .deleteBtn {
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+  }
+}
+
 @media (max-width: 600px) {
   .card {
     flex-direction: column;
@@ -124,5 +144,11 @@
   }
   .openBtn, .deleteBtn {
     flex: 1;
+    justify-content: center;
   }
+}
+
+@media (max-width: 480px) {
+  .card { padding: 14px; border-radius: 14px; }
+  .typeBadge { width: 40px; height: 40px; border-radius: 8px; }
 }

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import styles from './NavBar.module.css';
@@ -29,97 +30,169 @@ const getNavIcon = (label) => {
 
 const NAV_LINKS = {
   Patient: [
-    { to: '/patient/appointments', label: 'My Appointments' },
-    { to: '/patient/book',         label: 'Book a Visit'    },
-    { to: '/patient/documents',    label: 'My Documents'    },
-    { to: '/patient/profile',      label: 'Profile'         },
+    { to: '/patient/appointments', label: 'My Appointments', short: 'Appts' },
+    { to: '/patient/book',         label: 'Book a Visit',    short: 'Book'  },
+    { to: '/patient/documents',    label: 'My Documents',    short: 'Docs'  },
+    { to: '/patient/profile',      label: 'Profile',         short: 'Profile' },
   ],
   Doctor: [
-    { to: '/doctor/schedule',     label: 'Schedule'     },
-    { to: '/doctor/availability', label: 'Availability' },
-    { to: '/doctor/profile',      label: 'Profile'      },
+    { to: '/doctor/schedule',     label: 'Schedule',     short: 'Schedule' },
+    { to: '/doctor/availability', label: 'Availability', short: 'Slots'    },
+    { to: '/doctor/profile',      label: 'Profile',      short: 'Profile'  },
   ],
   Admin: [
-    { to: '/admin/users',    label: 'Users'    },
-    { to: '/admin/doctors',  label: 'Doctors'  },
+    { to: '/admin/users',    label: 'Users',    short: 'Users'   },
+    { to: '/admin/doctors',  label: 'Doctors',  short: 'Doctors' },
   ],
 };
 
 export default function NavBar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   if (!user) return null; 
 
   const links = NAV_LINKS[user.role] ?? [];
 
   return (
-    <header className={styles.navbar}>
-      <div className={styles.navInner}>
+    <>
+      {/* ═══ Desktop / Tablet Top Navbar ═══ */}
+      <header className={styles.navbar}>
+        <div className={styles.navInner}>
 
-        {/* Brand logo */}
-        <button
-          className={styles.brandBtn}
-          onClick={() => navigate(`/${user.role.toLowerCase()}`)}
-          aria-label="Go to dashboard"
-        >
-          <img src={smartClinicLogo} alt="SmartClinic Logo" className={styles.navLogoImg} />
-          SmartClinic
-        </button>
-
-        {/* Role-specific nav links */}
-        <nav className={styles.navLinks} aria-label="Main navigation">
-          {links.map((link) => (
-            <NavLink
-              key={link.to}
-              to={link.to}
-              className={({ isActive }) =>
-                `${styles.navLink} ${isActive ? styles.navLinkActive : ''}`
-              }
-            >
-              {getNavIcon(link.label)}
-              {link.label}
-            </NavLink>
-          ))}
-        </nav>
-
-        {/* User info + logout */}
-        <div className={styles.navUser}>
-
-          <div className={styles.userMeta}>
-            <span className={styles.userName}>
-              {user.firstName} {user.lastName}
-            </span>
-            <span className={`role-badge ${user.role.toLowerCase()}`} style={{ fontSize: '0.65rem', padding: '2px 6px', marginTop: '2px' }}>
-              {user.role}
-            </span>
-          </div>
-
-          {/* Profile avatar */}
-          {user.profilePictureUrl ? (
-            <img
-              src={user.profilePictureUrl}
-              alt={`${user.firstName}'s avatar`}
-              className={styles.avatar}
-            />
-          ) : (
-            <div className={styles.avatarFallback} aria-hidden="true">
-              {user.firstName[0]}{user.lastName[0]}
-            </div>
-          )}
-
+          {/* Brand logo */}
           <button
-            onClick={logout}
-            className={styles.logoutBtn}
-            aria-label="Sign out"
-            title="Sign Out"
+            className={styles.brandBtn}
+            onClick={() => navigate(`/${user.role.toLowerCase()}`)}
+            aria-label="Go to dashboard"
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            <img src={smartClinicLogo} alt="SmartClinic Logo" className={styles.navLogoImg} />
+            <span className={styles.brandText}>SmartClinic</span>
           </button>
 
+          {/* Desktop nav links */}
+          <nav className={styles.navLinks} aria-label="Main navigation">
+            {links.map((link) => (
+              <NavLink
+                key={link.to}
+                to={link.to}
+                className={({ isActive }) =>
+                  `${styles.navLink} ${isActive ? styles.navLinkActive : ''}`
+                }
+              >
+                {getNavIcon(link.label)}
+                <span className={styles.linkLabel}>{link.label}</span>
+              </NavLink>
+            ))}
+          </nav>
+
+          {/* User info + logout */}
+          <div className={styles.navUser}>
+            <div className={styles.userMeta}>
+              <span className={styles.userName}>
+                {user.firstName} {user.lastName}
+              </span>
+              <span className={`role-badge ${user.role.toLowerCase()}`} style={{ fontSize: '0.65rem', padding: '2px 6px', marginTop: '2px' }}>
+                {user.role}
+              </span>
+            </div>
+
+            {/* Profile avatar */}
+            {user.profilePictureUrl ? (
+              <img
+                src={user.profilePictureUrl}
+                alt={`${user.firstName}'s avatar`}
+                className={styles.avatar}
+              />
+            ) : (
+              <div className={styles.avatarFallback} aria-hidden="true">
+                {user.firstName[0]}{user.lastName[0]}
+              </div>
+            )}
+
+            <button
+              onClick={logout}
+              className={styles.logoutBtn}
+              aria-label="Sign out"
+              title="Sign Out"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            </button>
+          </div>
+
+          {/* Mobile hamburger */}
+          <button
+            className={styles.mobileMenuBtn}
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            ) : (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            )}
+          </button>
         </div>
 
-      </div>
-    </header>
+        {/* ═══ Mobile Dropdown Menu ═══ */}
+        {mobileMenuOpen && (
+          <div className={styles.mobileDropdown}>
+            <div className={styles.mobileUserCard}>
+              {user.profilePictureUrl ? (
+                <img src={user.profilePictureUrl} alt="" className={styles.mobileAvatar} />
+              ) : (
+                <div className={styles.mobileAvatarFallback}>
+                  {user.firstName[0]}{user.lastName[0]}
+                </div>
+              )}
+              <div>
+                <p className={styles.mobileUserName}>{user.firstName} {user.lastName}</p>
+                <span className={`role-badge ${user.role.toLowerCase()}`} style={{ fontSize: '0.65rem', padding: '2px 8px' }}>
+                  {user.role}
+                </span>
+              </div>
+            </div>
+
+            <nav className={styles.mobileNav}>
+              {links.map((link) => (
+                <NavLink
+                  key={link.to}
+                  to={link.to}
+                  className={({ isActive }) =>
+                    `${styles.mobileNavLink} ${isActive ? styles.mobileNavLinkActive : ''}`
+                  }
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {getNavIcon(link.label)}
+                  {link.label}
+                </NavLink>
+              ))}
+            </nav>
+
+            <button className={styles.mobileLogoutBtn} onClick={logout}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+              Sign Out
+            </button>
+          </div>
+        )}
+      </header>
+
+      {/* ═══ Mobile Bottom Tab Bar ═══ */}
+      <nav className={styles.bottomBar} aria-label="Mobile navigation">
+        {links.map((link) => (
+          <NavLink
+            key={link.to}
+            to={link.to}
+            className={({ isActive }) =>
+              `${styles.bottomTab} ${isActive ? styles.bottomTabActive : ''}`
+            }
+          >
+            {getNavIcon(link.label)}
+            <span className={styles.bottomTabLabel}>{link.short}</span>
+          </NavLink>
+        ))}
+      </nav>
+    </>
   );
 }

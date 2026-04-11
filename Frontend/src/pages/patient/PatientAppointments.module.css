@@ -368,9 +368,65 @@
   border-top: 1px dashed rgba(0,0,0,0.1);
 }
 
+/* ── Tablet ── */
+@media (max-width: 1024px) {
+  .layout { grid-template-columns: 220px 1fr; gap: 24px; }
+}
+
+/* ── Mobile ── */
 @media (max-width: 768px) {
+  .page {
+    padding: 16px 16px 100px; /* Bottom tab bar clearance */
+    gap: 20px;
+  }
+
   .layout { grid-template-columns: 1fr; }
-  .header { flex-direction: column; gap: 16px; }
-  .apptHeader { flex-direction: column; gap: 16px; }
+
+  .sidebar { display: none; } /* Hide sidebar stats on mobile */
+
+  .header { flex-direction: column; gap: 12px; }
+
+  .titleBlock h1 { font-size: 1.5rem; }
+
+  .bookBtn {
+    width: 100%;
+    justify-content: center;
+    padding: 14px;
+    border-radius: 12px;
+  }
+
+  .apptCard {
+    padding: 18px;
+    border-radius: 14px;
+  }
+
+  .apptHeader { flex-direction: column; gap: 12px; }
+
+  .avatar, .fallbackAvatar { width: 48px; height: 48px; border-radius: 12px; }
+
+  .docName { font-size: 1.05rem; }
+
+  .timeRow { flex-wrap: wrap; gap: 10px; }
+
   .actionBtn { align-self: flex-start; }
+
+  .actionBtn.secondary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .reasonQuote { font-size: 0.85rem; }
+
+  .successBanner { padding: 14px 16px; border-radius: 12px; }
+}
+
+/* ── Small mobile ── */
+@media (max-width: 480px) {
+  .page { padding: 12px 12px 100px; }
+
+  .titleBlock h1 { font-size: 1.3rem; }
+
+  .doctorInfo { gap: 12px; }
+
+  .docNameRow { flex-direction: column; align-items: flex-start; gap: 6px; }
 }

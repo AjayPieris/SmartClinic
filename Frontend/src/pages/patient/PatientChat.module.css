@@ -93,3 +93,28 @@
   padding: var(--space-12);
   color: var(--color-text-muted);
 }
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .chatPage {
+    height: calc(100vh - 64px - 100px); /* Account for bottom tab bar */
+    padding: 0 12px;
+    gap: 16px;
+  }
+
+  .pageTitle { font-size: 1.15rem; }
+
+  .infoCard {
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .apptMeta { font-size: 0.82rem; flex-wrap: wrap; }
+}
+
+@media (max-width: 480px) {
+  .chatPage {
+    padding: 0 8px;
+    gap: 12px;
+  }
+}

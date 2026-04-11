@@ -5,6 +5,7 @@
   flex-direction: column;
   gap: var(--space-6);
   padding: var(--space-4);
+  overflow-x: hidden; /* Prevent any child from causing horizontal scroll */
 }
 
 .pageHeader { 
@@ -63,16 +64,17 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  /* Add subtle background gradients to make glass elements pop visually */
+  overflow: hidden; /* Contain the pseudo-element */
 }
 
-/* Add an absolutely positioned blurred radial gradient as an underlay decoration to the content wrapper to amplify the glass effect */
+/* Decorative radial glow — contained by overflow: hidden */
 .stepContent::before {
   content: '';
   position: absolute;
   top: -50px;
   left: 50%;
-  width: 600px;
+  width: 100%; /* Use 100% instead of 600px to prevent overflow */
+  max-width: 600px;
   height: 600px;
   background: radial-gradient(circle, rgba(var(--color-primary-rgb), 0.05) 0%, rgba(var(--color-primary-rgb), 0) 70%);
   transform: translateX(-50%);
@@ -130,4 +132,41 @@
   cursor: not-allowed; 
   transform: none;
   box-shadow: none;
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .page {
+    padding: 16px 16px 100px;
+    gap: 20px;
+    max-width: 100vw; /* Prevent any horizontal overflow */
+  }
+
+  .pageTitle { font-size: 1.4rem; }
+  .pageSubtitle { font-size: 0.9rem; }
+
+  .dateSlotLayout {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .stepContent { min-height: 200px; }
+
+  .errorBanner {
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 0.88rem;
+  }
+
+  .backBtn {
+    width: 100%;
+    justify-content: center;
+    padding: 14px;
+    border-radius: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page { padding: 12px 12px 100px; }
+  .pageTitle { font-size: 1.2rem; }
 }

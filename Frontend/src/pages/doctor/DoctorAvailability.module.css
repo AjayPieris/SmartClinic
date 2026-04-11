@@ -431,6 +431,11 @@
 }
 
 /* ── Mobile ──────────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .page { padding: 0 12px 100px; } /* Bottom tab bar clearance */
+  .pageTitle { font-size: 1.4rem; }
+}
+
 @media (max-width: 600px) {
   .section { padding: 20px 18px; }
 
@@ -450,7 +455,10 @@
     gap: 10px;
   }
 
-  .timeRow { justify-content: flex-start; }
+  .dayLeft { min-width: auto; }
+
+  .timeRow { justify-content: flex-start; width: 100%; }
+  .timeInput { flex: 1; width: auto; }
   .unavailable { text-align: left; }
 
   .saveRow { padding: 20px 18px 24px; }
@@ -463,4 +471,10 @@
   }
 
   .statDivider { width: 80%; height: 1px; }
+}
+
+@media (max-width: 480px) {
+  .page { padding: 0 8px 100px; }
+  .formCard { border-radius: 16px; }
+  .warnBanner { border-radius: 12px; padding: 14px 16px; }
 }

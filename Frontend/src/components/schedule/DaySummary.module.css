@@ -99,3 +99,57 @@
 .info .iconWrap    { color: #0ea5e9; background: #e0f2fe; }
 .success .iconWrap { color: #10b981; background: #d1fae5; }
 .warning .iconWrap { color: #f59e0b; background: #fef3c7; }
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .wrap {
+    padding: 18px;
+    border-radius: 22px;
+    gap: 12px;
+  }
+
+  .headerRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  .dateLabel { font-size: 1.2rem; }
+
+  .stats { gap: 10px; }
+
+  .statCard {
+    padding: 12px 14px;
+    gap: 12px;
+    border-radius: 16px;
+  }
+
+  .iconWrap {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+  }
+
+  .iconWrap svg { width: 16px; height: 16px; }
+
+  .statValue { font-size: 1.4rem; }
+  .statLabel { font-size: 0.7rem; letter-spacing: 0.3px; }
+}
+
+@media (max-width: 480px) {
+  .wrap { padding: 14px; border-radius: 18px; }
+
+  .dateLabel { font-size: 1.05rem; }
+
+  .statCard {
+    padding: 10px 12px;
+    gap: 10px;
+    border-radius: 14px;
+  }
+
+  .iconWrap { width: 36px; height: 36px; border-radius: 10px; }
+
+  .statValue { font-size: 1.2rem; }
+  .statLabel { font-size: 0.65rem; }
+}

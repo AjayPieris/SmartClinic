@@ -238,3 +238,25 @@
   50% { opacity: 1; }
   100% { opacity: 0.5; }
 }
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .wrapper {
+    border-radius: 20px;
+    padding: 12px;
+  }
+
+  .hourLabels { width: 50px; }
+  .hourLabel { font-size: 0.72rem; padding-right: 10px; }
+
+  .block { left: 8px; right: 8px; }
+  .blockInner { gap: 8px; padding: 6px 8px; }
+  .blockName { font-size: 0.82rem; }
+  .profileAvatar { width: 30px; height: 30px; }
+}
+
+@media (max-width: 480px) {
+  .wrapper { padding: 8px; border-radius: 16px; }
+  .hourLabels { width: 40px; }
+  .hourLabel { font-size: 0.68rem; padding-right: 6px; }
+}

@@ -113,3 +113,30 @@
 }
 
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .form {
+    padding: 20px;
+    border-radius: 22px;
+    gap: 18px;
+  }
+
+  .panelTitle { font-size: 1.1rem; }
+
+  .input, .select {
+    padding: 14px 16px;
+    border-radius: 14px;
+    font-size: 0.9rem;
+  }
+
+  .uploadBtn {
+    padding: 14px;
+    font-size: 0.95rem;
+    border-radius: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .form { padding: 16px; border-radius: 18px; }
+}

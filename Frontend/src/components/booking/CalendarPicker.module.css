@@ -193,3 +193,31 @@
 
 .dotAvail   { background: #ffffff; border: 1px solid rgba(0,0,0,0.1); }
 .dotUnavail { background: rgba(0,0,0,0.05); }
+
+/* ── Mobile ── */
+@media (max-width: 480px) {
+  .calendar {
+    padding: 20px 16px;
+    border-radius: 18px;
+    max-width: 100%;
+  }
+
+  .grid { gap: 5px; }
+
+  .day {
+    font-size: 0.85rem;
+    border-radius: 10px;
+  }
+
+  .monthLabel { font-size: 1rem; }
+
+  .navBtn { width: 32px; height: 32px; border-radius: 10px; }
+
+  .legend {
+    gap: 14px;
+    margin-top: 18px;
+    padding-top: 14px;
+  }
+
+  .legendItem { font-size: 0.72rem; }
+}

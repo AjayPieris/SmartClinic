@@ -80,6 +80,12 @@
   }
   .uploadPanel { position: static; }
   .page {
-    padding: 24px 16px;
+    padding: 20px 16px 100px; /* Bottom tab bar clearance */
   }
+  .pageTitle { font-size: 1.5rem; }
+}
+
+@media (max-width: 480px) {
+  .page { padding: 16px 12px 100px; }
+  .pageTitle { font-size: 1.3rem; }
 }

@@ -385,3 +385,64 @@
   gap: 12px;
   margin-top: 8px;
 }
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .wrapper {
+    padding: 20px 12px 100px; /* Bottom tab bar clearance */
+    gap: 20px;
+  }
+
+  .statsContainer {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .statCard {
+    min-width: 0;
+    padding: 18px;
+    border-radius: 18px;
+  }
+
+  .statVal { font-size: 1.4rem; }
+
+  .ratioChartContainer {
+    padding: 18px;
+    border-radius: 18px;
+  }
+
+  .filterBar {
+    flex-direction: column;
+    border-radius: 16px;
+    padding: 14px;
+    gap: 12px;
+  }
+
+  .searchGroup { min-width: 0; width: 100%; }
+
+  .filterSelect { width: 100%; }
+
+  .tableCard {
+    padding: 16px;
+    border-radius: 20px;
+  }
+
+  .table th, .table td { padding: 12px 10px; font-size: 0.85rem; }
+
+  .actions { flex-wrap: wrap; }
+
+  .modalContent {
+    margin: 16px;
+    padding: 24px;
+    border-radius: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .wrapper { padding: 16px 8px 100px; }
+  .statCard { padding: 14px; gap: 14px; }
+  .statIconBox { width: 44px; height: 44px; border-radius: 14px; }
+  .statVal { font-size: 1.2rem; }
+  .userCell { gap: 10px; }
+  .avatar, .avatarFallback { width: 36px; height: 36px; }
+}

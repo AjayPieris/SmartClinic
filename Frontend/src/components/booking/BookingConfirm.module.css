@@ -209,3 +209,29 @@
   text-align: center;
   margin-top: var(--space-2);
 }
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .wrap { gap: 20px; }
+
+  .summaryCard, .formCard {
+    padding: 20px;
+    border-radius: 18px;
+  }
+
+  .summaryRow { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .summaryValue { text-align: left; }
+
+  .confirmBtn {
+    padding: 16px;
+    font-size: 1rem;
+    border-radius: 14px;
+  }
+
+  .textarea { padding: 14px; font-size: 0.9rem; border-radius: 14px; }
+}
+
+@media (max-width: 480px) {
+  .summaryCard, .formCard { padding: 16px; border-radius: 16px; }
+  .toggleBtn { padding: 12px 8px; font-size: 0.85rem; }
+}

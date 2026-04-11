@@ -161,7 +161,6 @@
   transform: rotate(90deg);
 }
 
-/* Error */
 .validationError {
   margin-top: 12px;
   font-size: 0.85rem;
@@ -171,4 +170,20 @@
   padding: 8px 12px;
   border-radius: 8px;
   text-align: center;
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .zone { border-radius: 16px; }
+  .idleContent { padding: 28px 18px; }
+  .uploadIcon { padding: 12px; }
+  .dropLabel { font-size: 0.95rem; }
+  .filePreview { padding: 18px; gap: 12px; }
+}
+
+@media (max-width: 480px) {
+  .zone { border-radius: 14px; }
+  .idleContent { padding: 24px 14px; }
+  .dropLabel { font-size: 0.88rem; }
+  .dropSub { font-size: 0.8rem; }
 }

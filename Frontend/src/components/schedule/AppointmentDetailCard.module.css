@@ -238,3 +238,48 @@
   box-shadow: 0 6px 15px rgba(0,0,0,0.05);
   color: var(--color-primary);
 }
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .card {
+    padding: 24px 18px;
+    border-radius: 22px;
+    gap: 18px;
+  }
+
+  .emptyCard {
+    border-radius: 22px;
+    padding: 24px;
+    min-height: 250px;
+  }
+
+  .avatarGlowRing { width: 72px; height: 72px; }
+  .patientName { font-size: 1.2rem; }
+
+  .infoRow {
+    padding: 10px;
+    border-radius: 14px;
+    gap: 12px;
+  }
+
+  .infoIcon { width: 36px; height: 36px; border-radius: 10px; }
+
+  .actionBtn { padding: 14px; border-radius: 14px; font-size: 0.9rem; }
+
+  .linkBtn {
+    padding: 10px;
+    font-size: 0.82rem;
+    border-radius: 10px;
+  }
+
+  .secondaryLinks { flex-direction: column; }
+}
+
+@media (max-width: 480px) {
+  .card { padding: 18px 14px; border-radius: 18px; }
+  .emptyCard { padding: 20px; min-height: 200px; border-radius: 18px; }
+  .avatarGlowRing { width: 64px; height: 64px; }
+  .patientName { font-size: 1.1rem; }
+  .infoTitle { font-size: 0.8rem; }
+  .infoSub { font-size: 0.75rem; }
+}
