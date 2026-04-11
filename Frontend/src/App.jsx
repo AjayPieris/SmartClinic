@@ -88,7 +88,7 @@ export default function App() {
         >
           <Route index element={<Navigate to="schedule" replace />} />
           <Route path="schedule" element={<DoctorSchedule />} />
-          <Route path="availability" element={<DoctorAvailability />} /> {/* ✅ ADDED */}
+          <Route path="availability" element={<DoctorAvailability />} />
           <Route path="chat/:appointmentId" element={<DoctorChat />} />
           <Route path="notes/:appointmentId" element={<DoctorNotes />} />
           <Route path="profile" element={<DoctorProfile />} />
