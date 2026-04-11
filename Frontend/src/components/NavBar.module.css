@@ -1,24 +1,38 @@
+/* NavBar Wrapper */
 .navbar {
-  background: var(--color-surface);
-  border-bottom: 1px solid var(--color-border);
+  /* No solid background, completely floating */
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: var(--shadow-sm);
+  padding: 16px 24px;
+  display: flex;
+  justify-content: center;
+  pointer-events: none; /* Let clicks pass through empty space */
 }
 
+/* Glass Inner Container */
 .navInner {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 var(--space-6);
-  height: 90px;
+  pointer-events: auto; /* Enable clicks inside the bar */
+  width: 100%;
+  max-width: 1400px;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05), inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+  border-radius: 99px;
+  padding: 8px 12px 8px 24px;
   display: flex;
   align-items: center;
-  gap: var(--space-8);
+  gap: 32px;
+  transition: all 0.3s ease;
 }
 
+/* Brand Section */
 .brandBtn {
-  font-size: 1.35rem;
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
   color: var(--color-primary);
   background: none;
   border: none;
@@ -27,115 +41,174 @@
   flex-shrink: 0;
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: 12px;
+  transition: transform 0.2s;
+}
+
+.brandBtn:hover {
+  transform: scale(1.02);
 }
 
 .navLogoImg {
-  height: 5rem;
+  height: 2.8rem;
   width: auto;
+  filter: drop-shadow(0 4px 6px rgba(14, 165, 233, 0.2));
 }
 
+/* Centered Navigation Pills */
 .navLinks {
   display: flex;
   align-items: center;
-  gap: var(--space-1);
+  gap: 8px;
   flex: 1;
+  justify-content: flex-start;
 }
 
 .navLink {
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-md);
-  font-size: 0.9rem;
-  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 99px;
+  font-size: 0.95rem;
+  font-weight: 600;
   color: var(--color-text-muted);
-  transition: color var(--transition), background var(--transition);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
+  border: 1px solid transparent;
+}
+
+.navLink svg {
+  color: inherit;
+  transition: transform 0.2s;
 }
 
 .navLink:hover {
   color: var(--color-text);
-  background: var(--color-bg);
-  text-decoration: none;
+  background: rgba(255, 255, 255, 0.6);
+  border-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+}
+
+.navLink:hover svg {
+  transform: scale(1.1);
 }
 
 .navLinkActive {
   color: var(--color-primary);
-  background: var(--color-primary-light);
+  background: white;
+  border-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 8px 20px rgba(14, 165, 233, 0.15);
 }
 
+/* User & Controls Section */
 .navUser {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: 16px;
   margin-left: auto;
-}
-
-.avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-full);
-  object-fit: cover;
-  border: 2px solid var(--color-border);
-}
-
-.avatarFallback {
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-full);
-  background: var(--color-primary-light);
-  color: var(--color-primary);
-  font-size: 0.8rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-transform: uppercase;
-  border: 2px solid var(--color-border);
+  background: rgba(255, 255, 255, 0.5);
+  padding: 6px 6px 6px 16px;
+  border-radius: 99px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
 }
 
 .userMeta {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  justify-content: center;
+  line-height: 1.2;
 }
 
 .userName {
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: 0.9rem;
+  font-weight: 700;
   color: var(--color-text);
-  line-height: 1;
 }
 
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid white;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.avatarFallback {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), #0ea5e9);
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  border: 2px solid white;
+  box-shadow: 0 4px 10px rgba(14, 165, 233, 0.3);
+}
+
+/* Specialized Logout Button */
 .logoutBtn {
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  font-size: 0.85rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: white;
+  border: 1px solid rgba(0,0,0,0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: var(--color-text-muted);
-  transition: all var(--transition);
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
 .logoutBtn:hover {
-  border-color: var(--color-danger);
-  color: var(--color-danger);
   background: #fef2f2;
+  color: #ef4444;
+  border-color: #fca5a5;
+  transform: rotate(5deg) scale(1.05);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
 }
 
 /* ── Mobile Responsiveness ──────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .navInner {
+    gap: 16px;
+    padding: 8px;
+  }
+  .brandBtn {
+    font-size: 0; /* Hide text, show only logo */
+    gap: 0;
+  }
+}
+
 @media (max-width: 768px) {
+  .navbar {
+    padding: 12px;
+  }
+  
   .navInner {
     flex-wrap: wrap;
-    height: auto;
-    padding: var(--space-3) var(--space-4);
-    gap: var(--space-4);
+    border-radius: 24px;
+    padding: 12px 16px;
+    gap: 16px;
+  }
+  
+  .brandBtn {
+    font-size: 1.2rem;
   }
   
   .navLinks {
     order: 3;
     width: 100%;
     overflow-x: auto;
-    padding-bottom: var(--space-2);
-    /* Hide scrollbar for cleaner look */
+    padding-bottom: 4px;
     -ms-overflow-style: none;  
     scrollbar-width: none;  
   }
@@ -150,10 +223,11 @@
 }
 
 @media (max-width: 480px) {
-  .userName {
+  .userName, .role-badge {
     display: none;
   }
-  .logoutBtn {
-    padding: var(--space-2);
+  .navUser {
+    padding: 4px;
+    gap: 8px;
   }
 }

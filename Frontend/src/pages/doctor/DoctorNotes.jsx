@@ -17,9 +17,6 @@ export default function DoctorNotes() {
   const [message, setMessage] = useState({ text: '', type: '' });
 
   useEffect(() => {
-    // 1. Fetch the appointment to verify ownership and load existing notes
-    // In a real app we'd have a specific GET /appointments/{id} endpoint.
-    // Here we reuse getMyScheduleApi and filter locally.
     getMyScheduleApi()
       .then((appts) => {
         const target = appts.find(a => a.id === id);
@@ -45,12 +42,9 @@ export default function DoctorNotes() {
     setMessage({ text: '', type: '' });
 
     try {
-      // Backend expects PATCH with { notes: "..." } and returns 204 NoContent
-      await axiosInstance.patch(`/appointments/${id}/notes`, {
-        notes: notes
-      });
+      await axiosInstance.patch(`/appointments/${id}/notes`, { notes });
       setAppointment(prev => ({ ...prev, doctorNotes: notes }));
-      showMessage('Medical notes saved successfully.', 'success');
+      showMessage('Medical notes saved securely.', 'success');
     } catch (err) {
       showMessage(err.response?.data?.message || 'Failed to save notes.', 'error');
     } finally {
@@ -60,85 +54,132 @@ export default function DoctorNotes() {
 
   if (isLoading) {
     return (
-      <div className={styles.page}>
+      <div className={styles.pageWrap}>
         <div className="skeleton" style={{ width: '40%', height: 28, marginBottom: 16 }} />
-        <div className="skeleton card" style={{ height: 300 }} />
+        <div className="skeleton" style={{ height: 300, borderRadius: 28 }} />
       </div>
     );
   }
 
   if (!appointment) {
     return (
-      <div className={styles.page}>
-         <div className="error-banner">
+      <div className={styles.pageWrap}>
+         <div className={styles.errorCard}>
            <span>{message.text}</span>
+           <button className={styles.backBtn} onClick={() => navigate(-1)}>
+             ← Return to Schedule
+           </button>
          </div>
-         <button className="btn-secondary" onClick={() => navigate(-1)} style={{ alignSelf: 'flex-start' }}>
-           ← Go back
-         </button>
       </div>
     );
   }
 
   return (
-    <div className={styles.page}>
-      <div className={styles.header}>
+    <div className={styles.pageWrap}>
+      
+      <div className={styles.pageHeader}>
         <button onClick={() => navigate(-1)} className={styles.backBtn}>
-          ← Back
+          ← Back to Schedule
         </button>
-        <h1 className="page-title">Medical Notes</h1>
       </div>
 
       {message.text && (
-        <div className={message.type === 'error' ? 'error-banner' : 'success-banner'}>
+        <div className={`${styles.toast} ${styles[message.type]}`}>
           {message.text}
         </div>
       )}
 
-      <div className={`card ${styles.consultationContext}`}>
-        <div className={styles.contextRow}>
-          <span className={styles.contextLabel}>Patient</span>
-          <span className={styles.contextValue}>{appointment.patientFullName}</span>
+      <div className={styles.layout}>
+        
+        {/* Left Column: Context Card */}
+        <div className={styles.leftCol}>
+          <div className={styles.glassCard}>
+            <div className={styles.cardHeader}>
+              <div className={styles.headerIcon}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+              </div>
+              <h2 className={styles.cardTitle}>Consultation</h2>
+            </div>
+            
+            <div className={styles.contextGrid}>
+              <div className={styles.contextRow}>
+                <span className={styles.contextLabel}>Patient</span>
+                <div className={styles.patientRow}>
+                  <div className={styles.avatarMini}>
+                    {appointment.patientProfilePictureUrl ? (
+                      <img src={appointment.patientProfilePictureUrl} alt="" />
+                    ) : (
+                      <span>{appointment.patientFullName?.charAt(0) ?? '?'}</span>
+                    )}
+                  </div>
+                  <span className={styles.contextValue}>{appointment.patientFullName}</span>
+                </div>
+              </div>
+
+              <div className={styles.contextRow}>
+                <span className={styles.contextLabel}>Date & Time</span>
+                <span className={styles.contextValue}>
+                  {new Date(appointment.startTimeUtc).toLocaleString(undefined, {
+                    dateStyle: 'full', timeStyle: 'short'
+                  })}
+                </span>
+              </div>
+
+              <div className={styles.contextRow}>
+                <span className={styles.contextLabel}>Reported Reason</span>
+                <div className={styles.reasonBox}>
+                  {appointment.patientReason || 'No reason provided by patient.'}
+                </div>
+              </div>
+
+              <div className={styles.contextRow}>
+                <span className={styles.contextLabel}>Status</span>
+                <span className={`${styles.statusBadge} ${styles[appointment.status.toLowerCase()]}`}>
+                  {appointment.status}
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className={styles.contextRow}>
-          <span className={styles.contextLabel}>Date</span>
-          <span className={styles.contextValue}>
-            {new Date(appointment.startTimeUtc).toLocaleString(undefined, {
-              dateStyle: 'medium', timeStyle: 'short'
-            })}
-          </span>
+
+        {/* Right Column: Editor */}
+        <div className={styles.rightCol}>
+          <form onSubmit={handleSave} className={`${styles.glassCard} ${styles.editorCard}`}>
+            <div className={styles.editorHeader}>
+              <h2 className={styles.cardTitle}>Clinical Notes</h2>
+              <span className={styles.encryptionBadge}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                Secure Environment
+              </span>
+            </div>
+
+            <div className={styles.editorWrapper}>
+              <textarea
+                className={styles.notesArea}
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="Type examination findings, diagnosis, and prescription details here..."
+                required
+                spellCheck="false"
+              />
+            </div>
+
+            <div className={styles.editorFooter}>
+              <button type="submit" className={styles.saveBtn} disabled={isSaving}>
+                {isSaving ? (
+                  <span className={styles.saveSpinner}></span>
+                ) : (
+                  <>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                    Save Notes securely
+                  </>
+                )}
+              </button>
+            </div>
+          </form>
         </div>
-        <div className={styles.contextRow}>
-          <span className={styles.contextLabel}>Patient Reason</span>
-          <span className={styles.contextValue}>
-            {appointment.patientReason || 'Not provided'}
-          </span>
-        </div>
+
       </div>
-
-      <form onSubmit={handleSave} className={`card ${styles.notesForm}`}>
-        <div className={styles.formGroup}>
-          <label htmlFor="notesInput" className={styles.label}>
-            Clinical notes
-          </label>
-          <textarea
-            id="notesInput"
-            className="input"
-            rows={10}
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            placeholder="Enter symptoms, diagnosis, prescription details, etc..."
-            required
-            spellCheck="false"
-          />
-        </div>
-
-        <div className={styles.footer}>
-          <button type="submit" className="btn-primary" disabled={isSaving}>
-            {isSaving ? 'Saving...' : 'Save securely'}
-          </button>
-        </div>
-      </form>
     </div>
   );
 }

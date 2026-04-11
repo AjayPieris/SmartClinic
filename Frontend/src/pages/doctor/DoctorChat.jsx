@@ -45,16 +45,23 @@ export default function DoctorChat() {
         <Link to="/doctor/schedule" className={styles.backLink}>
           ← My schedule
         </Link>
-        <div className={styles.apptInfo}>
+        <div className={styles.infoCard}>
           <h1 className={styles.pageTitle}>
             Chat with {appointment.patientFullName}
           </h1>
           <p className={styles.apptMeta}>
-            {appointment.patientReason && `"${appointment.patientReason}" · `}
-            {new Date(appointment.startTimeUtc).toLocaleString(undefined, {
-              dateStyle: 'medium',
-              timeStyle: 'short',
-            })}
+            {appointment.patientReason && (
+              <>
+                <span>"{appointment.patientReason}"</span>
+                <span className={styles.metaDot}></span>
+              </>
+            )}
+            <span>
+              {new Date(appointment.startTimeUtc).toLocaleString(undefined, {
+                dateStyle: 'medium',
+                timeStyle: 'short',
+              })}
+            </span>
           </p>
         </div>
       </div>
@@ -62,6 +69,8 @@ export default function DoctorChat() {
       <ChatBox
         appointmentId={appointmentId}
         appointmentStatus={appointment.status}
+        doctorName={appointment.patientFullName}
+        doctorAvatar={appointment.patientProfilePictureUrl}
       />
     </div>
   );

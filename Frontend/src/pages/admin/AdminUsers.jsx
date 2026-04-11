@@ -23,7 +23,6 @@ export default function AdminUsers() {
   const [userToBlock, setUserToBlock] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
 
-  // Fetch initial data
   useEffect(() => {
     fetchData();
   }, [roleFilter, statusFilter, search]);
@@ -63,7 +62,7 @@ export default function AdminUsers() {
     try {
       setActionLoading(true);
       await blockUserApi(userToBlock.id);
-      await fetchData(); // Refresh data
+      await fetchData();
       handleCloseModal();
     } catch (err) {
       alert(err.response?.data?.message || 'Failed to block user.');
@@ -78,7 +77,7 @@ export default function AdminUsers() {
     try {
       setActionLoading(true);
       await unblockUserApi(user.id);
-      await fetchData(); // Refresh data
+      await fetchData();
     } catch (err) {
       alert(err.response?.data?.message || 'Failed to unblock user.');
     } finally {
@@ -90,31 +89,83 @@ export default function AdminUsers() {
     <div className={styles.wrapper}>
       <header>
         <h1 className="page-title">User Management</h1>
-        <p className="page-subtitle">Manage all platform users, their roles, and access.</p>
+        <p className="page-subtitle">Platform overview and access control rules.</p>
       </header>
 
-      {/* ── Stats Row ────────────────────────────────────────── */}
+      {/* ── Glass Stats Row ────────────────────────────────────────── */}
       {stats && (
-        <div className={styles.statsRow}>
+        <div className={styles.statsContainer}>
           <div className={styles.statCard}>
-            <span className={styles.statLabel}>Total Users</span>
-            <span className={styles.statVal}>{stats.totalUsers}</span>
+            <div className={`${styles.statIconBox} ${styles.totalIcon}`}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            </div>
+            <div className={styles.statContent}>
+              <span className={styles.statVal}>{stats.totalUsers}</span>
+              <span className={styles.statLabel}>Total Users</span>
+            </div>
           </div>
+          
           <div className={styles.statCard}>
-            <span className={styles.statLabel}>Active Patients</span>
-            <span className={styles.statVal}>{stats.activePatients}</span>
+            <div className={`${styles.statIconBox} ${styles.patientIcon}`}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            </div>
+            <div className={styles.statContent}>
+              <span className={styles.statVal}>{stats.activePatients}</span>
+              <span className={styles.statLabel}>Active Patients</span>
+            </div>
           </div>
+
           <div className={styles.statCard}>
-            <span className={styles.statLabel}>Verified Doctors</span>
-            <span className={styles.statVal}>{stats.verifiedDoctors}</span>
+            <div className={`${styles.statIconBox} ${styles.doctorIcon}`}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            </div>
+            <div className={styles.statContent}>
+              <span className={styles.statVal}>{stats.verifiedDoctors}</span>
+              <span className={styles.statLabel}>Verified Doctors</span>
+            </div>
           </div>
+
           <div className={styles.statCard}>
-            <span className={styles.statLabel}>Pending Doctors</span>
-            <span className={styles.statVal}>{stats.pendingApproval}</span>
+            <div className={`${styles.statIconBox} ${styles.pendingIcon}`}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </div>
+            <div className={styles.statContent}>
+              <span className={styles.statVal}>{stats.pendingApproval}</span>
+              <span className={styles.statLabel}>Pending Doctors</span>
+            </div>
           </div>
+
           <div className={styles.statCard}>
-            <span className={styles.statLabel}>Blocked Users</span>
-            <span className={styles.statVal}>{stats.blockedUsers}</span>
+            <div className={`${styles.statIconBox} ${styles.blockedIcon}`}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+            </div>
+            <div className={styles.statContent}>
+              <span className={styles.statVal}>{stats.blockedUsers}</span>
+              <span className={styles.statLabel}>Blocked Profiles</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Proportion Chart ────────────────────────────────────────── */}
+      {stats && stats.totalUsers > 0 && (
+        <div className={styles.ratioChartContainer}>
+          <div className={styles.chartHeader}>
+            <h3 className={styles.chartTitle}>Platform Demographics</h3>
+          </div>
+          
+          <div className={styles.chartBarWrapper}>
+            <div className={styles.chartSegment} style={{ width: `${(stats.activePatients / stats.totalUsers) * 100}%`, background: 'rgba(16, 185, 129, 0.8)' }} />
+            <div className={styles.chartSegment} style={{ width: `${(stats.verifiedDoctors / stats.totalUsers) * 100}%`, background: 'rgba(14, 165, 233, 0.8)' }} />
+            <div className={styles.chartSegment} style={{ width: `${(stats.pendingApproval / stats.totalUsers) * 100}%`, background: 'rgba(245, 158, 11, 0.8)' }} />
+            <div className={styles.chartSegment} style={{ width: `${(stats.blockedUsers / stats.totalUsers) * 100}%`, background: 'rgba(239, 68, 68, 0.8)' }} />
+          </div>
+
+          <div className={styles.chartLegend}>
+            <div className={styles.legendItem}><span className={styles.legendColor} style={{ background: 'rgba(16, 185, 129, 0.8)' }}></span> Patients</div>
+            <div className={styles.legendItem}><span className={styles.legendColor} style={{ background: 'rgba(14, 165, 233, 0.8)' }}></span> Verified Doctors</div>
+            <div className={styles.legendItem}><span className={styles.legendColor} style={{ background: 'rgba(245, 158, 11, 0.8)' }}></span> Pending Doctors</div>
+            <div className={styles.legendItem}><span className={styles.legendColor} style={{ background: 'rgba(239, 68, 68, 0.8)' }}></span> Blocked</div>
           </div>
         </div>
       )}
@@ -162,18 +213,13 @@ export default function AdminUsers() {
         </div>
       )}
 
-      {/* ── Users Table ──────────────────────────────────────── */}
+      {/* ── Users Table Glass ──────────────────────────────────────── */}
       <div className={styles.tableCard}>
         {loading ? (
-          <div className="screen-center" style={{ minHeight: '300px' }}>
-            <div className="spinner" />
-          </div>
+          <div className="skeleton" style={{ height: '300px', borderRadius: 20 }} />
         ) : users.length === 0 ? (
           <div className="empty-state">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
-            </svg>
-            <p>No users found matching your filters.</p>
+             <p>No users found matching your filters.</p>
           </div>
         ) : (
           <div className={styles.tableWrapper}>
@@ -222,7 +268,7 @@ export default function AdminUsers() {
                         <span className="status-pill cancelled">Blocked</span>
                       )}
                     </td>
-                    <td style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
+                    <td style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', fontWeight: 600 }}>
                       {new Date(u.createdAtUtc).toLocaleDateString()}
                     </td>
                     <td>
@@ -233,14 +279,14 @@ export default function AdminUsers() {
                               className={`${styles.actionBtn} ${styles.block}`}
                               onClick={() => handleOpenBlockModal(u)}
                             >
-                              Block
+                              Block User
                             </button>
                           ) : (
                             <button 
                               className={`${styles.actionBtn} ${styles.unblock}`}
                               onClick={() => handleUnblock(u)}
                             >
-                              Unblock
+                              Restore Access
                             </button>
                           )}
                         </div>
@@ -254,14 +300,14 @@ export default function AdminUsers() {
         )}
       </div>
 
-      {/* ── Block Confirmation Modal ────────────────────────────────────── */}
+      {/* ── Block Confirmation Modal Drop-shadow ──────────────────────── */}
       {isModalOpen && userToBlock && (
         <div className={styles.modalOverlay} onClick={handleCloseModal}>
           <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
             <h3 className={styles.modalTitle}>Block User?</h3>
             <p className={styles.modalDesc}>
               Are you sure you want to block <strong>{userToBlock.firstName} {userToBlock.lastName}</strong>? 
-              They will be immediately logged out and unable to access the platform or book appointments.
+              They will be immediately logged out and unable to access the platform.
             </p>
             <div className={styles.modalActions}>
               <button 
@@ -276,7 +322,7 @@ export default function AdminUsers() {
                 onClick={handleBlockConfirm}
                 disabled={actionLoading}
               >
-                {actionLoading ? 'Blocking...' : 'Block User'}
+                {actionLoading ? 'Suspending...' : 'Suspend User Account'}
               </button>
             </div>
           </div>

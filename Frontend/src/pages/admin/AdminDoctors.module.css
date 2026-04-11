@@ -1,273 +1,314 @@
 .wrapper {
+  background: 
+    radial-gradient(circle at top left, rgba(14, 165, 233, 0.1) 0%, transparent 40%),
+    radial-gradient(circle at bottom right, rgba(16, 185, 129, 0.05) 0%, transparent 40%);
+  min-height: calc(100vh - 84px);
+  padding: 32px 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
-  padding-bottom: var(--space-12);
+  gap: 24px;
 }
 
-/* ── Tabs ───────────────────────────────────────────────────────────── */
+/* Glass Tabs */
 .tabs {
   display: flex;
-  gap: var(--space-6);
-  border-bottom: 1px solid var(--color-border);
-  margin-bottom: var(--space-2);
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 6px;
+  border-radius: 99px;
+  width: fit-content;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.02);
 }
 
 .tabBtn {
-  padding: var(--space-3) var(--space-2);
-  font-weight: 600;
+  background: transparent;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 99px;
+  font-weight: 700;
   font-size: 0.95rem;
   color: var(--color-text-muted);
-  border-bottom: 2px solid transparent;
-  transition: all var(--transition);
-  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .tabBtn:hover {
   color: var(--color-text);
+  background: rgba(255, 255, 255, 0.5);
 }
 
 .tabBtn.active {
+  background: white;
   color: var(--color-primary);
-  border-bottom-color: var(--color-primary);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 
 .badge {
-  background: var(--color-warning);
+  background: #ef4444;
   color: white;
   font-size: 0.75rem;
-  padding: 2px 6px;
-  border-radius: var(--radius-full);
-  margin-left: var(--space-2);
-  font-weight: 700;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 99px;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
 }
 
-/* ── Pending Cards List ─────────────────────────────────────────────── */
+/* Pending Grid */
 .pendingList {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 24px;
 }
 
 .doctorCard {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  padding: var(--space-6);
-  box-shadow: var(--shadow-sm);
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.04), inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+  border-radius: 28px;
+  padding: 24px;
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-6);
-  align-items: flex-start;
+  flex-direction: column;
+  gap: 20px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.doctorCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.06), inset 0 0 0 1px rgba(255, 255, 255, 0.9);
 }
 
 .cardHeader {
   display: flex;
-  gap: var(--space-4);
-  align-items: center;
-  flex: 1;
-  min-width: 250px;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.avatarBox {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), #0ea5e9);
+  padding: 3px;
+  box-shadow: 0 8px 20px rgba(14, 165, 233, 0.3);
+  flex-shrink: 0;
 }
 
 .avatar {
-  width: 56px;
-  height: 56px;
-  border-radius: var(--radius-full);
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
   object-fit: cover;
-  border: 1px solid var(--color-border);
+  border: 2px solid white;
 }
 
 .avatarFallback {
-  width: 56px;
-  height: 56px;
-  border-radius: var(--radius-full);
-  background: var(--color-primary-light);
-  color: var(--color-primary-dark);
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #cbd5e1;
+  border: 2px solid white;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  font-size: 1.25rem;
-  text-transform: uppercase;
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: white;
+}
+
+.doctorInfo {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .doctorInfo h3 {
-  font-size: 1.1rem;
-  margin-bottom: var(--space-1);
+  margin: 0 0 8px 0;
+  font-size: 1.25rem;
+  color: var(--color-text);
 }
 
 .doctorMeta {
   display: flex;
   flex-direction: column;
+  gap: 4px;
   font-size: 0.85rem;
   color: var(--color-text-muted);
 }
 
-/* ── Verification Section ────────────────────────────────────────────── */
+.doctorMeta span strong {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
 .verificationSection {
-  flex: 1.5;
-  min-width: 300px;
-  background: var(--color-bg);
-  padding: var(--space-4);
-  border-radius: var(--radius-md);
-  border: 1px dashed var(--color-border);
+  background: rgba(255, 255, 255, 0.6);
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.8);
 }
 
 .sectionTitle {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  font-weight: 700;
   text-transform: uppercase;
+  color: var(--color-primary);
+  margin-bottom: 12px;
   letter-spacing: 0.05em;
-  margin-bottom: var(--space-3);
 }
 
 .docLink {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: 8px;
+  background: white;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-weight: 600;
   color: var(--color-primary);
-  font-weight: 500;
   text-decoration: none;
-  background: var(--color-primary-light);
-  padding: var(--space-2) var(--space-4);
-  border-radius: var(--radius-md);
-  margin-bottom: var(--space-3);
-  transition: background var(--transition);
+  border: 1px solid #e0f2fe;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+  transition: all 0.2s;
+  margin-bottom: 16px;
 }
 
 .docLink:hover {
-  background: #e0e7ff;
-}
-
-.docLink svg {
-  width: 18px;
-  height: 18px;
-}
-
-.rejectDetails {
-  margin-top: var(--space-3);
-  animation: fadeIn 0.3s ease;
+  background: #e0f2fe;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(14, 165, 233, 0.15);
 }
 
 .rejectTextarea {
   width: 100%;
-  padding: var(--space-3);
-  border: 1px solid var(--color-danger);
-  border-radius: var(--radius-md);
-  margin-bottom: var(--space-2);
+  background: white;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 12px;
+  padding: 12px;
   font-size: 0.9rem;
+  font-family: inherit;
   resize: vertical;
   min-height: 80px;
+  transition: border-color 0.2s;
 }
 
-/* ── Card Actions ───────────────────────────────────────────────────── */
+.rejectTextarea:focus {
+  outline: none;
+  border-color: #ef4444;
+}
+
 .cardActions {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  min-width: 140px;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.approveBtn, .rejectBtn {
+  flex: 1;
+  padding: 14px;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
 }
 
 .approveBtn {
-  background: var(--color-success);
+  background: linear-gradient(135deg, #10b981, #059669);
   color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-md);
-  font-weight: 600;
-  transition: opacity var(--transition);
-  border: none;
-  cursor: pointer;
+  box-shadow: 0 6px 15px rgba(16, 185, 129, 0.25);
 }
 
-.approveBtn:hover { opacity: 0.9; }
+.approveBtn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(16, 185, 129, 0.35);
+}
 
 .rejectBtn {
-  background: var(--color-surface);
-  color: var(--color-danger);
-  border: 1px solid var(--color-danger);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-md);
-  font-weight: 600;
-  transition: all var(--transition);
-  cursor: pointer;
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
-.rejectBtn:hover {
-  background: #fef2f2;
+.rejectBtn:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.15);
+  transform: translateY(-2px);
 }
 
-/* ── All Doctors Table ──────────────────────────────────────────────── */
+/* Glass Table layout */
 .tableCard {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-sm);
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 28px;
+  padding: 24px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.04), inset 0 0 0 1px rgba(255, 255, 255, 0.6);
   overflow: hidden;
 }
 
 .tableWrapper {
+  width: 100%;
   overflow-x: auto;
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
-  text-align: left;
-  min-width: 800px;
+  white-space: nowrap;
 }
 
 .table th {
-  background: var(--color-bg);
-  padding: var(--space-3) var(--space-4);
-  font-weight: 600;
-  font-size: 0.85rem;
-  color: var(--color-text-muted);
+  text-align: left;
+  padding: 16px;
+  font-size: 0.8rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  border-bottom: 1px solid rgba(0,0,0,0.05);
 }
 
 .table td {
-  padding: var(--space-3) var(--space-4);
-  border-bottom: 1px solid var(--color-border);
+  padding: 16px;
   vertical-align: middle;
+  border-bottom: 1px solid rgba(0,0,0,0.03);
 }
 
 .userCell {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: 16px;
 }
 
 .smallAvatar {
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-full);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
   object-fit: cover;
-  border: 1px solid var(--color-border);
+  border: 2px solid white;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
 .smallAvatarFallback {
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-full);
-  background: var(--color-primary-light);
-  color: var(--color-primary-dark);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #cbd5e1, #94a3b8);
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 0.9rem;
-  text-transform: uppercase;
+  font-size: 1.1rem;
+  border: 2px solid white;
 }
 
 .userInfo {
@@ -276,57 +317,21 @@
 }
 
 .userName {
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 1rem;
   color: var(--color-text);
-  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.verifiedBadge {
+  color: #0ea5e9;
+  width: 18px;
+  height: 18px;
 }
 
 .userEmail {
   font-size: 0.85rem;
   color: var(--color-text-muted);
-}
-
-.verifiedBadge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 16px;
-  height: 16px;
-  background: var(--color-primary);
-  color: white;
-  border-radius: var(--radius-full);
-  margin-left: var(--space-1);
-  vertical-align: middle;
-}
-
-.verifiedBadge svg {
-  width: 10px;
-  height: 10px;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-5px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* ── Mobile Responsiveness ──────────────────────────────────────────────── */
-@media (max-width: 640px) {
-  .doctorCard {
-    flex-direction: column;
-    gap: var(--space-4);
-  }
-  
-  .verificationSection {
-    width: 100%;
-    min-width: unset;
-  }
-  
-  .cardActions {
-    width: 100%;
-    flex-direction: row;
-  }
-  
-  .actionBtn, .approveBtn, .rejectBtn {
-    flex: 1;
-  }
 }

@@ -1,56 +1,101 @@
 .wrap {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 28px;
+  padding: 24px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.04), inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
 }
 
 .dateLabel {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--color-text-muted);
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+}
+
+.badgeLabel {
+  font-size: 0.75rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 1px;
+  color: var(--color-primary);
+  background: rgba(14, 165, 233, 0.1);
+  padding: 6px 12px;
+  border-radius: 99px;
+  border: 1px solid rgba(14, 165, 233, 0.2);
 }
 
 .stats {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-2);
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
 }
 
-/* Stat metric card */
 .statCard {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  padding: var(--space-3) var(--space-2);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  gap: 2px;
+  gap: 16px;
+  padding: 16px 20px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.statCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+  background: #ffffff;
+}
+
+.iconWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.statInfo {
+  display: flex;
+  flex-direction: column;
 }
 
 .statValue {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: 800;
   line-height: 1;
   color: var(--color-text);
+  margin-bottom: 4px;
 }
 
 .statLabel {
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: var(--color-text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.5px;
 }
 
-/* Semantic colour variants */
-.info    { background: #eff6ff; border-color: #bfdbfe; }
-.info    .statValue { color: var(--color-info); }
-
-.success { background: #f0fdf4; border-color: #bbf7d0; }
-.success .statValue { color: var(--color-success); }
-
-.warning { background: #fffbeb; border-color: #fde68a; }
-.warning .statValue { color: var(--color-warning); }
+/* ── Colors (Icons and Text accents) ── */
+.default .iconWrap { color: #64748b; background: #f1f5f9; }
+.info .iconWrap    { color: #0ea5e9; background: #e0f2fe; }
+.success .iconWrap { color: #10b981; background: #d1fae5; }
+.warning .iconWrap { color: #f59e0b; background: #fef3c7; }

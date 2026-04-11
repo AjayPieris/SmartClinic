@@ -1,199 +1,240 @@
-/* ── Null state ──────────────────────────────────────────────────────────── */
 .emptyCard {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px dashed rgba(255, 255, 255, 0.8);
+  border-radius: 28px;
+  height: 100%;
+  min-height: 400px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: var(--space-12) var(--space-6);
+  padding: 32px;
   text-align: center;
-  gap: var(--space-3);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  min-height: 260px;
 }
 
-.emptyIcon { color: var(--color-text-subtle); }
-.emptyTitle { font-weight: 600; color: var(--color-text-muted); }
-.emptyHint  { font-size: 0.875rem; color: var(--color-text-subtle); }
-
-/* ── Card ────────────────────────────────────────────────────────────────── */
-.card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  padding: var(--space-5);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  box-shadow: var(--shadow-sm);
-}
-
-/* Patient header */
-.cardHeader {
+.emptyIconWrap {
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
   display: flex;
   align-items: center;
-  gap: var(--space-4);
+  justify-content: center;
+  margin-bottom: 16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
 }
 
-.avatarImg {
-  width: 52px; height: 52px;
-  border-radius: var(--radius-full);
+.emptyTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 8px;
+}
+
+.emptyHint {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 28px;
+  padding: 32px 24px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.04), inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  height: 100%;
+}
+
+.patientProfilePlate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.avatarGlowRing {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), #0ea5e9);
+  padding: 3px;
+  box-shadow: 0 8px 25px rgba(14, 165, 233, 0.3);
+}
+
+.avatarGlowRing img, .avatarFallback {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.9);
   object-fit: cover;
-  border: 2px solid var(--color-border);
-  flex-shrink: 0;
 }
 
 .avatarFallback {
-  width: 52px; height: 52px;
-  border-radius: var(--radius-full);
-  background: var(--color-primary-light);
-  color: var(--color-primary);
-  font-size: 1.3rem;
+  background: #cbd5e1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
   font-weight: 700;
-  display: flex; align-items: center; justify-content: center;
-  border: 2px solid var(--color-border);
-  flex-shrink: 0;
+  color: white;
 }
 
-.patientInfo { display: flex; flex-direction: column; gap: var(--space-2); }
-
 .patientName {
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: 1.5rem;
+  font-weight: 800;
   color: var(--color-text);
-  line-height: 1.2;
+  margin: 0;
+  letter-spacing: -0.02em;
 }
 
 .statusRow {
-  display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap;
+  display: flex;
+  justify-content: center;
 }
 
-/* Status pill */
-.statusPill {
-  font-size: 0.72rem; font-weight: 700;
-  padding: 2px 10px;
-  border-radius: var(--radius-full);
-  text-transform: uppercase; letter-spacing: 0.04em;
+.statusBadge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 6px 16px;
+  border-radius: 99px;
+  letter-spacing: 1px;
 }
 
-.statusPending   { background: #fef3c7; color: #92400e; }
-.statusConfirmed { background: #dbeafe; color: #1e40af; }
-.statusCompleted { background: #d1fae5; color: #065f46; }
-.statusCancelled { background: #fee2e2; color: #991b1b; }
+.statusPending   { background: rgba(245, 158, 11, 0.15); color: #b45309; }
+.statusConfirmed { background: rgba(16, 185, 129, 0.15); color: #047857; }
+.statusCompleted { background: rgba(14, 165, 233, 0.15); color: #0369a1; }
+.statusCancelled { background: rgba(156, 163, 175, 0.15); color: #374151; }
 
-.telehealthTag {
-  display: inline-flex; align-items: center; gap: 4px;
-  font-size: 0.72rem; font-weight: 600;
-  color: var(--color-info);
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-/* Time block */
-.timeBlock {
-  padding: var(--space-3) var(--space-4);
-  background: var(--color-bg);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
+.infoRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
 }
 
-.timeDate {
-  font-size: 0.8rem; color: var(--color-text-muted);
-  font-weight: 500; margin-bottom: 2px;
-}
-
-.timeRange {
-  font-size: 1rem; font-weight: 700; color: var(--color-text);
-  display: flex; align-items: center; gap: var(--space-2);
-}
-
-.duration {
-  font-size: 0.8rem; font-weight: 400; color: var(--color-text-muted);
-}
-
-/* Reason / notes blocks */
-.reasonBlock, .notesBlock {
-  padding: var(--space-3) var(--space-4);
-  background: var(--color-bg);
-  border-radius: var(--radius-md);
-  border-left: 3px solid var(--color-border);
-  border-radius: 0;
-}
-
-.reasonLabel, .notesLabel {
-  font-size: 0.72rem; font-weight: 700;
-  color: var(--color-text-muted);
-  text-transform: uppercase; letter-spacing: 0.05em;
-  margin-bottom: var(--space-1);
-}
-
-.reasonText, .notesText {
-  font-size: 0.875rem; color: var(--color-text);
-  line-height: 1.5;
-}
-
-/* Action label */
-.actionLabel {
-  font-size: 0.72rem; font-weight: 700;
-  color: var(--color-text-muted);
-  text-transform: uppercase; letter-spacing: 0.05em;
-  margin-bottom: var(--space-2);
-}
-
-/* Button rows */
-.statusActions { display: flex; flex-direction: column; }
-.btnRow, .navActions {
-  display: flex; gap: var(--space-2); flex-wrap: wrap;
-}
-
-.navActions { margin-top: var(--space-1); }
-
-/* Shared action button base */
-.actionBtn {
-  display: inline-flex;
+.infoIcon {
+  width: 40px;
+  height: 40px;
+  background: white;
+  border-radius: 12px;
+  display: flex;
   align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-4);
-  border-radius: var(--radius-md);
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
-  border: 1.5px solid transparent;
-  text-decoration: none;
-  transition: all var(--transition);
+  justify-content: center;
+  color: var(--color-text-muted);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+  flex-shrink: 0;
 }
 
-/* Variant: Confirm */
-.btnConfirm {
-  background: #dbeafe; color: #1e40af; border-color: #bfdbfe;
-}
-.btnConfirm:hover { background: #bfdbfe; }
-
-/* Variant: Complete */
-.btnComplete {
-  background: #d1fae5; color: #065f46; border-color: #6ee7b7;
-}
-.btnComplete:hover { background: #a7f3d0; }
-
-/* Variant: Cancel */
-.btnCancel {
-  background: #fee2e2; color: #991b1b; border-color: #fecaca;
-}
-.btnCancel:hover { background: #fecaca; }
-
-/* Variant: Chat */
-.btnChat {
-  background: var(--color-primary-light); color: var(--color-primary);
-  border-color: #c7d2fe; flex: 1; justify-content: center;
-}
-.btnChat:hover { background: #c7d2fe; text-decoration: none; }
-
-/* Variant: Notes */
-.btnNotes {
-  background: var(--color-bg); color: var(--color-text-muted);
-  border-color: var(--color-border); flex: 1; justify-content: center;
-}
-.btnNotes:hover {
-  border-color: var(--color-primary);
+.iconInfo {
   color: var(--color-primary);
+}
+
+.infoContent {
+  display: flex;
+  flex-direction: column;
+  padding-top: 4px;
+}
+
+.infoTitle {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 2px 0;
+}
+
+.infoSub {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.cardActions {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(0,0,0,0.05);
+}
+
+.mainTransitions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.actionBtn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px;
+  border-radius: 16px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btnConfirm { background: linear-gradient(135deg, #10b981, #059669); color: white; box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25); }
+.btnConfirm:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(16, 185, 129, 0.35); }
+
+.btnComplete { background: linear-gradient(135deg, #0ea5e9, #0284c7); color: white; box-shadow: 0 8px 20px rgba(14, 165, 233, 0.25); }
+.btnComplete:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(14, 165, 233, 0.35); }
+
+.btnCancel { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); }
+.btnCancel:hover { background: rgba(239, 68, 68, 0.15); transform: translateY(-2px); }
+
+
+.secondaryLinks {
+  display: flex;
+  gap: 8px;
+}
+
+.linkBtn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
   text-decoration: none;
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--color-text);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  transition: all 0.2s;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+}
+
+.linkBtn:hover {
+  background: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+  color: var(--color-primary);
 }

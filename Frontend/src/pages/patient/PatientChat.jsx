@@ -1,5 +1,3 @@
-
-
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getMyAppointmentsApi } from '../../api/appointmentsApi';
@@ -15,13 +13,11 @@ export default function PatientChat() {
   useEffect(() => {
     const loadAppointment = async () => {
       try {
-        // Fetch the full list and find this specific appointment.
-        // In a larger app you'd have a GET /appointments/:id endpoint.
         const all = await getMyAppointmentsApi();
         const found = all.find((a) => a.id === appointmentId);
         setAppointment(found ?? null);
       } catch {
-        // ChatBox has its own error handling — no need to duplicate here
+        // Error handling inside ChatBox
       } finally {
         setIsLoading(false);
       }
@@ -49,32 +45,33 @@ export default function PatientChat() {
 
   return (
     <div className={styles.chatPage}>
-
-      {/* Breadcrumb / context header */}
       <div className={styles.pageHeader}>
         <Link to="/patient/appointments" className={styles.backLink}>
           ← My appointments
         </Link>
-        <div className={styles.apptInfo}>
+        <div className={styles.infoCard}>
           <h1 className={styles.pageTitle}>
-            Chat with Dr. {appointment.doctorFullName}
+            Telehealth Session
           </h1>
           <p className={styles.apptMeta}>
-            {appointment.doctorSpecialization} ·{' '}
-            {new Date(appointment.startTimeUtc).toLocaleString(undefined, {
-              dateStyle: 'medium',
-              timeStyle: 'short',
-            })}
+            <span>{appointment.doctorSpecialization}</span>
+            <span className={styles.metaDot}></span>
+            <span>
+              {new Date(appointment.startTimeUtc).toLocaleString(undefined, {
+                dateStyle: 'medium',
+                timeStyle: 'short',
+              })}
+            </span>
           </p>
         </div>
       </div>
 
-      {/* The ChatBox — full height within the page layout */}
       <ChatBox
         appointmentId={appointmentId}
         appointmentStatus={appointment.status}
+        doctorName={appointment.doctorFullName}
+        doctorAvatar={appointment.doctorProfilePictureUrl}
       />
-
     </div>
   );
 }

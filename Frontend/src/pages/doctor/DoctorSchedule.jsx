@@ -1,19 +1,33 @@
 import { useState, useEffect } from 'react';
+import { startOfWeek, addDays, subWeeks, addWeeks, isSameDay } from 'date-fns';
 import { getMyScheduleApi, updateAppointmentStatusApi } from '../../api/appointmentsApi';
 import { getMyDoctorProfileApi } from '../../api/doctorsApi';
 import { useAuth } from '../../context/AuthContext';
-import { Link } from 'react-router-dom';
+import DateStrip from '../../components/schedule/DateStrip';
+import DaySummary from '../../components/schedule/DaySummary';
+import ScheduleTimeline from '../../components/schedule/ScheduleTimeline';
+import AppointmentDetailCard from '../../components/schedule/AppointmentDetailCard';
 import styles from './DoctorSchedule.module.css';
 
 export default function DoctorSchedule() {
   const { user } = useAuth();
+  
+  // Data state
   const [appointments, setAppointments] = useState([]);
+  const [availability, setAvailability] = useState([]);
   const [verificationStatus, setVerificationStatus] = useState(null);
-  const [isLoading,    setIsLoading]    = useState(true);
-  const [error,        setError]        = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  // UI state
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [weekStart, setWeekStart] = useState(startOfWeek(new Date(), { weekStartsOn: 1 }));
+  const [selectedApptId, setSelectedApptId] = useState(null);
+
+  // Generate 7 days starting from weekStart
+  const weekDates = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
 
   useEffect(() => {
-    // Only fetch if logged in as a doctor
     if (!user || user.role !== 'Doctor') return;
 
     Promise.all([
@@ -22,6 +36,7 @@ export default function DoctorSchedule() {
     ])
     .then(([profile, schedule]) => {
       setVerificationStatus(profile.verificationStatus);
+      setAvailability(JSON.parse(profile.availabilityJson || '[]'));
       setAppointments(schedule);
     })
     .catch((err) => setError(err.response?.data?.message || 'Could not load your schedule.'))
@@ -31,7 +46,6 @@ export default function DoctorSchedule() {
   const handleStatusChange = async (appointmentId, newStatus) => {
     try {
       const updated = await updateAppointmentStatusApi(appointmentId, newStatus);
-      // Update local state without full refetch
       setAppointments((prev) =>
         prev.map((a) => (a.id === appointmentId ? { ...a, status: updated.status } : a))
       );
@@ -40,17 +54,32 @@ export default function DoctorSchedule() {
     }
   };
 
+  const handlePrevWeek = () => setWeekStart((prev) => subWeeks(prev, 1));
+  const handleNextWeek = () => setWeekStart((prev) => addWeeks(prev, 1));
+
+  const appointmentsForSelectedDate = appointments.filter((a) => 
+    isSameDay(new Date(a.startTimeUtc), selectedDate)
+  );
+
+  const selectedAppointment = appointments.find((a) => a.id === selectedApptId);
+
   if (isLoading) {
     return (
       <div className={styles.page}>
-        <div className="skeleton" style={{ width: 180, height: 28, marginBottom: 'var(--space-6)' }} />
-        <div className={styles.grid}>
-          {[1, 2, 3].map(i => (
-            <div key={i} className={`card ${styles.apptCard}`}>
-              <div className="skeleton-text medium" />
-              <div className="skeleton-text short" />
-            </div>
-          ))}
+         <div className="skeleton" style={{ width: 180, height: 28, marginBottom: 24 }} />
+         <div className="skeleton" style={{ height: 500 }} />
+      </div>
+    );
+  }
+
+  if (verificationStatus !== 'Approved') {
+    return (
+      <div className={styles.page}>
+        <div className="card" style={{ padding: '24px', border: '1px solid var(--color-warning)', background: '#fffbeb' }}>
+          <h3 style={{ color: '#b45309', margin: '0 0 8px 0' }}>Account Not Verified</h3>
+          <p style={{ margin: 0, color: 'var(--color-text-muted)' }}>
+            Your account must be verified by an administrator before you can receive and manage appointments.
+          </p>
         </div>
       </div>
     );
@@ -58,8 +87,7 @@ export default function DoctorSchedule() {
 
   return (
     <div className={styles.page}>
-      <h1 className="page-title">Upcoming schedule</h1>
-
+      
       {error && (
         <div className="error-banner">
           <span>{error}</span>
@@ -67,81 +95,52 @@ export default function DoctorSchedule() {
         </div>
       )}
 
-      {verificationStatus !== 'Approved' ? (
-        <div className="card" style={{ padding: 'var(--space-6)', border: '1px solid var(--color-warning)', background: '#fffbeb', marginTop: 'var(--space-6)' }}>
-          <h3 style={{ color: '#b45309', margin: '0 0 8px 0' }}>Account Not Verified</h3>
-          <p style={{ margin: 0, color: 'var(--color-text-muted)' }}>
-            Your account must be verified by an administrator before you can receive and manage appointments.
-          </p>
+      {/* Main Glassmorphism Layout */}
+      <div className={styles.layoutBoard}>
+        
+        {/* Top Strip */}
+        <div className={styles.topSection}>
+          <DateStrip 
+            weekDates={weekDates}
+            selectedDate={selectedDate}
+            onDateSelect={(date) => { setSelectedDate(date); setSelectedApptId(null); }}
+            onPrevWeek={handlePrevWeek}
+            onNextWeek={handleNextWeek}
+            allAppointments={appointments}
+          />
         </div>
-      ) : appointments.length === 0 && !error ? (
-        <div className="empty-state card">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-2.25-6.5h.008v.008H18.75V10.5Z" />
-          </svg>
-          <p>You have no upcoming appointments.</p>
+
+        {/* Content Columns */}
+        <div className={styles.contentColumns}>
+          
+          {/* Left Column: Summary + Timeline */}
+          <div className={styles.leftCol}>
+            <DaySummary 
+              appointments={appointmentsForSelectedDate} 
+              selectedDate={selectedDate} 
+            />
+            <ScheduleTimeline 
+              appointments={appointmentsForSelectedDate}
+              availability={availability}
+              selectedDate={selectedDate}
+              selectedApptId={selectedApptId}
+              isLoading={isLoading}
+              onAppointmentClick={(appt) => setSelectedApptId(appt.id)}
+            />
+          </div>
+
+          {/* Right Column: Appointment Details */}
+          <div className={styles.rightCol}>
+            <AppointmentDetailCard 
+              appointment={selectedAppointment}
+              onStatusUpdate={handleStatusChange}
+            />
+          </div>
+          
         </div>
-      ) : (
-        <div className={styles.grid}>
-          {appointments.map((appt) => (
-            <div key={appt.id} className={`card ${styles.apptCard}`}>
-              <div className={styles.header}>
-                <div>
-                  <h3 className={styles.patientName}>{appt.patientFullName}</h3>
-                  <p className={styles.timeLine}>
-                    {new Date(appt.startTimeUtc).toLocaleString(undefined, {
-                      dateStyle: 'medium', timeStyle: 'short',
-                    })}
-                  </p>
-                </div>
-                <span className={`status-pill ${appt.status.toLowerCase()}`}>
-                  {appt.status}
-                </span>
-              </div>
 
-              {appt.patientReason && (
-                <div className={styles.reasonBlock}>
-                  <strong>Reason: </strong> {appt.patientReason}
-                </div>
-              )}
+      </div>
 
-              <div className={styles.actions}>
-                {/* Chat and Notes usually available unless Cancelled */}
-                {appt.status !== 'Cancelled' && (
-                  <div className={styles.primaryActions}>
-                    <Link to={`/doctor/chat/${appt.id}`} className="btn-primary" style={{ flex: 1 }}>
-                      Chat
-                    </Link>
-                    <Link to={`/doctor/notes/${appt.id}`} className="btn-secondary" style={{ flex: 1 }}>
-                      Notes
-                    </Link>
-                  </div>
-                )}
-
-                {/* Status transitions */}
-                {appt.status === 'Pending' && (
-                  <div className={styles.statusActions}>
-                    <button onClick={() => handleStatusChange(appt.id, 'Confirmed')} className={styles.btnApprove}>
-                      Approve request
-                    </button>
-                    <button onClick={() => handleStatusChange(appt.id, 'Cancelled')} className={styles.btnCancel}>
-                      Cancel
-                    </button>
-                  </div>
-                )}
-
-                {appt.status === 'Confirmed' && (
-                  <div className={styles.statusActions}>
-                    <button onClick={() => handleStatusChange(appt.id, 'Completed')} className={styles.btnComplete}>
-                      Mark as Completed
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 }

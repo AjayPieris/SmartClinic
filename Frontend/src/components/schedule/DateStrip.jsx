@@ -1,16 +1,3 @@
-// =============================================================================
-// src/components/schedule/DateStrip.jsx
-//
-// A 7-day horizontal strip. Each day shows:
-//   - Short day name (Mon, Tue…)
-//   - Date number
-//   - A coloured dot if there are appointments that day
-//   - "Today" ring when applicable
-//   - Active highlight on selectedDate
-//
-// The doctor can navigate week-by-week with prev/next arrow buttons.
-// =============================================================================
-
 import { isSameDay, isToday, format } from 'date-fns';
 import styles from './DateStrip.module.css';
 
@@ -20,9 +7,8 @@ export default function DateStrip({
   onDateSelect,
   onPrevWeek,
   onNextWeek,
-  allAppointments, // used to show appointment-dot indicators
+  allAppointments,
 }) {
-  // Build a fast lookup: dateString → appointment count for that day
   const apptCountByDate = allAppointments.reduce((acc, a) => {
     const key = format(new Date(a.startTimeUtc), 'yyyy-MM-dd');
     acc[key] = (acc[key] ?? 0) + 1;
@@ -30,70 +16,51 @@ export default function DateStrip({
   }, {});
 
   return (
-    <div className={styles.strip}>
+    <div className={styles.wrapper}>
+      <div className={styles.strip}>
+        <button className={styles.navBtn} onClick={onPrevWeek} aria-label="Previous week">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
 
-      {/* Prev week button */}
-      <button
-        className={styles.navBtn}
-        onClick={onPrevWeek}
-        aria-label="Previous week"
-      >
-        ‹
-      </button>
+        <div className={styles.days}>
+          {weekDates.map((date) => {
+            const isSelected = isSameDay(date, selectedDate);
+            const isCurrentDay = isToday(date);
+            const dateKey = format(date, 'yyyy-MM-dd');
+            const hasAppts = (apptCountByDate[dateKey] ?? 0) > 0;
+            const count = apptCountByDate[dateKey] ?? 0;
 
-      {/* 7 day buttons */}
-      <div className={styles.days}>
-        {weekDates.map((date) => {
-          const isSelected = isSameDay(date, selectedDate);
-          const isCurrentDay = isToday(date);
-          const dateKey = format(date, 'yyyy-MM-dd');
-          const hasAppts = (apptCountByDate[dateKey] ?? 0) > 0;
-          const count = apptCountByDate[dateKey] ?? 0;
+            return (
+              <button
+                key={date.toISOString()}
+                className={`
+                  ${styles.dayPill}
+                  ${isSelected ? styles.selectedPill : ''}
+                  ${isCurrentDay && !isSelected ? styles.todayPill : ''}
+                `}
+                onClick={() => onDateSelect(date)}
+                aria-pressed={isSelected}
+              >
+                <div className={styles.dayTop}>
+                  <span className={styles.dayName}>{format(date, 'EEE')}</span>
+                </div>
+                <span className={styles.dayNum}>{format(date, 'd')}</span>
+                <div className={styles.indicatorWrap}>
+                  {hasAppts ? (
+                    <span className={styles.dot}><span className={styles.dotCount}>{count > 9 ? '9+' : count}</span></span>
+                  ) : (
+                    <span className={styles.dotEmpty}></span>
+                  )}
+                </div>
+              </button>
+            );
+          })}
+        </div>
 
-          return (
-            <button
-              key={date.toISOString()}
-              className={`
-                ${styles.day}
-                ${isSelected    ? styles.daySelected : ''}
-                ${isCurrentDay  ? styles.dayToday    : ''}
-              `}
-              onClick={() => onDateSelect(date)}
-              aria-label={format(date, 'EEEE, MMMM d')}
-              aria-pressed={isSelected}
-            >
-              {/* Day of week abbreviation */}
-              <span className={styles.dayName}>
-                {format(date, 'EEE')}
-              </span>
-
-              {/* Date number */}
-              <span className={styles.dayNum}>
-                {format(date, 'd')}
-              </span>
-
-              {/* Appointment count dot */}
-              {hasAppts && (
-                <span
-                  className={`${styles.dot} ${isSelected ? styles.dotSelected : ''}`}
-                  aria-label={`${count} appointment${count !== 1 ? 's' : ''}`}
-                >
-                  {count > 9 ? '9+' : count}
-                </span>
-              )}
-            </button>
-          );
-        })}
+        <button className={styles.navBtn} onClick={onNextWeek} aria-label="Next week">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
       </div>
-
-      {/* Next week button */}
-      <button
-        className={styles.navBtn}
-        onClick={onNextWeek}
-        aria-label="Next week"
-      >
-        ›
-      </button>
     </div>
   );
 }

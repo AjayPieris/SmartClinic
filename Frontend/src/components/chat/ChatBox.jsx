@@ -1,5 +1,3 @@
-
-
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { getChatHistoryApi, sendMessageApi } from '../../api/chatApi';
@@ -7,10 +5,9 @@ import usePusherChat from '../../hooks/usePusherChat';
 import ChatMessage from './ChatMessage';
 import styles from './ChatBox.module.css';
 
-// Appointments in these statuses allow sending messages
 const CHATABLE_STATUSES = ['Pending', 'Confirmed'];
 
-export default function ChatBox({ appointmentId, appointmentStatus }) {
+export default function ChatBox({ appointmentId, appointmentStatus, doctorName, doctorAvatar }) {
   const { user } = useAuth();
 
   const [messages,         setMessages]         = useState([]);
@@ -19,24 +16,16 @@ export default function ChatBox({ appointmentId, appointmentStatus }) {
   const [isLoadingHistory, setIsLoadingHistory] = useState(true);
   const [error,            setError]            = useState('');
 
-  // Ref to the invisible div at the bottom of the message list
   const messagesEndRef = useRef(null);
-
-  // Track whether we should auto-scroll.
-  // Set to false when user scrolls up; reset to true when they scroll to bottom.
   const shouldAutoScrollRef = useRef(true);
-
-  // The scroll container ref — used to detect manual scroll-up
   const scrollContainerRef = useRef(null);
 
-  // ── Determine if sending is allowed ────────────────────────────────────
   const canSend = CHATABLE_STATUSES.includes(appointmentStatus);
 
-  // ── Load chat history on mount / appointmentId change ──────────────────
   useEffect(() => {
     if (!appointmentId) return;
 
-    let cancelled = false; // Prevents state update if component unmounts mid-fetch
+    let cancelled = false;
 
     const loadHistory = async () => {
       setIsLoadingHistory(true);
@@ -46,12 +35,15 @@ export default function ChatBox({ appointmentId, appointmentStatus }) {
       try {
         const history = await getChatHistoryApi(appointmentId, { pageSize: 50 });
         if (!cancelled) {
-          setMessages(history);
+          const taggedHistory = history.map(m => ({
+            ...m,
+            isFromCurrentUser: String(m.senderId) === String(user.userId)
+          }));
+          setMessages(taggedHistory);
         }
       } catch (err) {
         if (!cancelled) {
           setError('Could not load chat history. Please refresh.');
-          console.error('[ChatBox] History load failed:', err);
         }
       } finally {
         if (!cancelled) setIsLoadingHistory(false);
@@ -59,111 +51,80 @@ export default function ChatBox({ appointmentId, appointmentStatus }) {
     };
 
     loadHistory();
-
     return () => { cancelled = true; };
   }, [appointmentId]);
 
-  // ── Handle incoming Pusher message ─────────────────────────────────────
-  // useCallback is REQUIRED here — usePusherChat's useEffect depends on this
-  // function. Without useCallback, a new function reference on every render
-  // would cause the Pusher subscription to teardown and re-subscribe constantly.
   const handleNewMessage = useCallback((incomingMessage) => {
     setMessages((prev) => {
-      // Remove the optimistic placeholder if this is our own message coming back.
-      // We identify optimistic messages by their "optimistic-" prefixed id.
       const withoutOptimistic = prev.filter(
-        (m) => !m.id.toString().startsWith('optimistic-')
-          || m.senderId !== incomingMessage.senderId
+        (m) => !m.id.toString().startsWith('optimistic-') || m.senderId !== incomingMessage.senderId
       );
 
-      // Prevent duplicate messages (Pusher occasionally delivers twice on reconnect)
       const alreadyExists = withoutOptimistic.some((m) => m.id === incomingMessage.id);
       if (alreadyExists) return prev;
 
-      // Tag isFromCurrentUser client-side — never trust the server value
       const tagged = {
         ...incomingMessage,
-        isFromCurrentUser: incomingMessage.senderId === user.userId,
+        isFromCurrentUser: String(incomingMessage.senderId) === String(user.userId),
       };
 
       return [...withoutOptimistic, tagged];
     });
 
-    // Reset auto-scroll when a new message arrives
     shouldAutoScrollRef.current = true;
   }, [user.userId]);
 
-  // Wire up the Pusher subscription via our custom hook
   usePusherChat(appointmentId, handleNewMessage);
 
-  // ── Auto-scroll to bottom whenever messages change ──────────────────────
   useEffect(() => {
     if (shouldAutoScrollRef.current && messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
 
-  // ── Detect when the user scrolls up (disable auto-scroll) ──────────────
   const handleScroll = () => {
     const container = scrollContainerRef.current;
     if (!container) return;
-
-    // "At bottom" = within 60px of the bottom edge
-    const distanceFromBottom =
-      container.scrollHeight - container.scrollTop - container.clientHeight;
-
+    const distanceFromBottom = container.scrollHeight - container.scrollTop - container.clientHeight;
     shouldAutoScrollRef.current = distanceFromBottom < 60;
   };
 
-  // ── Send a message ──────────────────────────────────────────────────────
   const handleSend = async () => {
     const text = inputText.trim();
     if (!text || isSending || !canSend) return;
 
-    setInputText(''); // Clear immediately for better UX
+    setInputText('');
     setIsSending(true);
     setError('');
 
-    // Optimistic message — appears instantly while the API call is in-flight
     const optimisticId = `optimistic-${Date.now()}`;
     const optimisticMessage = {
-      id:                   optimisticId,
+      id: optimisticId,
       appointmentId,
-      senderId:             user.userId,
-      senderFullName:       `${user.firstName} ${user.lastName}`,
-      senderRole:           user.role,
+      senderId: user.userId,
+      senderFullName: `${user.firstName} ${user.lastName}`,
+      senderRole: user.role,
       senderProfilePictureUrl: user.profilePictureUrl,
-      messageText:          text,
-      sentAtUtc:            new Date().toISOString(),
-      isFromCurrentUser:    true,
-      isOptimistic:         true, // Internal flag for styling (e.g. opacity)
+      messageText: text,
+      sentAtUtc: new Date().toISOString(),
+      isFromCurrentUser: true,
+      isOptimistic: true,
     };
 
     setMessages((prev) => [...prev, optimisticMessage]);
     shouldAutoScrollRef.current = true;
 
     try {
-      // API call — backend saves to DB and triggers Pusher event
       await sendMessageApi({ appointmentId, messageText: text });
-      // The real message will arrive via Pusher and handleNewMessage will
-      // replace the optimistic entry automatically.
     } catch (err) {
-      // Roll back the optimistic message on failure
       setMessages((prev) => prev.filter((m) => m.id !== optimisticId));
-
-      // Restore the typed text so the user doesn't lose their message
       setInputText(text);
-
-      setError(
-        err.response?.data?.message ??
-        'Failed to send message. Please try again.'
-      );
+      setError(err.response?.data?.message ?? 'Failed to send message.');
     } finally {
       setIsSending(false);
     }
   };
 
-  // ── Allow Enter to send (Shift+Enter for newline) ───────────────────────
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -171,87 +132,93 @@ export default function ChatBox({ appointmentId, appointmentStatus }) {
     }
   };
 
-  // ── Render ──────────────────────────────────────────────────────────────
   return (
     <div className={styles.chatBox}>
 
-      {/* Header */}
+      {/* WhatsApp Style Header */}
       <div className={styles.chatHeader}>
-        <div className={styles.headerDot} />
-        <span className={styles.headerTitle}>
-          Telehealth session
-        </span>
-        <span className={`${styles.statusPill} ${styles[appointmentStatus?.toLowerCase()]}`}>
-          {appointmentStatus}
-        </span>
+        <div className={styles.headerProfile}>
+          {doctorAvatar ? (
+            <img src={doctorAvatar} alt="Doctor" className={styles.headerAvatar} />
+          ) : (
+            <div className={styles.headerAvatarFallback}>
+              {doctorName ? doctorName.charAt(0) : 'D'}
+            </div>
+          )}
+          <div className={styles.headerInfo}>
+            <span className={styles.headerTitle}>
+              {doctorName ? (user?.role === 'Doctor' ? doctorName : `Dr. ${doctorName}`) : 'Chat'}
+            </span>
+            <span className={styles.headerOnline}>
+              <div className={styles.headerDot}></div> Online
+            </span>
+          </div>
+        </div>
+        
+        <div className={styles.headerActions}>
+          <span className={`${styles.statusPill} ${styles[appointmentStatus?.toLowerCase()]}`}>
+            {appointmentStatus}
+          </span>
+          <svg className={styles.wsIcon} xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+             <path d="M12.031 0C5.385 0 0 5.385 0 12.031c0 2.128.55 4.195 1.594 6.012L.15 24l6.096-1.597A11.967 11.967 0 0012.031 24c6.644 0 12.031-5.385 12.031-12.031S18.675 0 12.031 0zm0 20.156c-1.785 0-3.53-.483-5.06-1.393l-.363-.215-3.766.987.994-3.67-.236-.376a10.15 10.15 0 01-1.554-5.458c0-5.59 4.549-10.14 10.14-10.14 5.591 0 10.14 4.55 10.14 10.14s-4.549 10.14-10.14 10.14z"/>
+             <path fill="var(--color-surface)" d="M17.653 14.18c-.31-.155-1.838-.908-2.122-1.013-.284-.105-.49-.155-.697.155s-.804 1.013-.984 1.22c-.18.207-.361.233-.671.078-2.115-.965-3.328-1.584-4.59-3.725-.18-.306.18-.285.485-.89.078-.155.039-.284-.013-.439-.052-.155-.697-1.682-.955-2.302-.25-.6-.505-.518-.696-.527l-.609-.009c-.206 0-.542.078-.826.388s-1.084 1.06-1.084 2.585 1.11 2.999 1.265 3.206c.155.207 2.185 3.336 5.293 4.673 2.17.933 2.87.802 3.385.672.587-.148 1.838-.75 2.096-1.474.258-.724.258-1.344.18-1.474-.078-.13-.284-.207-.594-.362z"/>
+          </svg>
+        </div>
       </div>
 
-      {/* Error banner — non-fatal, dismissible */}
       {error && (
         <div className={styles.errorBanner} role="alert">
           <span>{error}</span>
-          <button
-            className={styles.errorDismiss}
-            onClick={() => setError('')}
-            aria-label="Dismiss error"
-          >
-            ×
-          </button>
+          <button className={styles.errorDismiss} onClick={() => setError('')}>×</button>
         </div>
       )}
 
-      {/* Message list */}
-      <div
-        className={styles.messageList}
-        ref={scrollContainerRef}
-        onScroll={handleScroll}
-        aria-live="polite"
-        aria-label="Chat messages"
-      >
-        {isLoadingHistory ? (
-          // Skeleton loading state
-          <div className={styles.skeletonWrap}>
-            {[...Array(4)].map((_, i) => (
-              <div
-                key={i}
-                className={`${styles.skeleton} ${i % 2 === 0 ? styles.skeletonLeft : styles.skeletonRight}`}
-              />
-            ))}
-          </div>
-        ) : messages.length === 0 ? (
-          <div className={styles.emptyState}>
-            <p>No messages yet.</p>
-            <p className={styles.emptyHint}>
-              {canSend
-                ? 'Send a message to start the conversation.'
-                : 'This session has ended.'}
-            </p>
-          </div>
-        ) : (
-          messages.map((message, index) => (
-            <ChatMessage
-              key={message.id}
-              message={message}
-              // Show avatar/name only when sender changes (groups consecutive messages)
-              showSenderInfo={
-                index === 0 ||
-                messages[index - 1].senderId !== message.senderId
-              }
-            />
-          ))
-        )}
+      {/* Message Area with Glass Background Graphic */}
+      <div className={styles.scrollWrapper}>
+        <div className={styles.wsBackground}></div>
+        <div
+          className={styles.messageList}
+          ref={scrollContainerRef}
+          onScroll={handleScroll}
+        >
+          {isLoadingHistory ? (
+            <div className={styles.skeletonWrap}>
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className={`${styles.skeleton} ${i % 2 === 0 ? styles.skeletonLeft : styles.skeletonRight}`} />
+              ))}
+            </div>
+          ) : messages.length === 0 ? (
+            <div className={styles.emptyState}>
+              <div className={styles.encrypBadge}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                Messages are end-to-end encrypted
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className={styles.encrypBadge}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                Messages are end-to-end encrypted
+              </div>
+              {messages.map((message, index) => (
+                <ChatMessage
+                  key={message.id}
+                  message={message}
+                  showSenderInfo={index === 0 || messages[index - 1].senderId !== message.senderId}
+                />
+              ))}
+            </>
+          )}
 
-        {/* Invisible anchor div — scrollIntoView target */}
-        <div ref={messagesEndRef} aria-hidden="true" />
+          <div ref={messagesEndRef} aria-hidden="true" />
+        </div>
       </div>
 
-      {/* Input area */}
+      {/* Input Area */}
       <div className={styles.inputArea}>
         {!canSend ? (
           <p className={styles.closedNotice}>
-            {appointmentStatus === 'Completed'
-              ? 'This session has been completed. Chat is read-only.'
-              : 'Chat is not available for this appointment.'}
+            {appointmentStatus === 'Completed' ? 'This session has been completed.' : 'Chat is not available for this appointment.'}
           </p>
         ) : (
           <>
@@ -260,35 +227,20 @@ export default function ChatBox({ appointmentId, appointmentStatus }) {
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Type a message… (Enter to send, Shift+Enter for new line)"
+              placeholder="Message"
               rows={1}
               disabled={isSending}
-              aria-label="Message input"
-              // Auto-expand textarea height as user types
-              style={{
-                height: 'auto',
-                minHeight: '44px',
-                maxHeight: '120px',
-              }}
+              style={{ minHeight: '44px', maxHeight: '120px' }}
               onInput={(e) => {
-                // Reset height then expand to scrollHeight for auto-resize
                 e.target.style.height = 'auto';
                 e.target.style.height = `${Math.min(e.target.scrollHeight, 120)}px`;
               }}
             />
-            <button
-              className={styles.sendBtn}
-              onClick={handleSend}
-              disabled={isSending || !inputText.trim()}
-              aria-label="Send message"
-            >
+            <button className={styles.sendBtn} onClick={handleSend} disabled={isSending || !inputText.trim()}>
               {isSending ? (
-                <span className={styles.sendSpinner} aria-hidden="true" />
+                <span className={styles.sendSpinner} />
               ) : (
-                /* Send arrow icon — pure CSS/SVG, no icon library needed */
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" strokeWidth="2.5"
-                  strokeLinecap="round" strokeLinejoin="round">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="22" y1="2" x2="11" y2="13" />
                   <polygon points="22 2 15 22 11 13 2 9 22 2" />
                 </svg>

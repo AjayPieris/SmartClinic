@@ -1,118 +1,138 @@
+.wrapper {
+  padding: 8px 0;
+  width: 100%;
+}
+
 .strip {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  padding: var(--space-3) var(--space-4);
-  box-shadow: var(--shadow-sm);
+  justify-content: space-between;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 28px;
+  padding: 12px 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
 }
 
 .navBtn {
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  font-size: 1.3rem;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.9);
   color: var(--color-text-muted);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: all var(--transition);
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
 .navBtn:hover {
-  border-color: var(--color-primary);
+  background: white;
   color: var(--color-primary);
-  background: var(--color-primary-light);
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
 }
 
 .days {
   display: flex;
-  flex: 1;
   justify-content: space-between;
-  gap: var(--space-1);
+  align-items: center;
+  flex: 1;
+  gap: 8px;
 }
 
-/* Individual day button */
-.day {
+.dayPill {
+  flex: 1;
+  max-width: 80px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-lg);
-  border: 1.5px solid transparent;
+  gap: 4px;
+  padding: 12px 8px;
   background: transparent;
+  border: 1px solid transparent;
+  border-radius: 20px;
   cursor: pointer;
-  flex: 1;
-  min-width: 0;
-  transition: all var(--transition);
-  position: relative;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.day:hover:not(.daySelected) {
-  background: var(--color-primary-light);
-  border-color: var(--color-primary);
+.dayPill:hover {
+  background: rgba(255, 255, 255, 0.6);
+  transform: translateY(-2px);
 }
 
-/* Today — subtle ring even when not selected */
-.dayToday {
-  border-color: var(--color-border);
-}
-
-/* Selected day */
-.daySelected {
-  background: var(--color-primary) !important;
-  border-color: var(--color-primary) !important;
-}
-
-.dayName {
-  font-size: 0.7rem;
-  font-weight: 600;
-  color: var(--color-text-muted);
+.dayTop {
+  font-size: 0.75rem;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  line-height: 1;
-  transition: color var(--transition);
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: rgba(0,0,0,0.4);
 }
-
-.daySelected .dayName { color: rgba(255,255,255,0.8); }
 
 .dayNum {
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: 1.5rem;
+  font-weight: 800;
   color: var(--color-text);
   line-height: 1;
-  transition: color var(--transition);
 }
 
-.dayToday .dayNum  { color: var(--color-primary); }
-.daySelected .dayNum { color: #ffffff; }
+.indicatorWrap {
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 4px;
+}
 
-/* Appointment count dot / badge */
 .dot {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 16px;
-  height: 16px;
-  padding: 0 4px;
-  border-radius: var(--radius-full);
-  background: var(--color-primary);
-  color: #ffffff;
-  font-size: 0.62rem;
+  width: 24px;
+  height: 24px;
+  background: rgba(14, 165, 233, 0.15); /* light primary */
+  color: var(--color-primary);
+  border-radius: 50%;
+  font-size: 0.65rem;
   font-weight: 700;
-  line-height: 1;
-  transition: background var(--transition);
 }
 
-/* When the day is selected, invert the dot colour so it's visible */
-.dotSelected {
-  background: rgba(255,255,255,0.9);
-  color: var(--color-primary);
+.selectedPill .dot {
+  background: rgba(255, 255, 255, 0.3);
+  color: white;
+}
+
+.dotEmpty {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.todayPill {
+  border: 1px dashed rgba(0,0,0,0.15);
+  background: rgba(255,255,255,0.3);
+}
+
+/* ── Selected State ── */
+.selectedPill {
+  background: linear-gradient(135deg, var(--color-primary) 0%, #0284c7 100%);
+  border-color: transparent;
+  color: white;
+  box-shadow: 0 10px 20px rgba(14, 165, 233, 0.3);
+  transform: translateY(-4px);
+}
+
+.selectedPill .dayTop { color: rgba(255,255,255,0.8); }
+.selectedPill .dayNum { color: white; }
+.selectedPill:hover {
+  background: linear-gradient(135deg, var(--color-primary) 0%, #0284c7 100%);
+  transform: translateY(-6px);
 }
