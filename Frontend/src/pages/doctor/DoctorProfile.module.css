@@ -1,147 +1,548 @@
+/* ── Page shell ─────────────────────────────────────────────────────────── */
 .page {
-  max-width: 640px;
+  max-width: 860px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
+  gap: 24px;
 }
 
-.section {
-  padding: var(--space-6);
+/* ── Header ─────────────────────────────────────────────────────────────── */
+.header {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
-.sectionLabel {
-  font-size: 0.75rem;
+.pageTitle {
+  margin: 0;
+  font-size: 1.75rem;
   font-weight: 700;
-  color: var(--color-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border-bottom: 1px solid var(--color-border);
-  padding-bottom: var(--space-3);
+  color: var(--color-text);
+  line-height: 1.2;
 }
 
-.infoGrid {
+.pageSubtitle {
+  margin: 4px 0 0 0;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+/* "VERIFIED DOCTOR" pill in header */
+.verifiedBadgeHeader {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Body (avatar + right col) ──────────────────────────────────────────── */
+.body {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ── Avatar column ──────────────────────────────────────────────────────── */
+.avatarCol {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
-}
-
-.infoRow {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 10px;
+  padding-top: 8px;
 }
 
-.infoLabel {
+.avatarBtn {
+  position: relative;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  overflow: hidden;
+  background: #dbeafe;
+  flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  transition: box-shadow 0.2s;
+}
+
+.avatarBtn:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.18); }
+
+.avatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.avatarFallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+  border-radius: 50%;
+}
+
+.avatarOverlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 16px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.avatarBtn:hover .avatarOverlay { opacity: 1; }
+
+/* Camera icon inside overlay */
+.avatarOverlay svg { filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4)); }
+
+/* Progress ring */
+.progressRing {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.ringsvg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.ringTrack {
+  fill: none;
+  stroke: rgba(255,255,255,0.25);
+  stroke-width: 3;
+}
+
+.ringBar {
+  fill: none;
+  stroke: white;
+  stroke-width: 3;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.2s;
+}
+
+.updatePicBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--color-primary);
   font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-body);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.15s;
+}
+
+.updatePicBtn:hover { color: var(--color-primary-dark); }
+.updatePicBtn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.avatarHint {
+  margin: 0;
+  font-size: 0.76rem;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.avatarError {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--color-danger, #ef4444);
+  text-align: center;
+}
+
+/* ── Right column ───────────────────────────────────────────────────────── */
+.rightCol {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Card (white rounded panel) ─────────────────────────────────────────── */
+.card {
+  background: white;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.cardSubtitle {
+  margin: 4px 0 0 0;
+  font-size: 0.82rem;
   color: var(--color-text-muted);
 }
 
-.infoValue {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--color-text);
+/* Status pills */
+.verifiedPill {
+  display: inline-flex;
+  align-items: center;
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
-.availCta {
+.pendingPill {
+  display: inline-flex;
+  align-items: center;
+  background: #fef9c3;
+  color: #854d0e;
+  border: 1px solid #fde047;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.rejectedPill {
+  display: inline-flex;
+  align-items: center;
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Document form ──────────────────────────────────────────────────────── */
+.docForm {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.docLabel {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+}
+
+.docRow {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.docInputWrap {
+  flex: 1;
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: var(--space-4) var(--space-6);
-  background: var(--color-primary-light);
-  border: 1px solid #c7d2fe;
-  border-radius: var(--radius-lg);
-  color: var(--color-primary);
-  font-weight: 600;
-  font-size: 0.9rem;
-  text-decoration: none;
-  transition: all var(--transition);
 }
 
-.availCta:hover {
-  background: #e0e7ff;
-  text-decoration: none;
-}
-
-.availCta:hover span:last-child {
-  transform: translateX(4px);
-}
-
-/* ── Verification Submit Form ───────────────────────────────────────── */
-.submitDocForm {
-  display: flex;
-  gap: var(--space-3);
-  margin-top: var(--space-4);
-  align-items: center;
+.docIcon {
+  position: absolute;
+  left: 12px;
+  width: 16px;
+  height: 16px;
+  color: #9ca3af;
+  pointer-events: none;
+  flex-shrink: 0;
 }
 
 .docInput {
-  flex: 1;
+  width: 100%;
   height: 44px;
-  padding: 0 16px;
+  padding: 0 14px 0 36px;
   border: 1px solid var(--color-border);
-  border-radius: 8px;
+  border-radius: 10px;
   font-family: var(--font-body);
-  font-size: 0.95rem;
-  background: white;
+  font-size: 0.88rem;
+  color: var(--color-text);
+  background: #f9fafb;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
+
+.docInput::placeholder { color: #c4c9d4; }
 
 .docInput:focus {
   outline: none;
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px var(--color-primary-light);
+  background: white;
 }
 
 .submitBtn {
   height: 44px;
-  background: var(--color-primary);
+  background: #1e6a6a;
   color: white;
   border: none;
-  padding: 0 24px;
-  border-radius: 8px;
+  padding: 0 22px;
+  border-radius: 10px;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   cursor: pointer;
-  transition: background var(--transition);
   white-space: nowrap;
+  transition: background 0.2s, transform 0.1s;
+  flex-shrink: 0;
 }
 
-.submitBtn:hover {
-  background: var(--color-primary-dark);
+.submitBtn:hover  { background: #155555; }
+.submitBtn:active { transform: scale(0.97); }
+.submitBtn:disabled { opacity: 0.65; cursor: not-allowed; }
+
+/* doc meta row */
+.docMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
-.submitBtn:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
+.viewDocLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--color-primary);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.15s;
 }
 
-/* ── Mobile Responsiveness ──────────────────────────────────────────────── */
-@media (max-width: 600px) {
-  .infoRow {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--space-1);
+.viewDocLink:hover { opacity: 0.75; text-decoration: underline; }
+
+.docMetaDivider {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+}
+
+.docMetaDate {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+
+.successMsg {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #15803d;
+}
+
+.rejectedNote {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #b91c1c;
+  background: #fee2e2;
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
+/* ── Info grid ──────────────────────────────────────────────────────────── */
+.infoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.infoCell {
+  background: white;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* Role cell spans full width and has row layout */
+.roleCell {
+  grid-column: 1 / -1;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.roleCell > div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.infoLabel {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+
+.infoValue {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+/* Admin access badge */
+.adminBadge {
+  display: inline-flex;
+  align-items: center;
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Availability CTA ───────────────────────────────────────────────────── */
+.availCta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 28px 32px;
+  background: linear-gradient(135deg, #1a5f5f 0%, #0d4747 100%);
+  border-radius: 20px;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(14, 71, 71, 0.3);
+  flex-wrap: wrap;
+}
+
+.availCta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(14, 71, 71, 0.4);
+  text-decoration: none;
+}
+
+.availCtaText {
+  flex: 1;
+  min-width: 200px;
+}
+
+.availCtaTitle {
+  margin: 0 0 6px 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: white;
+  line-height: 1.3;
+}
+
+.availCtaDesc {
+  margin: 0;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.5;
+  max-width: 340px;
+}
+
+.availCtaBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 10px 20px;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.88rem;
+  white-space: nowrap;
+  backdrop-filter: blur(4px);
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.availCta:hover .availCtaBtn {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* ── Mobile ─────────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .body {
+    grid-template-columns: 1fr;
   }
-  
-  .infoLabel {
-    font-size: 0.8rem;
+
+  .avatarCol {
+    align-items: center;
   }
-  
-  .submitDocForm {
+
+  .infoGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .roleCell {
+    grid-column: auto;
+  }
+
+  .docRow {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .submitBtn {
     width: 100%;
   }
-  
+
   .availCta {
     flex-direction: column;
-    gap: var(--space-2);
     align-items: flex-start;
+    padding: 22px 22px;
   }
 }

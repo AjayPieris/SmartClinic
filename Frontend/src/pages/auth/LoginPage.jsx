@@ -4,6 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import { loginApi } from "../../api/authApi";
 import styles from "./AuthPage.module.css";
 
+import leftBg from "../../assets/Left.png";
 import smartClinicLogo from "../../assets/SmartClinicLogo.png";
 
 export default function LoginPage() {
@@ -15,8 +16,6 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // If somehow already authenticated (e.g. navigated to /login directly),
-  // redirect to their dashboard immediately
   useEffect(() => {
     if (isAuthenticated && user) {
       const roleRoutes = {
@@ -30,7 +29,6 @@ export default function LoginPage() {
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-    // Clear the error when the user starts typing again
     if (error) setError("");
   };
 
@@ -38,19 +36,13 @@ export default function LoginPage() {
     e.preventDefault();
     setIsSubmitting(true);
     setError("");
-
     try {
       const authResponse = await loginApi(formData);
-
-      // login() saves to localStorage, updates context, and navigates to dashboard
       login(authResponse);
-
-      // If user was sent to /login from a protected route, go back there
       const intendedDestination = location.state?.from?.pathname;
       if (intendedDestination && intendedDestination !== "/login") {
         navigate(intendedDestination, { replace: true });
       }
-      // Otherwise login() handles the navigation to their dashboard
     } catch (err) {
       if (err.response?.data?.errors) {
         const validationErrors = Object.values(err.response.data.errors).flat();
@@ -68,76 +60,95 @@ export default function LoginPage() {
 
   return (
     <div className={styles.authPage}>
-      <div className={styles.authCard}>
-        {/* Brand logo / heading */}
-        <div className={styles.authHeader}>
-          <div className={styles.logoContainer}>
-            <img src={smartClinicLogo} alt="SmartClinic Logo" className={styles.brandLogoImg} />
-            <h1 className={`brand-heading ${styles.brandLogo}`}>SmartClinic</h1>
-          </div>
-          <p className={styles.authSubtitle}>Sign in to your account</p>
+
+      {/* ── Left panel ── */}
+      <div className={styles.authLeft}>
+        <img src={leftBg} alt="" className={styles.authLeftBg} aria-hidden="true" />
+        <div className={styles.authLeftOverlay} />
+        <div className={styles.authLeftContent}>
+          <h2 className={styles.authLeftHeading}>
+            Precision in Care,<br />Driven by Intelligence.
+          </h2>
+          <p className={styles.authLeftText}>
+            Join the next generation of healthcare management. Our sanctuary of
+            clinical data ensures you stay focused on what matters most: human
+            connection.
+          </p>
         </div>
-
-        {/* Error banner */}
-        {error && (
-          <div className={styles.errorBanner} role="alert">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} noValidate>
-          <div className={styles.formGroup}>
-            <label htmlFor="email" className={styles.label}>
-              Email address
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              value={formData.email}
-              onChange={handleChange}
-              className={styles.input}
-              placeholder="you@example.com"
-              disabled={isSubmitting}
-            />
-          </div>
-
-          <div className={styles.formGroup}>
-            <label htmlFor="password" className={styles.label}>
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="current-password"
-              required
-              value={formData.password}
-              onChange={handleChange}
-              className={styles.input}
-              placeholder="Your password"
-              disabled={isSubmitting}
-            />
-          </div>
-
-          <button
-            type="submit"
-            className={styles.submitBtn}
-            disabled={isSubmitting || !formData.email || !formData.password}
-          >
-            {isSubmitting ? (
-              <span className={styles.btnSpinner} aria-hidden="true" />
-            ) : null}
-            {isSubmitting ? "Signing in…" : "Sign in"}
-          </button>
-        </form>
-
-        <p className={styles.authFooter}>
-          Don't have an account? <Link to="/register">Create one</Link>
-        </p>
       </div>
+
+      {/* ── Right panel ── */}
+      <div className={styles.authRight}>
+        {/* Liquid blobs */}
+        <div className={styles.blob3} />
+
+        <div className={styles.authCard}>
+
+          {/* Logo — stacked vertically */}
+          <div className={styles.logoBlock}>
+            <img src={smartClinicLogo} alt="SmartClinic" className={styles.brandLogoImg} />
+            <span className={`brand-heading ${styles.brandLogo}`}>SmartClinic</span>
+          </div>
+
+          {/* Heading */}
+          <div className={styles.authHeader}>
+            <h1 className={styles.authTitle}>Sign In</h1>
+            <p className={styles.authSubtitle}>Welcome back — enter your credentials below.</p>
+          </div>
+
+          {error && (
+            <div className={styles.errorBanner} role="alert">{error}</div>
+          )}
+
+          <form onSubmit={handleSubmit} noValidate>
+            <div className={styles.formGroup}>
+              <label htmlFor="email" className={styles.label}>Email Address</label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                value={formData.email}
+                onChange={handleChange}
+                className={styles.input}
+                placeholder="john.doe@clinic.com"
+                disabled={isSubmitting}
+              />
+            </div>
+
+            <div className={styles.formGroup}>
+              <label htmlFor="password" className={styles.label}>Password</label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="current-password"
+                required
+                value={formData.password}
+                onChange={handleChange}
+                className={styles.input}
+                placeholder="••••••••"
+                disabled={isSubmitting}
+              />
+            </div>
+
+            <button
+              type="submit"
+              className={styles.submitBtn}
+              disabled={isSubmitting || !formData.email || !formData.password}
+            >
+              {isSubmitting && <span className={styles.btnSpinner} aria-hidden="true" />}
+              {isSubmitting ? "Signing in…" : "Sign In →"}
+            </button>
+          </form>
+
+          <p className={styles.authFooter}>
+            Don't have an account? <Link to="/register">Create one</Link>
+          </p>
+        </div>
+      </div>
+
     </div>
   );
 }
