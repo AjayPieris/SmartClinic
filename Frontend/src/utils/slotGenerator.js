@@ -1,10 +1,9 @@
 
-
 /**
  * @typedef {Object} AvailabilityWindow
- * @property {number} dayOfWeek   — 0=Sunday … 6=Saturday (matches JS Date.getDay())
- * @property {string} startTime   — "HH:MM" in UTC (e.g. "09:00")
- * @property {string} endTime     — "HH:MM" in UTC (e.g. "17:00")
+ * @property {number} DayOfWeek   — 0=Sunday … 6=Saturday (matches JS Date.getDay())
+ * @property {string} StartTime   — "HH:MM" in LOCAL time as entered by the doctor
+ * @property {string} EndTime     — "HH:MM" in LOCAL time as entered by the doctor
  */
 
 /**
@@ -24,9 +23,23 @@
 /**
  * Generate time slots for a doctor on a specific date.
  *
- * @param {Date}               selectedDate          — the calendar date chosen by the patient
+ * KEY DESIGN DECISIONS
+ * --------------------
+ * 1. The doctor enters times in their LOCAL timezone via the browser's <input type="time">.
+ *    Those strings ("09:00", "17:00") are stored as-is — they are NOT UTC.
+ *
+ * 2. selectedDate is a Date object set to LOCAL midnight by CalendarPicker
+ *    (e.g. new Date(year, month, day) — no UTC offset applied).
+ *    We must use .getFullYear()/.getMonth()/.getDate() (local accessors) to
+ *    build slot boundary dates so we don't drift into the wrong calendar day.
+ *
+ * 3. We construct window boundaries with `new Date(year, month, day, h, m)`
+ *    (local-time constructor) so the resulting Date is in the doctor's timezone.
+ *    These are then converted to UTC automatically when sent to the backend.
+ *
+ * @param {Date}               selectedDate          — local-midnight Date for chosen day
  * @param {string}             availabilityJson      — JSON string from DoctorProfile.AvailabilityJson
- * @param {BookedSlot[]}       bookedSlots           — already-booked windows for this date
+ * @param {BookedSlot[]}       bookedSlots           — already-booked windows for this date (UTC strings)
  * @param {number}             durationMinutes       — doctor's ConsultationDurationMinutes
  * @returns {SlotOption[]}
  */
@@ -47,36 +60,35 @@ export function generateSlots(
 
   if (!Array.isArray(availability) || availability.length === 0) return [];
 
-  // ── 2. Find the availability window for this day of week ─────────────────
-  // Date.getDay() returns 0 (Sun) – 6 (Sat), matching our DayOfWeek field
+  // ── 2. Find the window for this day of week ───────────────────────────────
+  // Use LOCAL day (.getDay()) because selectedDate is local-midnight.
   const dayOfWeek = selectedDate.getDay();
   const window = availability.find((w) => w.DayOfWeek === dayOfWeek);
 
   // Doctor doesn't work on this day
   if (!window) return [];
 
-  // ── 3. Parse window start/end as UTC times on the selected date ───────────
-  // availabilityJson stores times as "HH:MM" strings in UTC.
-  // We construct full UTC Date objects by combining with the selected date.
+  // ── 3. Parse window start/end as LOCAL times on the selected date ─────────
+  // Doctor entered "HH:MM" strings in their local browser timezone.
+  // Build Date objects using the LOCAL-time constructor so they map to the
+  // same wall-clock hour the doctor intended.
   const [startHour, startMin] = window.StartTime.split(':').map(Number);
   const [endHour,   endMin  ] = window.EndTime.split(':').map(Number);
 
-  // Build UTC timestamps for the window boundaries on the selected date
-  const windowStart = new Date(Date.UTC(
-    selectedDate.getUTCFullYear(),
-    selectedDate.getUTCMonth(),
-    selectedDate.getUTCDate(),
-    startHour, startMin, 0, 0
-  ));
+  // Local-time year/month/date from selectedDate (avoids UTC day-drift bug)
+  const y = selectedDate.getFullYear();
+  const m = selectedDate.getMonth();
+  const d = selectedDate.getDate();
 
-  const windowEnd = new Date(Date.UTC(
-    selectedDate.getUTCFullYear(),
-    selectedDate.getUTCMonth(),
-    selectedDate.getUTCDate(),
-    endHour, endMin, 0, 0
-  ));
+  const windowStart = new Date(y, m, d, startHour, startMin, 0, 0);
+  const windowEnd   = new Date(y, m, d, endHour,   endMin,   0, 0);
 
-  // ── 4. Pre-process booked slots into Date objects (avoid parsing in loop) ─
+  if (windowEnd <= windowStart) {
+    console.warn('[generateSlots] Window end is not after start — skipping day.', window);
+    return [];
+  }
+
+  // ── 4. Pre-process booked slots into Date objects ─────────────────────────
   const bookedRanges = bookedSlots.map((slot) => ({
     start: new Date(slot.startTimeUtc),
     end:   new Date(slot.endTimeUtc),
@@ -96,7 +108,7 @@ export function generateSlots(
     const isPast = slotStart <= now;
 
     // Filter 2: Check overlap with any booked appointment
-    // Overlap condition: bookedStart < slotEnd AND bookedEnd > slotStart
+    // Overlap: bookedStart < slotEnd AND bookedEnd > slotStart
     const isBooked = bookedRanges.some(
       (range) => range.start < slotEnd && range.end > slotStart
     );
@@ -111,7 +123,6 @@ export function generateSlots(
       available,
     });
 
-    // Advance cursor by one slot duration
     cursor = new Date(cursor.getTime() + durationMinutes * 60_000);
   }
 

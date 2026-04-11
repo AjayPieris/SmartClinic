@@ -1,10 +1,19 @@
+/* ── BookingProgress Modern Glass 3D Style ─────────────────── */
 .progress {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0;
-  padding: var(--space-6) var(--space-4);
+  padding: 16px 24px;
   margin-bottom: var(--space-6);
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 20px;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.03),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .stepWrap {
@@ -17,58 +26,82 @@
 
 .connector {
   flex: 1;
-  height: 2px;
-  background: var(--color-border);
-  transition: background 300ms ease;
+  height: 4px;
+  background: rgba(0,0,0,0.06);
+  margin: 0 12px;
+  border-radius: 2px;
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
 }
 
-.connectorDone { background: var(--color-primary); }
+.connectorDone { 
+  background: linear-gradient(90deg, var(--color-primary-light), var(--color-primary)); 
+  box-shadow: 0 0 8px rgba(var(--color-primary-rgb), 0.4);
+}
 
 .step {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-2);
+  gap: 8px;
   cursor: default;
+  min-width: 64px;
 }
 
 .stepCircle {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-full);
-  border: 2px solid var(--color-border);
-  background: var(--color-surface);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.8rem;
-  font-weight: 700;
+  font-size: 0.9rem;
+  font-weight: 800;
   color: var(--color-text-muted);
-  transition: border-color 300ms, background 300ms, color 300ms;
+  box-shadow: 
+    0 4px 10px rgba(0,0,0,0.05),
+    inset 0 -2px 4px rgba(0,0,0,0.05),
+    inset 0 2px 4px rgba(255,255,255,1);
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .stepLabel {
-  font-size: 0.72rem;
-  font-weight: 500;
+  font-size: 0.75rem;
+  font-weight: 600;
   color: var(--color-text-subtle);
   white-space: nowrap;
-  transition: color 300ms;
+  transition: color 0.4s ease;
+  letter-spacing: 0.03em;
 }
 
 /* Active step */
 .stepActive .stepCircle {
-  border-color: var(--color-primary);
-  background: var(--color-primary);
+  background: linear-gradient(135deg, var(--color-primary), #115e59);
   color: #ffffff;
+  transform: scale(1.15);
+  box-shadow: 
+    0 8px 20px rgba(17, 94, 89, 0.3),
+    inset 0 2px 4px rgba(255,255,255,0.3);
 }
 
-.stepActive .stepLabel { color: var(--color-primary); font-weight: 600; }
+.stepActive .stepLabel { 
+  color: var(--color-primary); 
+  font-weight: 800; 
+  transform: translateY(2px);
+}
 
 /* Completed step */
 .stepComplete .stepCircle {
-  border-color: var(--color-primary);
   background: var(--color-primary-light);
   color: var(--color-primary);
+  box-shadow: 
+    0 4px 10px rgba(var(--color-primary-rgb), 0.1),
+    inset 0 2px 4px rgba(255,255,255,0.8);
 }
 
-.stepComplete .stepLabel { color: var(--color-text-muted); }
+.stepComplete .stepLabel { 
+  color: var(--color-text-muted); 
+  font-weight: 700;
+}

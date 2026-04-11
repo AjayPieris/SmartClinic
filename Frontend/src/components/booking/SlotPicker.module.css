@@ -1,86 +1,125 @@
-.wrap { display: flex; flex-direction: column; gap: var(--space-4); }
+/* ── SlotPicker Modern Glass 3D Style ─────────────────────── */
+.wrap { 
+  display: flex; 
+  flex-direction: column; 
+  gap: var(--space-5); 
+  align-items: center;
+  padding-bottom: 20px;
+}
 
 .dateLabel {
-  font-size: 0.95rem;
-  font-weight: 600;
+  font-size: 1.15rem;
+  font-weight: 800;
   color: var(--color-text);
   text-align: center;
+  letter-spacing: -0.3px;
+  background: rgba(255, 255, 255, 0.5);
+  padding: 12px 24px;
+  border-radius: 9999px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+  margin: 0 auto;
+  border: 1px solid rgba(255,255,255,0.7);
 }
 
 .sectionLabel {
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 0.85rem;
+  font-weight: 700;
   color: var(--color-text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: var(--space-2);
+  letter-spacing: 0.08em;
+  margin: 0 0 12px 0;
+  width: 100%;
+  text-align: left;
+}
+
+section {
+  width: 100%;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: var(--space-2);
+  grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+  gap: var(--space-3);
 }
 
 .slot {
-  padding: var(--space-3) var(--space-2);
-  border: 1.5px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-surface);
+  padding: 14px 10px;
+  border: 1px solid rgba(255,255,255,0.6);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.6);
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--color-text);
   text-align: center;
   cursor: pointer;
-  transition: all var(--transition);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 
+    0 4px 6px rgba(0,0,0,0.03),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .slot:hover:not(.slotUnavailable):not(.slotSelected) {
-  border-color: var(--color-primary);
-  background: var(--color-primary-light);
+  background: #ffffff;
   color: var(--color-primary);
+  border-color: rgba(var(--color-primary-rgb), 0.3);
+  transform: translateY(-3px);
+  box-shadow: 
+    0 8px 15px rgba(var(--color-primary-rgb), 0.08),
+    0 2px 5px rgba(0,0,0,0.04);
 }
 
 .slotSelected {
-  border-color: var(--color-primary);
-  background: var(--color-primary);
+  background: linear-gradient(135deg, var(--color-primary), #115e59) !important;
   color: #ffffff;
+  border-color: transparent;
+  transform: scale(1.05) translateY(-2px);
+  box-shadow: 
+    0 10px 20px rgba(17, 94, 89, 0.25),
+    inset 0 2px 5px rgba(255,255,255,0.2) !important;
+  z-index: 2;
 }
 
 .slotUnavailable {
-  opacity: 0.4;
+  opacity: 0.5;
   cursor: not-allowed;
   text-decoration: line-through;
-  background: var(--color-bg);
+  background: rgba(0,0,0,0.02);
+  box-shadow: none;
+  border-color: transparent;
+  transform: none;
 }
 
 .empty {
   text-align: center;
   padding: var(--space-8);
-  color: var(--color-text-muted);
+  background: rgba(255,255,255,0.4);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-3);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
 }
 
-.emptyHint { font-size: 0.875rem; color: var(--color-text-subtle); }
+.emptyHint { font-size: 0.95rem; font-weight: 500; color: var(--color-text-muted); }
 
-/* Skeleton slots */
+/* Skeleton */
 .skeletonGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: var(--space-2);
+  grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+  gap: var(--space-3);
 }
 
 .skeleton {
-  height: 44px;
-  border-radius: var(--radius-md);
-  background: var(--color-border);
-  opacity: 0.4;
-  animation: shimmer 1.4s ease-in-out infinite;
+  height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+  background-size: 200% 100%;
+  animation: shine 1.5s linear infinite;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.4);
 }
 
-@keyframes shimmer {
-  0%, 100% { opacity: 0.3; }
-  50%       { opacity: 0.55; }
-}
+@keyframes shine { to { background-position-x: -200%; } }

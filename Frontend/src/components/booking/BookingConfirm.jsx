@@ -52,63 +52,66 @@ export default function BookingConfirm({
         </div>
       </div>
 
-      {/* Visit type toggle */}
-      <div className={styles.formGroup}>
-        <p className={styles.fieldLabel}>Visit type</p>
-        <div className={styles.toggleGroup}>
-          <button
-            type="button"
-            className={`${styles.toggleBtn} ${isTelehealth ? styles.toggleActive : ''}`}
-            onClick={() => onTelehealthChange(true)}
-          >
-            Telehealth (video)
-          </button>
-          <button
-            type="button"
-            className={`${styles.toggleBtn} ${!isTelehealth ? styles.toggleActive : ''}`}
-            onClick={() => onTelehealthChange(false)}
-          >
-            In-person
-          </button>
+      {/* Form controls card */}
+      <div className={styles.formCard}>
+        {/* Visit type toggle */}
+        <div className={styles.formGroup}>
+          <p className={styles.fieldLabel}>Visit type</p>
+          <div className={styles.toggleGroup}>
+            <button
+              type="button"
+              className={`${styles.toggleBtn} ${isTelehealth ? styles.toggleActive : ''}`}
+              onClick={() => onTelehealthChange(true)}
+            >
+              Telehealth (video)
+            </button>
+            <button
+              type="button"
+              className={`${styles.toggleBtn} ${!isTelehealth ? styles.toggleActive : ''}`}
+              onClick={() => onTelehealthChange(false)}
+            >
+              In-person
+            </button>
+          </div>
         </div>
+
+        {/* Reason for visit */}
+        <div className={styles.formGroup}>
+          <label htmlFor="reason" className={styles.fieldLabel}>
+            Reason for visit <span className={styles.optional}>(optional)</span>
+          </label>
+          <textarea
+            id="reason"
+            className={styles.textarea}
+            value={patientReason}
+            onChange={(e) => onReasonChange(e.target.value)}
+            placeholder="Briefly describe your symptoms or reason for visiting…"
+            rows={3}
+            maxLength={500}
+          />
+          <p className={styles.charCount}>{patientReason.length}/500</p>
+        </div>
+
+        {/* Confirm button */}
+        <button
+          className={styles.confirmBtn}
+          onClick={onConfirm}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <>
+              <span className={styles.btnSpinner} aria-hidden="true" />
+              Booking…
+            </>
+          ) : (
+            'Confirm booking'
+          )}
+        </button>
+
+        <p className={styles.disclaimer}>
+          You can cancel or reschedule up to 24 hours before your appointment.
+        </p>
       </div>
-
-      {/* Reason for visit */}
-      <div className={styles.formGroup}>
-        <label htmlFor="reason" className={styles.fieldLabel}>
-          Reason for visit <span className={styles.optional}>(optional)</span>
-        </label>
-        <textarea
-          id="reason"
-          className={styles.textarea}
-          value={patientReason}
-          onChange={(e) => onReasonChange(e.target.value)}
-          placeholder="Briefly describe your symptoms or reason for visiting…"
-          rows={3}
-          maxLength={500}
-        />
-        <p className={styles.charCount}>{patientReason.length}/500</p>
-      </div>
-
-      {/* Confirm button */}
-      <button
-        className={styles.confirmBtn}
-        onClick={onConfirm}
-        disabled={isSubmitting}
-      >
-        {isSubmitting ? (
-          <>
-            <span className={styles.btnSpinner} aria-hidden="true" />
-            Booking…
-          </>
-        ) : (
-          'Confirm booking'
-        )}
-      </button>
-
-      <p className={styles.disclaimer}>
-        You can cancel or reschedule up to 24 hours before your appointment.
-      </p>
 
     </div>
   );

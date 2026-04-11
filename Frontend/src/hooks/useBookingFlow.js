@@ -78,8 +78,13 @@ export default function useBookingFlow() {
       setError('');
 
       try {
-        // Format date as YYYY-MM-DD for the query param
-        const dateIso = selectedDate.toISOString().split('T')[0];
+        // Format date as YYYY-MM-DD using LOCAL date parts, NOT toISOString()
+        // (toISOString converts to UTC first — in IST a local midnight becomes
+        //  the previous UTC day, so the API would query the wrong date)
+        const y   = selectedDate.getFullYear();
+        const mo  = String(selectedDate.getMonth() + 1).padStart(2, '0');
+        const day = String(selectedDate.getDate()).padStart(2, '0');
+        const dateIso = `${y}-${mo}-${day}`;
         const booked  = await getDoctorBookedSlotsApi(selectedDoctor.id, dateIso);
         setBookedSlots(booked);
 
