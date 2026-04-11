@@ -2,6 +2,8 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import styles from './NavBar.module.css';
 
+import smartClinicLogo from '../assets/SmartClinicLogo.png';
+
 // Nav link definitions per role — drives what appears in the header
 const NAV_LINKS = {
   Patient: [
@@ -39,6 +41,7 @@ export default function NavBar() {
           onClick={() => navigate(`/${user.role.toLowerCase()}`)}
           aria-label="Go to dashboard"
         >
+          <img src={smartClinicLogo} alt="SmartClinic Logo" className={styles.navLogoImg} />
           SmartClinic
         </button>
 

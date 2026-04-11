@@ -4,6 +4,8 @@ import { useAuth } from "../../context/AuthContext";
 import { registerApi } from "../../api/authApi";
 import styles from "./AuthPage.module.css";
 
+import smartClinicLogo from "../../assets/SmartClinicLogo.png";
+
 const ROLES = [
   { value: "Patient", label: "Patient", icon: "🧑‍⚕️" },
   { value: "Doctor", label: "Doctor", icon: "👨‍⚕️" },
@@ -85,7 +87,10 @@ export default function RegisterPage() {
     <div className={styles.authPage}>
       <div className={styles.authCard}>
         <div className={styles.authHeader}>
-          <h1 className={`brand-heading ${styles.brandLogo}`}>SmartClinic</h1>
+          <div className={styles.logoContainer}>
+            <img src={smartClinicLogo} alt="SmartClinic Logo" className={styles.brandLogoImg} />
+            <h1 className={`brand-heading ${styles.brandLogo}`}>SmartClinic</h1>
+          </div>
           <p className={styles.authSubtitle}>Create your account</p>
         </div>
 

@@ -4,6 +4,8 @@ import { useAuth } from "../../context/AuthContext";
 import { loginApi } from "../../api/authApi";
 import styles from "./AuthPage.module.css";
 
+import smartClinicLogo from "../../assets/SmartClinicLogo.png";
+
 export default function LoginPage() {
   const { login, isAuthenticated, user } = useAuth();
   const location = useLocation();
@@ -69,7 +71,10 @@ export default function LoginPage() {
       <div className={styles.authCard}>
         {/* Brand logo / heading */}
         <div className={styles.authHeader}>
-          <h1 className={`brand-heading ${styles.brandLogo}`}>SmartClinic</h1>
+          <div className={styles.logoContainer}>
+            <img src={smartClinicLogo} alt="SmartClinic Logo" className={styles.brandLogoImg} />
+            <h1 className={`brand-heading ${styles.brandLogo}`}>SmartClinic</h1>
+          </div>
           <p className={styles.authSubtitle}>Sign in to your account</p>
         </div>
 
