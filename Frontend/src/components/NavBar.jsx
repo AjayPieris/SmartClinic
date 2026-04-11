@@ -59,6 +59,20 @@ export default function NavBar() {
 
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
 
+  // Separate notifications by type
+  const chatNotifications = notifications.filter(n => n.type === 'Message');
+  const otherNotifications = notifications.filter(n => n.type !== 'Message');
+
+  const unreadChatCount = chatNotifications.filter(n => !n.isRead).length;
+  const unreadOtherCount = otherNotifications.filter(n => !n.isRead).length;
+
+  const unreadCountsByAppt = {};
+  chatNotifications.forEach(n => {
+    if (!n.isRead && n.relatedEntityId) {
+      unreadCountsByAppt[n.relatedEntityId] = (unreadCountsByAppt[n.relatedEntityId] || 0) + 1;
+    }
+  });
+
   // Listen for open-chat-drawer event
   useEffect(() => {
     const handleOpenChat = (e) => {
@@ -75,6 +89,11 @@ export default function NavBar() {
   if (!user) return null; 
 
   const links = NAV_LINKS[user.role] ?? [];
+
+  const handleChatOpened = (appointmentId) => {
+    const unreadForAppt = chatNotifications.filter(n => !n.isRead && n.relatedEntityId === appointmentId);
+    unreadForAppt.forEach(n => markAsRead(n.id));
+  };
 
   return (
     <>
@@ -119,13 +138,13 @@ export default function NavBar() {
                 aria-label="Notifications"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-                {unreadCount > 0 && <span className={styles.badge}>{unreadCount > 9 ? '9+' : unreadCount}</span>}
+                {unreadOtherCount > 0 && <span className={styles.badge}>{unreadOtherCount > 9 ? '9+' : unreadOtherCount}</span>}
               </button>
               
               {notifOpen && (
                 <NotificationPanel 
-                  notifications={notifications}
-                  unreadCount={unreadCount}
+                  notifications={otherNotifications}
+                  unreadCount={unreadOtherCount}
                   markAsRead={markAsRead}
                   markAllAsRead={markAllAsRead}
                   onClose={() => setNotifOpen(false)}
@@ -133,7 +152,7 @@ export default function NavBar() {
               )}
             </div>
 
-            {/* Chat button placeholder (Will connect when we build ChatDrawer) */}
+            {/* Chat Icon */}
             <div className={styles.panelWrapper}>
               <button 
                 className={styles.iconBtn} 
@@ -141,7 +160,7 @@ export default function NavBar() {
                 aria-label="Chat"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                <span className={styles.badge} style={{display: 'none'}}>0</span>
+                {unreadChatCount > 0 && <span className={styles.badge}>{unreadChatCount > 9 ? '9+' : unreadChatCount}</span>}
               </button>
             </div>
 
@@ -261,6 +280,8 @@ export default function NavBar() {
           setChatDrawerApptId(null);
         }} 
         initialAppointmentId={chatDrawerApptId} 
+        onChatOpened={handleChatOpened}
+        unreadCounts={unreadCountsByAppt}
       />
     </>
   );

@@ -63,11 +63,16 @@ export default function NotificationPanel({ notifications, unreadCount, markAsRe
     <div className={styles.dropdown}>
       <div className={styles.header}>
         <h3 className={styles.title}>Notifications</h3>
-        {unreadCount > 0 && (
-          <button className={styles.markAll} onClick={markAllAsRead}>
-            Mark all read
+        <div className={styles.headerActions}>
+          {unreadCount > 0 && (
+            <button className={styles.markAll} onClick={markAllAsRead}>
+              Mark all read
+            </button>
+          )}
+          <button className={styles.closeBtn} onClick={onClose} aria-label="Close notifications">
+            ×
           </button>
-        )}
+        </div>
       </div>
       
       <div className={styles.list}>

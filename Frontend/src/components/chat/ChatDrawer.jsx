@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { getMyAppointmentsApi, getMyScheduleApi } from '../../api/appointmentsApi';
+import { getChatHistoryApi } from '../../api/chatApi';
 import ChatBox from './ChatBox';
 import styles from './ChatDrawer.module.css';
 
-export default function ChatDrawer({ isOpen, onClose, initialAppointmentId }) {
+export default function ChatDrawer({ isOpen, onClose, initialAppointmentId, onChatOpened, unreadCounts }) {
   const { user } = useAuth();
   const [contacts, setContacts] = useState([]);
   const [selectedAppointmentId, setSelectedAppointmentId] = useState(initialAppointmentId || null);
@@ -55,7 +56,25 @@ export default function ChatDrawer({ isOpen, onClose, initialAppointmentId }) {
           }
         }
         
-        setContacts(uniqueContacts);
+        // Get history for each to find the last message
+        const contactsWithMessages = await Promise.all(uniqueContacts.map(async (c) => {
+          try {
+            const history = await getChatHistoryApi(c.appointmentId, { pageSize: 50 });
+            if (history && history.length > 0) {
+              const last = history[history.length - 1];
+              const isMe = String(last.senderId) === String(user.userId);
+              c.lastMessage = (isMe ? 'You: ' : '') + last.messageText;
+            } else {
+              c.lastMessage = 'No messages yet';
+            }
+          } catch (e) {
+            console.error('Failed to get history for appt', c.appointmentId, e);
+            c.lastMessage = 'No messages yet';
+          }
+          return c;
+        }));
+        
+        setContacts(contactsWithMessages);
         
         // Auto-select if requested
         if (selectedAppointmentId) {
@@ -82,8 +101,13 @@ export default function ChatDrawer({ isOpen, onClose, initialAppointmentId }) {
     if (selectedAppointmentId) {
       const contact = contacts.find(c => c.appointmentId === selectedAppointmentId);
       if (contact) setSelectedContact(contact);
+      
+      // Clear notifications for this chat if function provided
+      if (onChatOpened) {
+        onChatOpened(selectedAppointmentId);
+      }
     }
-  }, [selectedAppointmentId, contacts]);
+  }, [selectedAppointmentId, contacts, onChatOpened]);
 
   if (!isOpen) return null;
 
@@ -124,8 +148,13 @@ export default function ChatDrawer({ isOpen, onClose, initialAppointmentId }) {
                     <h4 className={styles.contactName}>
                       {user.role === 'Patient' ? `Dr. ${c.name}` : c.name}
                     </h4>
-                    <p className={styles.contactStatus}>{c.status}</p>
+                    <p className={styles.contactStatus}>{c.lastMessage}</p>
                   </div>
+                  {unreadCounts && unreadCounts[c.appointmentId] ? (
+                    <div className={styles.unreadBadge}>
+                      {unreadCounts[c.appointmentId] > 9 ? '9+' : unreadCounts[c.appointmentId]}
+                    </div>
+                  ) : null}
                 </div>
               ))
             )}

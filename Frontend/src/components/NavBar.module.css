@@ -507,17 +507,20 @@
   /* Brand on mobile */
   .brandText {
     display: inline;
-    font-size: 1.2rem;
+    font-size: 1.25rem;
   }
 
   .navLogoImg {
-    height: 3rem;
-    margin-block: -4px;
+    display: none;
   }
 
   .brandBtn {
-    font-size: 1.2rem;
-    gap: 8px;
+    font-size: 1.25rem;
+    gap: 0;
+  }
+  
+  .mobileMenuBtn {
+    margin-left: 0;
   }
 }
 

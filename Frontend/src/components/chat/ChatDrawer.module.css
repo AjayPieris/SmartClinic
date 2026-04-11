@@ -150,8 +150,28 @@
 
 .contactStatus {
   margin: 0;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+}
+
+.unreadBadge {
+  background-color: var(--color-primary);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  height: 22px;
+  min-width: 22px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
+  margin-left: auto; /* Pushes badge to the far right */
+  flex-shrink: 0;
 }
 
 .noContacts {

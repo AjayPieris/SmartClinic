@@ -138,6 +138,16 @@
   font-size: 0.95rem;
 }
 
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.closeBtn {
+  display: none;
+}
+
 /* Scrollbar styles */
 .list::-webkit-scrollbar { width: 6px; }
 .list::-webkit-scrollbar-track { background: transparent; }
@@ -163,4 +173,18 @@
   .list { max-height: calc(100vh - 60px); }
   
   .title { font-size: 1.25rem; }
+
+  .closeBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    line-height: 1;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    font-weight: 300;
+    padding: 0 4px;
+  }
 }
