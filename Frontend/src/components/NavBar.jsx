@@ -57,7 +57,7 @@ export default function NavBar() {
   const [chatDrawerOpen, setChatDrawerOpen] = useState(false);
   const [chatDrawerApptId, setChatDrawerApptId] = useState(null);
 
-  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
+  const { notifications, markAsRead, markAllAsRead } = useNotifications();
 
   // Separate notifications by type
   const chatNotifications = notifications.filter(n => n.type === 'Message');

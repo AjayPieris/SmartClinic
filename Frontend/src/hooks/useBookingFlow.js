@@ -29,7 +29,6 @@ export default function useBookingFlow() {
   const [selectedDate,   setSelectedDate]   = useState(null);
 
   // ── Step 3: Slot selection ──────────────────────────────────────────────
-  const [bookedSlots,   setBookedSlots]   = useState([]);
   const [slots,         setSlots]         = useState([]);
   const [isSlotsLoading, setIsSlotsLoading] = useState(false);
   const [selectedSlot,  setSelectedSlot]  = useState(null);
@@ -75,7 +74,6 @@ export default function useBookingFlow() {
         const day = String(selectedDate.getDate()).padStart(2, '0');
         const dateIso = `${y}-${mo}-${day}`;
         const booked  = await getDoctorBookedSlotsApi(selectedDoctor.id, dateIso);
-        setBookedSlots(booked);
 
         // Generate slots immediately after fetching booked data
         const generated = generateSlots(

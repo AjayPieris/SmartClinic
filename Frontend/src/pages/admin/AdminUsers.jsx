@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { 
   getAllUsersApi, 
   blockUserApi, 
@@ -23,11 +23,7 @@ export default function AdminUsers() {
   const [userToBlock, setUserToBlock] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
 
-  useEffect(() => {
-    fetchData();
-  }, [roleFilter, statusFilter, search]);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -44,7 +40,11 @@ export default function AdminUsers() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [roleFilter, statusFilter, search]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleOpenBlockModal = (user) => {
     setUserToBlock(user);

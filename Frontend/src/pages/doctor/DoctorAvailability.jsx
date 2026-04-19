@@ -110,7 +110,7 @@ export default function DoctorAvailability() {
     setMessage({ text: '', type: '' });
 
     const availabilityArray = Object.entries(schedule)
-      .filter(([_, val]) => val.enabled)
+      .filter(([, val]) => val.enabled)
       .map(([dayId, val]) => ({
         DayOfWeek: parseInt(dayId, 10),
         StartTime: val.start,

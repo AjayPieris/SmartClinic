@@ -49,7 +49,7 @@ export default function DoctorSchedule() {
       setAppointments((prev) =>
         prev.map((a) => (a.id === appointmentId ? { ...a, status: updated.status } : a))
       );
-    } catch (err) {
+    } catch {
       alert('Failed to update status.');
     }
   };

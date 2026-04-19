@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { 
   getPendingDoctorsApi, 
   getAllDoctorsApi, 
@@ -15,11 +15,7 @@ export default function AdminDoctors() {
   const [actionLoadingId, setActionLoadingId] = useState(null);
   const [rejectReasons, setRejectReasons] = useState({});
 
-  useEffect(() => {
-    fetchDoctors();
-  }, [activeTab]);
-
-  const fetchDoctors = async () => {
+  const fetchDoctors = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -32,7 +28,11 @@ export default function AdminDoctors() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [activeTab]);
+
+  useEffect(() => {
+    fetchDoctors();
+  }, [fetchDoctors]);
 
   const handleApprove = async (id) => {
     try {

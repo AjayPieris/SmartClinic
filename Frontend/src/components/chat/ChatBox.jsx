@@ -41,7 +41,7 @@ export default function ChatBox({ appointmentId, appointmentStatus, doctorName, 
           }));
           setMessages(taggedHistory);
         }
-      } catch (err) {
+      } catch {
         if (!cancelled) {
           setError('Could not load chat history. Please refresh.');
         }
@@ -116,10 +116,10 @@ export default function ChatBox({ appointmentId, appointmentStatus, doctorName, 
 
     try {
       await sendMessageApi({ appointmentId, messageText: text });
-    } catch (err) {
+    } catch {
       setMessages((prev) => prev.filter((m) => m.id !== optimisticId));
       setInputText(text);
-      setError(err.response?.data?.message ?? 'Failed to send message.');
+      setError('Failed to send message.');
     } finally {
       setIsSending(false);
     }

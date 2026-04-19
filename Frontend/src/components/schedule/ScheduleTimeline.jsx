@@ -19,15 +19,13 @@ export default function ScheduleTimeline({
   isLoading,
   onAppointmentClick,
 }) {
-  const [tick, setTick] = useState(0);
+  const [, setTick] = useState(0);
 
   useEffect(() => {
     if (!isToday(selectedDate)) return;
     const interval = setInterval(() => setTick((t) => t + 1), 60_000);
     return () => clearInterval(interval);
   }, [selectedDate]);
-
-  const timelineHeight = isLoading ? 0 : 0; // will be calculated below
 
   if (isLoading) {
     return (

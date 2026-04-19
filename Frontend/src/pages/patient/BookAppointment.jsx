@@ -6,8 +6,7 @@
 // No state lives here — it all lives in useBookingFlow.
 // =============================================================================
 
-import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+// Removed unused imports
 import useBookingFlow from '../../hooks/useBookingFlow';
 import BookingProgress from '../../components/booking/BookingProgress';
 import DoctorPicker    from '../../components/booking/DoctorPicker';

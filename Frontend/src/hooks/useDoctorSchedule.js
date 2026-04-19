@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import {
-  startOfWeek, addDays, isSameDay, format,
+  startOfWeek, addDays, isSameDay,
 } from 'date-fns';
 import { getMyScheduleApi, updateAppointmentStatusApi } from '../api/appointmentsApi';
 
