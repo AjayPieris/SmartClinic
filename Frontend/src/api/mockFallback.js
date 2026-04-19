@@ -1,16 +1,6 @@
 // mockFallback.js
 // Provides mock data responses when the backend is unreachable
 
-const demoUser = {
-  userId: 'demo-user-123',
-  email: 'demo@clinic.com',
-  firstName: 'Demo',
-  lastName: 'User',
-  role: 'Patient',
-  profilePictureUrl: null,
-  token: 'mock.jwt.token.12345'
-};
-
 const mockAppointments = [
   {
     id: 'appt-1',
@@ -39,7 +29,22 @@ export const generateMockResponse = (config) => {
   // 1. Auth routes
   if (url.includes('/auth/login') && method === 'post') {
     const data = JSON.parse(config.data || '{}');
-    return { ...demoUser, email: data.email || demoUser.email };
+    const email = data.email || 'demo@clinic.com';
+    
+    // Dynamic role based on email hint for easy testing
+    let role = 'Patient';
+    if (email.includes('doctor')) role = 'Doctor';
+    if (email.includes('admin')) role = 'Admin';
+
+    return {
+      userId: 'demo-user-123',
+      email: email,
+      firstName: 'Demo',
+      lastName: role,
+      role: role,
+      profilePictureUrl: null,
+      token: 'mock.jwt.token.12345'
+    };
   }
 
   if (url.includes('/auth/register') && method === 'post') {
@@ -48,12 +53,14 @@ export const generateMockResponse = (config) => {
     if (!['Patient', 'Doctor', 'Admin'].includes(role)) {
        role = 'Patient';
     }
-    return { 
-      ...demoUser, 
-      email: data.email || demoUser.email, 
+    return {
+      userId: 'demo-user-123',
+      email: data.email || 'demo@clinic.com',
       firstName: data.firstName || 'Demo',
       lastName: data.lastName || 'User',
-      role: role
+      role: role,
+      profilePictureUrl: null,
+      token: 'mock.jwt.token.12345'
     };
   }
 
@@ -67,7 +74,6 @@ export const generateMockResponse = (config) => {
   }
   
   if (url.includes('/appointments') && method === 'post') {
-     // Book appointment mock
      const data = JSON.parse(config.data || '{}');
      return {
         id: `mock-appt-${Date.now()}`,
@@ -78,8 +84,31 @@ export const generateMockResponse = (config) => {
      };
   }
   
-  // 3. Doctors (for booking page)
-  if (url.includes('/doctors') && method === 'get' && !url.includes('booked-slots')) {
+  // 3. Doctors
+  if (url.includes('/doctors/me') && method === 'get') {
+    // Mock doctor profile for the Doctor Availability page
+    return {
+      userId: 'demo-user-123',
+      profileId: 'doc-prof-demo',
+      firstName: 'Demo',
+      lastName: 'Doctor',
+      specialization: 'General',
+      bio: 'Demo doctor bio',
+      consultationFee: 100,
+      verificationStatus: 'Approved',
+      consultationDurationMinutes: 30,
+      availabilityJson: JSON.stringify([
+        { DayOfWeek: 1, StartTime: '09:00', EndTime: '17:00' },
+        { DayOfWeek: 2, StartTime: '09:00', EndTime: '17:00' },
+      ])
+    };
+  }
+
+  if (url.includes('/doctors/availability') && method === 'patch') {
+    return {}; // Success 204 equivalent
+  }
+
+  if (url.includes('/doctors') && method === 'get' && !url.includes('booked-slots') && !url.includes('me')) {
      return [
        {
          userId: 'doc-1',
@@ -103,9 +132,69 @@ export const generateMockResponse = (config) => {
   }
 
   if (url.includes('booked-slots') && method === 'get') {
-     // Return empty array meaning no slots are booked
      return [];
   }
 
-  return null; // No mock available
+  // 4. Notifications
+  if (url.includes('/notifications') && method === 'get') {
+    return [
+      {
+        id: 'notif-1',
+        title: 'Welcome to SmartClinic',
+        message: 'This is a demo notification.',
+        isRead: false,
+        createdAtUtc: new Date().toISOString()
+      }
+    ];
+  }
+
+  if (url.includes('/notifications') && method === 'patch') {
+    return {};
+  }
+
+  // 5. Chat
+  if (url.includes('/chat') && method === 'get') {
+    return [
+      {
+        id: 'msg-1',
+        senderId: 'other-user',
+        senderName: 'System',
+        content: 'Welcome to the chat!',
+        timestampUtc: new Date().toISOString()
+      }
+    ];
+  }
+
+  if (url.includes('/chat') && method === 'post') {
+    return {
+      id: `msg-${Date.now()}`,
+      ...JSON.parse(config.data || '{}'),
+      timestampUtc: new Date().toISOString()
+    };
+  }
+
+  // 6. Admin
+  if (url.includes('/admin/stats') && method === 'get') {
+    return {
+      totalPatients: 150,
+      totalDoctors: 12,
+      pendingVerifications: 2,
+      systemHealth: 'Optimal'
+    };
+  }
+
+  if (url.includes('/admin/users') && method === 'get') {
+    return [
+      {
+        id: 'user-1',
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john@example.com',
+        role: 'Patient',
+        createdAtUtc: new Date().toISOString()
+      }
+    ];
+  }
+
+  return null; // Fallback to failing
 };
