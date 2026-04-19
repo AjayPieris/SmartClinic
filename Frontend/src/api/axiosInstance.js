@@ -54,43 +54,4 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-import MockAdapter from 'axios-mock-adapter';
-import { mockUsers, mockAppointments, mockDoctors, mockAvailability } from './mockData';
-
-// ─── MOCK ADAPTER ────────────────────────────────────────────────────────────
-// If VITE_MOCK_MODE is true, we intercept API calls and return local dummy data.
-if (import.meta.env.VITE_MOCK_MODE === 'true') {
-  console.log('Mock mode enabled: intercepting API calls');
-  const mock = new MockAdapter(axiosInstance, { delayResponse: 500 });
-  
-  // Auth
-  mock.onPost('/auth/login').reply((config) => {
-    const data = JSON.parse(config.data);
-    if (data.email.startsWith('patient')) return [200, mockUsers.patient];
-    if (data.email.startsWith('doctor')) return [200, mockUsers.doctor];
-    if (data.email.startsWith('admin')) return [200, mockUsers.admin];
-    return [200, mockUsers.patient]; // default fallback
-  });
-  mock.onPost('/auth/register').reply(200, mockUsers.patient);
-  
-  // Appointments
-  mock.onGet(/^\/appointments/).reply(200, mockAppointments);
-  mock.onPost('/appointments').reply(200, { ...mockAppointments[0], appointmentId: 'apt-new' });
-  mock.onPut(new RegExp('/appointments/.+')).reply(200, {});
-  
-  // Doctors
-  mock.onGet('/doctors').reply(200, Object.values(mockDoctors));
-  mock.onGet(new RegExp('/doctors/.+/availability')).reply(200, mockAvailability);
-  
-  // Admin
-  mock.onGet('/admin/users').reply(200, [mockUsers.patient, mockUsers.doctor, mockUsers.admin]);
-  mock.onGet('/admin/doctors').reply(200, mockDoctors);
-  
-  // Notifications
-  mock.onGet('/notifications').reply(200, []);
-  
-  // Default passthrough for any unmatched mock routes
-  mock.onAny().reply(404, { message: 'Mock route not configured' });
-}
-
 export default axiosInstance;
