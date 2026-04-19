@@ -5,6 +5,7 @@ import ProtectedRoute from './components/guards/ProtectedRoute';
 import RoleGuard from './components/guards/RoleGuard';
 
 // Public pages
+import HomePage from './pages/public/HomePage';
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
 import UnauthorizedPage from './pages/UnauthorizedPage';
@@ -49,12 +50,10 @@ export default function App() {
       <Routes>
 
         {/* ── Public routes ───────────────────────────────────────── */}
+        <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/unauthorized" element={<UnauthorizedPage />} />
-
-        {/* Root redirect */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
 
         {/* ── Patient routes ─────────────────────────────────────── */}
         <Route
