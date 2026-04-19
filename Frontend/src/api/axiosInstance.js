@@ -1,6 +1,7 @@
 
 
 import axios from 'axios';
+import { generateMockResponse } from './mockFallback';
 
 const axiosInstance = axios.create({
   // VITE_API_BASE_URL comes from .env — no hardcoded localhost in components
@@ -36,6 +37,29 @@ axiosInstance.interceptors.response.use(
   (response) => response,
 
   (error) => {
+    // === MOCK FALLBACK ===
+    // If backend proxy fails or backend is unreachable, Vite proxy returns 504.
+    // Native network errors return no response or ERR_NETWORK.
+    const status = error.response?.status;
+    const isOfflineError = !error.response || status === 504 || status === 502 || status === 404 || error.code === 'ERR_NETWORK';
+
+    if (isOfflineError) {
+      console.warn('Backend unreachable. Falling back to mock data for:', error.config.url);
+      const mockData = generateMockResponse(error.config);
+      
+      if (mockData) {
+        return Promise.resolve({
+          data: mockData,
+          status: 200,
+          statusText: 'OK',
+          headers: {},
+          config: error.config,
+          request: {}
+        });
+      }
+    }
+
+    // === STANDARD ERROR HANDLING ===
     if (error.response?.status === 401) {
       // Clear all auth state from storage
       localStorage.removeItem('sc_token');
