@@ -1,16 +1,4 @@
-// =============================================================================
-// src/hooks/useDoctorSchedule.js — All schedule page state in one place.
-//
-// Owns:
-//   selectedDate       — which day the doctor is viewing
-//   appointments       — the fetched list for selectedDate
-//   selectedAppt       — the appointment currently open in the detail card
-//   isLoading          — skeleton state while fetching
-//   weekDates          — the 7 dates shown in the DateStrip
-//
-// Re-fetches appointments whenever selectedDate changes.
-// Status updates are optimistic: local state updates first, API call follows.
-// =============================================================================
+
 
 import { useState, useEffect, useCallback } from 'react';
 import {

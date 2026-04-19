@@ -1,26 +1,4 @@
-// =============================================================================
-// src/context/AuthContext.jsx — The global authentication state store.
-//
-// What lives here:
-//   user        — { userId, email, firstName, lastName, role, profilePictureUrl }
-//   token       — the raw JWT string (also mirrored in localStorage)
-//   isLoading   — true during the initial mount hydration check
-//   login()     — called after successful /auth/login or /auth/register
-//   logout()    — clears state + localStorage, redirects to /login
-//   updateUser() — called after profile picture upload to refresh avatar in nav
-//
-// Persistence strategy:
-//   On login   → token + user object written to localStorage
-//   On mount   → hydrated from localStorage (user sees no flash of logged-out state)
-//   On logout  → localStorage cleared, state reset
-//   On 401     → axiosInstance interceptor clears localStorage + hard redirects
-//
-// Why localStorage (not cookies)?
-//   For a React SPA calling a separate API domain, httpOnly cookies require
-//   CORS credentials configuration on both sides and SameSite=None on HTTPS.
-//   localStorage is simpler for this architecture. For higher-security requirements,
-//   consider httpOnly cookies with a BFF (Backend For Frontend) pattern.
-// =============================================================================
+
 
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';

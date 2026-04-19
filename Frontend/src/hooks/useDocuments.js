@@ -1,19 +1,4 @@
-// =============================================================================
-// src/hooks/useDocuments.js — All document page state in one place.
-//
-// Owns:
-//   documents        — fetched list of MedicalDocumentDto
-//   isLoading        — skeleton while GET is in-flight
-//   isUploading      — true while XHR multipart POST is in-flight
-//   uploadProgress   — 0-100 integer, drives the progress bar
-//   error            — non-fatal error string shown in the UI
-//   pendingDelete    — the document staged for deletion (opens confirm modal)
-//
-// XHR upload:
-//   We use XMLHttpRequest instead of Axios so we can listen to the
-//   upload.onprogress event for real byte-level progress reporting.
-//   The Authorization header is attached manually from localStorage.
-// =============================================================================
+
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { getMyDocumentsApi, deleteDocumentApi } from '../api/documentsApi';

@@ -1,16 +1,4 @@
-// =============================================================================
-// src/api/axiosInstance.js — The single configured Axios client.
-//
-// Every API call in the app goes through this instance. Because of the
-// request interceptor, NO component ever manually writes:
-//   headers: { Authorization: `Bearer ${token}` }
-// The interceptor handles it automatically for every outgoing request.
-//
-// The response interceptor handles 401s globally:
-//   If any request comes back 401 (token expired or invalid), we clear
-//   localStorage and redirect to /login. This prevents the user from
-//   being stuck in a half-authenticated state.
-// =============================================================================
+
 
 import axios from 'axios';
 

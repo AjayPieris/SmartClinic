@@ -1,17 +1,4 @@
-// =============================================================================
-// src/hooks/useAvailabilityEditor.js — All availability editor state.
-//
-// Internal shape (working state in React):
-//   schedule: Array of 7 DayConfig objects, one per day-of-week (0–6).
-//   Each DayConfig: { dayOfWeek, enabled, startTime, endTime, error }
-//
-// Persisted shape (what goes into AvailabilityJson in the DB):
-//   Only the ENABLED days are serialized — disabled days are omitted.
-//   [ { dayOfWeek, startTime, endTime }, ... ]
-//
-// isDirty: true if the current schedule differs from the last saved/loaded state.
-// Used to: show an "unsaved changes" warning and enable the Save button.
-// =============================================================================
+
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { getMyDoctorProfileApi, saveAvailabilityApi } from '../api/doctorsApi';

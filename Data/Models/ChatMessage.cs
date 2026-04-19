@@ -1,8 +1,4 @@
-// =============================================================================
-// ChatMessage.cs — A single message in a telehealth chat session.
-// Messages are scoped to an Appointment — the Pusher channel name is
-// derived as "appointment-{AppointmentId}-chat" in the chat service.
-// =============================================================================
+
 
 namespace SmartClinic.API.Data.Models;
 

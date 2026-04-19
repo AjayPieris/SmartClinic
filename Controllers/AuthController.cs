@@ -1,12 +1,4 @@
-// =============================================================================
-// AuthController.cs — Public endpoints for registration and login.
-// No [Authorize] attribute here — these routes are fully public.
-//
-// Error handling pattern:
-//   - InvalidOperationException  → 400 Bad Request (client error, e.g. dup email)
-//   - UnauthorizedAccessException → 401 Unauthorized (wrong credentials)
-//   - All other exceptions        → caught by GlobalExceptionMiddleware → 500
-// =============================================================================
+
 
 using Microsoft.AspNetCore.Mvc;
 using SmartClinic.API.DTOs.Auth;

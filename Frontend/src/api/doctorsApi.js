@@ -1,9 +1,4 @@
-// =============================================================================
-// src/api/doctorsApi.js — Doctor-specific API calls.
-//
-// Create this new file — it keeps doctor-profile calls separate from the
-// appointment-focused appointmentsApi.js.
-// =============================================================================
+
 
 import axiosInstance from './axiosInstance';
 

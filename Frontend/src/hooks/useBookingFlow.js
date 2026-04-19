@@ -1,15 +1,4 @@
-// =============================================================================
-// src/hooks/useBookingFlow.js — Centralises all booking wizard state.
-//
-// This hook owns every piece of state in the 4-step booking flow.
-// Components only call hook actions — they never manage state themselves.
-//
-// Steps:
-//   1 → 'doctor'   Pick a doctor from the list
-//   2 → 'date'     Pick a date from the calendar
-//   3 → 'slot'     Pick a time slot from the generated list
-//   4 → 'confirm'  Review and confirm — triggers the API call
-// =============================================================================
+
 
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';

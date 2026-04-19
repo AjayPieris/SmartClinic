@@ -1,12 +1,4 @@
-// =============================================================================
-// MedicalDocument.cs — Metadata record for a file uploaded to Cloudinary.
-// The actual binary file lives in Cloudinary's CDN. We only store the
-// secure_url and public_id returned by the Cloudinary upload API.
-//
-// SECURITY: Only the patient who owns the document (or their doctor,
-// or an admin) should be able to retrieve the CloudinaryUrl.
-// This is enforced in the service layer, NOT in this model.
-// =============================================================================
+
 
 namespace SmartClinic.API.Data.Models;
 

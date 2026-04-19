@@ -1,6 +1,4 @@
-// =============================================================================
-// VerificationStatus.cs — Enum for doctor verification workflow.
-// =============================================================================
+
 
 namespace SmartClinic.API.Data.Models;
 

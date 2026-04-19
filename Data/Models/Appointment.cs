@@ -1,16 +1,4 @@
-// =============================================================================
-// Appointment.cs — The core transactional record of the system.
-//
-// CONCURRENCY STRATEGY:
-//   The RowVersion byte array is an EF Core concurrency token. When two requests
-//   try to book the same slot simultaneously, Postgres will throw a
-//   DbUpdateConcurrencyException on the second write. The AppointmentService
-//   catches this and returns a 409 Conflict to the client.
-//
-// TIME ZONES:
-//   ALL timestamps are UTC. The React frontend converts to the user's local
-//   timezone for display using the Intl API. This prevents DST bugs entirely.
-// =============================================================================
+
 
 namespace SmartClinic.API.Data.Models;
 

@@ -1,12 +1,4 @@
-// =============================================================================
-// AdminController.cs — Admin-only endpoints for user & doctor management.
-//
-// All endpoints require [Authorize(Roles = "Admin")].
-// Provides:
-//   - User listing with filtering
-//   - Block / Unblock any user (patient or doctor)
-//   - Doctor verification: list pending, approve, reject
-// =============================================================================
+
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

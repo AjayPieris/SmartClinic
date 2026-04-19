@@ -1,13 +1,4 @@
-// =============================================================================
-// AppointmentsController.cs — Protected appointment endpoints.
-//
-// [Authorize] on the class means ALL endpoints require a valid JWT.
-// Individual endpoints narrow down to specific roles using
-// [Authorize(Roles = "Doctor")] etc.
-//
-// The requesting user's ID is extracted from the JWT claims — we never
-// trust a userId passed in the request body from the client.
-// =============================================================================
+
 
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;

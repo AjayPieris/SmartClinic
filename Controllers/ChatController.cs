@@ -1,14 +1,4 @@
-// =============================================================================
-// ChatController.cs — HTTP interface for the real-time chat feature.
-//
-// Endpoints:
-//   POST /api/chat/send             — Send a message (triggers Pusher event)
-//   GET  /api/chat/{id}/history     — Load paginated chat history
-//   POST /api/pusher/auth           — Authenticate private Pusher channel (future)
-//
-// The /api/pusher/auth endpoint is on a SEPARATE controller prefix but
-// is housed here for co-location. Move to PusherController.cs if it grows.
-// =============================================================================
+
 
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;

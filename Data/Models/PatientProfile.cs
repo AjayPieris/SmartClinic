@@ -1,7 +1,4 @@
-// =============================================================================
-// PatientProfile.cs — Extended profile data specific to patients.
-// Stores medical background info used by doctors during consultations.
-// =============================================================================
+
 
 namespace SmartClinic.API.Data.Models;
 

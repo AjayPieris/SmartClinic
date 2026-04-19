@@ -1,9 +1,4 @@
-// =============================================================================
-// DoctorProfile.cs — Extended profile data specific to doctors.
-// Linked 1-to-1 with User. Created immediately after a Doctor registers.
-// AvailabilityJson stores the doctor's weekly schedule as a serialized
-// list of time slots, avoiding a separate join table for simplicity.
-// =============================================================================
+
 
 namespace SmartClinic.API.Data.Models;
 

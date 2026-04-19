@@ -1,8 +1,4 @@
-// =============================================================================
-// User.cs — The central identity record for ALL roles in the system.
-// A single User row is created on registration. Role is stored as a string
-// claim ("Patient", "Doctor", "Admin") and is embedded in the JWT token.
-// =============================================================================
+
 
 namespace SmartClinic.API.Data.Models;
 

@@ -1,6 +1,4 @@
-// =============================================================================
-// src/api/appointmentsApi.js — Appointment-related API calls.
-// =============================================================================
+
 
 import axiosInstance from './axiosInstance';
 

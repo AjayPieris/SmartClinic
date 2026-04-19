@@ -1,7 +1,4 @@
-// =============================================================================
-// src/api/authApi.js — All authentication-related API calls.
-// These are the only functions that talk to /api/auth/*.
-// =============================================================================
+
 
 import axiosInstance from './axiosInstance';
 

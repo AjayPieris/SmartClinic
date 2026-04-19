@@ -1,8 +1,5 @@
-// =============================================================================
-// src/api/documentsApi.js — Document and profile picture API calls.
-// These endpoints use multipart/form-data — NOT JSON.
-// We pass FormData objects and let Axios set the correct Content-Type boundary.
-// =============================================================================
+
+
 
 import axiosInstance from './axiosInstance';
 

@@ -1,8 +1,4 @@
-// =============================================================================
-// src/api/chatApi.js — Chat-related API calls.
-// Note: real-time delivery is via Pusher (pusher-js), NOT via polling this API.
-// This API is only used to: (a) send a message, (b) load chat history.
-// =============================================================================
+
 
 import axiosInstance from './axiosInstance';
 

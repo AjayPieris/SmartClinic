@@ -1,18 +1,4 @@
-// =============================================================================
-// DocumentsController.cs — HTTP interface for all file upload operations.
-//
-// IMPORTANT: These endpoints accept multipart/form-data (NOT application/json).
-//   - [FromForm] is used instead of [FromBody]
-//   - The React frontend must send FormData objects, not JSON
-//   - Content-Type header must be "multipart/form-data" (axios sets this automatically
-//     when you pass a FormData instance)
-//
-// Request size limits are configured in Program.cs via:
-//   builder.Services.Configure<FormOptions>(...)
-//   builder.WebHost.ConfigureKestrel(...)
-// Both must be set — Kestrel handles the transport limit,
-// FormOptions handles the ASP.NET parsing limit.
-// =============================================================================
+
 
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;

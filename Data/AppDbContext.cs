@@ -1,12 +1,4 @@
-// =============================================================================
-// AppDbContext.cs — The EF Core gateway to Neon PostgreSQL.
-//
-// Responsibilities:
-//   1. Register all DbSets (one per model)
-//   2. Configure relationships, constraints, and indexes in OnModelCreating
-//   3. Set up the xmin concurrency token for Appointment (Postgres-specific)
-//   4. Seed the Admin user on first migration
-// =============================================================================
+
 
 using Microsoft.EntityFrameworkCore;
 using SmartClinic.API.Data.Models;
