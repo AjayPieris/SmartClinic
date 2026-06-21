@@ -1,10 +1,3 @@
-// src/utils/fileValidation.js — Client-side file validation.
-//
-// These checks mirror the server-side whitelist in CloudinaryService.cs.
-// Client validation is UX only — the server always has the final say.
-// Never rely solely on client validation for security.
-
-// Must match AllowedDocumentMimeTypes in CloudinaryService.cs
 export const ALLOWED_DOCUMENT_TYPES = new Set([
   'application/pdf',
   'image/jpeg',
@@ -15,7 +8,6 @@ export const ALLOWED_DOCUMENT_TYPES = new Set([
   'application/dicom',
 ]);
 
-// Must match AllowedImageMimeTypes in CloudinaryService.cs
 export const ALLOWED_IMAGE_TYPES = new Set([
   'image/jpeg',
   'image/jpg',
@@ -24,14 +16,9 @@ export const ALLOWED_IMAGE_TYPES = new Set([
   'image/gif',
 ]);
 
-export const MAX_DOCUMENT_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
-export const MAX_IMAGE_SIZE_BYTES    =  5 * 1024 * 1024; // 5 MB
+export const MAX_DOCUMENT_SIZE_BYTES = 10 * 1024 * 1024;
+export const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
 
-/**
- * Validate a file chosen for medical document upload.
- * @param {File} file
- * @returns {{ valid: boolean, error: string }}
- */
 export function validateDocumentFile(file) {
   if (!file) return { valid: false, error: 'No file selected.' };
 
@@ -57,11 +44,6 @@ export function validateDocumentFile(file) {
   return { valid: true, error: '' };
 }
 
-/**
- * Validate a file chosen for profile picture upload.
- * @param {File} file
- * @returns {{ valid: boolean, error: string }}
- */
 export function validateImageFile(file) {
   if (!file) return { valid: false, error: 'No file selected.' };
 
@@ -82,29 +64,17 @@ export function validateImageFile(file) {
   return { valid: true, error: '' };
 }
 
-/**
- * Return a human-readable file size string.
- * @param {number} bytes
- * @returns {string}
- */
 export function formatBytes(bytes) {
-  if (bytes === 0)         return '0 B';
-  if (bytes < 1024)        return `${bytes} B`;
+  if (bytes === 0) return '0 B';
+  if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-/**
- * Map a MIME type to a short display label and icon colour class.
- * @param {string} mimeType
- * @returns {{ label: string, colorClass: string }}
- */
 export function getFileMeta(mimeType) {
-  if (mimeType === 'application/pdf')
-    return { label: 'PDF',  colorClass: 'pdf'   };
-  if (mimeType.startsWith('image/'))
-    return { label: 'IMG',  colorClass: 'image' };
-  if (mimeType === 'application/dicom')
-    return { label: 'DICOM', colorClass: 'dicom' };
+  if (mimeType === 'application/pdf') return { label: 'PDF', colorClass: 'pdf' };
+  if (mimeType.startsWith('image/')) return { label: 'IMG', colorClass: 'image' };
+  if (mimeType === 'application/dicom') return { label: 'DICOM', colorClass: 'dicom' };
+  
   return { label: 'FILE', colorClass: 'generic' };
 }
