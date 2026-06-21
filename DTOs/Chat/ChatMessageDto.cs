@@ -1,15 +1,13 @@
-// =============================================================================
 // ChatMessageDto.cs — Outbound shape for a single chat message.
-//
+
 // This DTO is used in TWO places:
-//   1. The HTTP 201 response body from POST /api/chat/send
-//      (the sender gets immediate confirmation their message was saved)
-//   2. The Pusher event payload serialized to JSON and broadcast to
-//      ALL subscribers on the appointment channel — including the other party.
-//
+// 1. The HTTP 201 response body from POST /api/chat/send
+// (the sender gets immediate confirmation their message was saved)
+// 2. The Pusher event payload serialized to JSON and broadcast to
+// ALL subscribers on the appointment channel — including the other party.
+
 // Because this DTO is broadcast over Pusher (a public-ish channel), we
 // deliberately exclude any sensitive fields (e.g. internal IDs, raw DB keys).
-// =============================================================================
 
 namespace SmartClinic.API.DTOs.Chat;
 

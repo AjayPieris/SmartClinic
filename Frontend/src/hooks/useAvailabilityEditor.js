@@ -1,5 +1,4 @@
 
-
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { getMyDoctorProfileApi, saveAvailabilityApi } from '../api/doctorsApi';
 
@@ -62,14 +61,12 @@ export default function useAvailabilityEditor() {
   const [error,                setError]                = useState('');
   const [successMsg,           setSuccessMsg]           = useState('');
 
-  // ── isDirty: true if working state differs from last saved state ─────────
   const isDirty = useMemo(() => {
     const currentJson = serializeSchedule(schedule);
     return currentJson !== savedScheduleJson ||
            consultationDuration !== savedDuration;
   }, [schedule, savedScheduleJson, consultationDuration, savedDuration]);
 
-  // ── Load doctor's profile on mount ───────────────────────────────────────
   useEffect(() => {
     const load = async () => {
       try {
@@ -88,7 +85,6 @@ export default function useAvailabilityEditor() {
     load();
   }, []);
 
-  // ── Toggle a day on/off ──────────────────────────────────────────────────
   const toggleDay = useCallback((dayOfWeek) => {
     setSchedule((prev) =>
       prev.map((d) =>
@@ -99,7 +95,6 @@ export default function useAvailabilityEditor() {
     );
   }, []);
 
-  // ── Update start or end time for a day ───────────────────────────────────
   const setDayTime = useCallback((dayOfWeek, field, value) => {
     setSchedule((prev) =>
       prev.map((d) => {
@@ -122,14 +117,12 @@ export default function useAvailabilityEditor() {
     );
   }, []);
 
-  // ── Reset to last saved state ────────────────────────────────────────────
   const resetToSaved = useCallback(() => {
     setSchedule(parseSchedule(savedScheduleJson));
     setConsultationDuration(savedDuration);
     setError('');
   }, [savedScheduleJson, savedDuration]);
 
-  // ── Save to API ──────────────────────────────────────────────────────────
   const save = useCallback(async () => {
     // Block save if any day has a validation error
     const hasErrors = schedule.some((d) => d.enabled && d.error);

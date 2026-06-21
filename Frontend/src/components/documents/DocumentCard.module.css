@@ -114,7 +114,6 @@
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
 }
 
-/* ── Mobile ── */
 @media (max-width: 768px) {
   .card {
     gap: 14px;

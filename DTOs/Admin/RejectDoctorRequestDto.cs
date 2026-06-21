@@ -1,6 +1,4 @@
-// =============================================================================
 // RejectDoctorRequestDto.cs — Payload for the reject-doctor endpoint.
-// =============================================================================
 
 using System.ComponentModel.DataAnnotations;
 

@@ -1,13 +1,11 @@
-// =============================================================================
 // src/pages/patient/PatientDocuments.jsx — The full document management page.
 //
 // Two-column layout:
-//   Left  (40%): UploadForm panel
-//   Right (60%): DocumentList
+// Left  (40%): UploadForm panel
+// Right (60%): DocumentList
 //
 // The delete confirmation modal is rendered at the page level so it can
 // overlay both columns. All state lives in useDocuments.
-// =============================================================================
 
 import useDocuments        from '../../hooks/useDocuments';
 import UploadForm          from '../../components/documents/UploadForm';

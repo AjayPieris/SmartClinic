@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
-import { 
-  getAllUsersApi, 
-  blockUserApi, 
-  unblockUserApi, 
-  getAdminStatsApi 
+import {
+  getAllUsersApi,
+  blockUserApi,
+  unblockUserApi,
+  getAdminStatsApi
 } from '../../api/adminApi';
 import styles from './AdminUsers.module.css';
 
@@ -27,7 +27,7 @@ export default function AdminUsers() {
     try {
       setLoading(true);
       setError(null);
-      
+
       const [usersData, statsData] = await Promise.all([
         getAllUsersApi({ role: roleFilter, status: statusFilter, search }),
         getAdminStatsApi()
@@ -58,7 +58,7 @@ export default function AdminUsers() {
 
   const handleBlockConfirm = async () => {
     if (!userToBlock) return;
-    
+
     try {
       setActionLoading(true);
       await blockUserApi(userToBlock.id);
@@ -92,7 +92,6 @@ export default function AdminUsers() {
         <p className="page-subtitle">Platform overview and access control rules.</p>
       </header>
 
-      {/* ── Glass Stats Row ────────────────────────────────────────── */}
       {stats && (
         <div className={styles.statsContainer}>
           <div className={styles.statCard}>
@@ -104,7 +103,7 @@ export default function AdminUsers() {
               <span className={styles.statLabel}>Total Users</span>
             </div>
           </div>
-          
+
           <div className={styles.statCard}>
             <div className={`${styles.statIconBox} ${styles.patientIcon}`}>
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
@@ -147,13 +146,12 @@ export default function AdminUsers() {
         </div>
       )}
 
-      {/* ── Proportion Chart ────────────────────────────────────────── */}
       {stats && stats.totalUsers > 0 && (
         <div className={styles.ratioChartContainer}>
           <div className={styles.chartHeader}>
             <h3 className={styles.chartTitle}>Platform Demographics</h3>
           </div>
-          
+
           <div className={styles.chartBarWrapper}>
             <div className={styles.chartSegment} style={{ width: `${(stats.activePatients / stats.totalUsers) * 100}%`, background: 'rgba(16, 185, 129, 0.8)' }} />
             <div className={styles.chartSegment} style={{ width: `${(stats.verifiedDoctors / stats.totalUsers) * 100}%`, background: 'rgba(14, 165, 233, 0.8)' }} />
@@ -170,22 +168,21 @@ export default function AdminUsers() {
         </div>
       )}
 
-      {/* ── Filter Bar ───────────────────────────────────────── */}
       <div className={styles.filterBar}>
         <div className={styles.searchGroup}>
           <svg className={styles.searchIcon} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
           </svg>
-          <input 
-            type="text" 
-            placeholder="Search by name or email..." 
+          <input
+            type="text"
+            placeholder="Search by name or email..."
             className={styles.searchInput}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        
-        <select 
+
+        <select
           className={styles.filterSelect}
           value={roleFilter}
           onChange={(e) => setRoleFilter(e.target.value)}
@@ -196,7 +193,7 @@ export default function AdminUsers() {
           <option value="Admin">Admins</option>
         </select>
 
-        <select 
+        <select
           className={styles.filterSelect}
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
@@ -213,7 +210,6 @@ export default function AdminUsers() {
         </div>
       )}
 
-      {/* ── Users Table Glass ──────────────────────────────────────── */}
       <div className={styles.tableCard}>
         {loading ? (
           <div className="skeleton" style={{ height: '300px', borderRadius: 20 }} />
@@ -275,14 +271,14 @@ export default function AdminUsers() {
                       {u.role !== 'Admin' && (
                         <div className={styles.actions}>
                           {u.isActive ? (
-                            <button 
+                            <button
                               className={`${styles.actionBtn} ${styles.block}`}
                               onClick={() => handleOpenBlockModal(u)}
                             >
                               Block User
                             </button>
                           ) : (
-                            <button 
+                            <button
                               className={`${styles.actionBtn} ${styles.unblock}`}
                               onClick={() => handleUnblock(u)}
                             >
@@ -300,25 +296,24 @@ export default function AdminUsers() {
         )}
       </div>
 
-      {/* ── Block Confirmation Modal Drop-shadow ──────────────────────── */}
       {isModalOpen && userToBlock && (
         <div className={styles.modalOverlay} onClick={handleCloseModal}>
           <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
             <h3 className={styles.modalTitle}>Block User?</h3>
             <p className={styles.modalDesc}>
-              Are you sure you want to block <strong>{userToBlock.firstName} {userToBlock.lastName}</strong>? 
+              Are you sure you want to block <strong>{userToBlock.firstName} {userToBlock.lastName}</strong>?
               They will be immediately logged out and unable to access the platform.
             </p>
             <div className={styles.modalActions}>
-              <button 
-                className="btn-secondary" 
+              <button
+                className="btn-secondary"
                 onClick={handleCloseModal}
                 disabled={actionLoading}
               >
                 Cancel
               </button>
-              <button 
-                className="btn-danger" 
+              <button
+                className="btn-danger"
                 onClick={handleBlockConfirm}
                 disabled={actionLoading}
               >

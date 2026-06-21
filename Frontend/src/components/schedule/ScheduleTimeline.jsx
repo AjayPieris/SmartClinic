@@ -62,7 +62,7 @@ export default function ScheduleTimeline({
   }
 
   const TOTAL_MINUTES = (endHour - startHour) * 60;
-  
+
   // 2. Generate labels
   const hourLabels = Array.from(
     { length: endHour - startHour },
@@ -111,7 +111,7 @@ export default function ScheduleTimeline({
     <div className={styles.wrapper}>
       <div className={styles.timeline}>
         <div className={styles.grid} style={{ height: calculatedHeight }}>
-          
+
           <div className={styles.hourLabels}>
             {hourLabels.map(({ hour, label }) => (
               <div key={hour} className={styles.hourLabel} style={{ height: HOUR_ROW_HEIGHT }}>

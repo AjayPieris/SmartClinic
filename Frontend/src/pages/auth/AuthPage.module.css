@@ -1,12 +1,10 @@
 
-/* ── Root page ──────────────────────────────────────────────────────────── */
 .authPage {
   height: 100vh;
   display: flex;
   overflow: hidden;
 }
 
-/* ── LEFT PANEL ─────────────────────────────────────────────────────────── */
 .authLeft {
   flex: 1;
   position: relative;
@@ -58,7 +56,6 @@
   color: rgba(255, 255, 255, 0.8);
 }
 
-/* ── RIGHT PANEL — animated glassmorphism ───────────────────────────────── */
 .authRight {
   width: 460px;
   flex-shrink: 0;
@@ -121,7 +118,6 @@
   pointer-events: none;
 }
 
-/* ── Glass card ─────────────────────────────────────────────────────────── */
 .authCard {
   width: 100%;
   max-width: 380px;
@@ -160,7 +156,6 @@
   pointer-events: none;
 }
 
-/* ── Logo block — stacked vertically ────────────────────────────────────── */
 .logoBlock {
   display: flex;
   flex-direction: column;
@@ -193,7 +188,6 @@
   line-height: 1;
 }
 
-/* ── Page heading ───────────────────────────────────────────────────────── */
 .authHeader {
   margin-bottom: 0.6rem;
   animation: fadeDown 0.5s 0.15s both;
@@ -212,7 +206,6 @@
   font-size: 0.78rem;
 }
 
-/* ── Error banner ───────────────────────────────────────────────────────── */
 .errorBanner {
   background: rgba(239, 68, 68, 0.15);
   border: 1px solid rgba(239, 68, 68, 0.4);
@@ -224,7 +217,6 @@
   animation: fadeDown 0.3s both;
 }
 
-/* ── Form elements ──────────────────────────────────────────────────────── */
 .formGroup {
   margin-bottom: 0.5rem;
   animation: fadeDown 0.5s 0.2s both;
@@ -269,7 +261,6 @@
   cursor: not-allowed;
 }
 
-/* ── Role selector ──────────────────────────────────────────────────────── */
 .roleGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -324,7 +315,6 @@
   color: rgba(255, 255, 255, 0.85);
 }
 
-/* ── Doctor extra fields ── */
 .extraFields {
   border-top: 1px solid rgba(255, 255, 255, 0.15);
   padding-top: 0.4rem;
@@ -340,7 +330,6 @@
   margin-bottom: 0.3rem;
 }
 
-/* ── Submit button ──────────────────────────────────────────────────────── */
 .submitBtn {
   width: 100%;
   padding: 0.7rem 1rem;
@@ -387,7 +376,6 @@
   transform: none;
 }
 
-/* ── Spinner ── */
 .btnSpinner {
   width: 0.9rem;
   height: 0.9rem;
@@ -399,7 +387,6 @@
   flex-shrink: 0;
 }
 
-/* ── Footer ── */
 .authFooter {
   text-align: center;
   margin-top: 0.85rem;
@@ -419,7 +406,6 @@
   text-decoration: underline;
 }
 
-/* ── Keyframe animations ─────────────────────────────────────────────────── */
 @keyframes gradientShift {
   0%   { background-position: 0% 50%; }
   50%  { background-position: 100% 50%; }
@@ -461,7 +447,6 @@
   to { transform: rotate(360deg); }
 }
 
-/* ── Mobile ─────────────────────────────────────────────────────────────── */
 @media (max-width: 900px) {
   .authLeft { display: none; }
   .authRight {

@@ -1,5 +1,5 @@
 .wrapper {
-  background: 
+  background:
     radial-gradient(circle at top left, rgba(14, 165, 233, 0.1) 0%, transparent 40%),
     radial-gradient(circle at bottom right, rgba(16, 185, 129, 0.05) 0%, transparent 40%);
   min-height: calc(100vh - 84px);
@@ -336,7 +336,6 @@
   color: var(--color-text-muted);
 }
 
-/* ── Mobile ── */
 @media (max-width: 768px) {
   .wrapper {
     padding: 20px 12px 100px; /* Bottom tab bar clearance */

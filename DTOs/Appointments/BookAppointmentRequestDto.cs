@@ -1,8 +1,6 @@
 // DTOs/Appointments/BookAppointmentRequestDto.cs
-// =============================================================================
 // Inbound payload for POST /api/appointments
 // Times must be sent as UTC ISO 8601 strings from the React frontend.
-// =============================================================================
 
 using System.ComponentModel.DataAnnotations;
 

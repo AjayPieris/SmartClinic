@@ -208,7 +208,6 @@
 .btnCancel { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); }
 .btnCancel:hover { background: rgba(239, 68, 68, 0.15); transform: translateY(-2px); }
 
-
 .secondaryLinks {
   display: flex;
   gap: 8px;
@@ -239,7 +238,6 @@
   color: var(--color-primary);
 }
 
-/* ── Mobile ── */
 @media (max-width: 768px) {
   .card {
     padding: 24px 18px;

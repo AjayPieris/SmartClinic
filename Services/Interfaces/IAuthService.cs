@@ -1,8 +1,6 @@
-// =============================================================================
 // IAuthService.cs — Contract for the authentication service.
 // Programming to interfaces allows us to swap implementations or mock
 // in unit tests without touching the controller layer.
-// =============================================================================
 
 using SmartClinic.API.DTOs.Auth;
 

@@ -1,19 +1,17 @@
-// =============================================================================
 // DocumentService.cs — Orchestrates Cloudinary uploads and DB persistence.
-//
+
 // Key design decisions:
-//   1. Upload to Cloudinary FIRST, then write to DB.
-//      If the DB write fails, we call DeleteFileAsync to clean up Cloudinary.
-//      This avoids orphaned files (files in Cloudinary with no DB record).
-//
-//   2. Profile picture replacement: old URL is deleted from Cloudinary AFTER
-//      the new upload succeeds and DB is updated. This prevents a window where
-//      the user has no profile picture if the new upload fails.
-//
-//   3. Authorization is enforced in this service, not just the controller.
-//      Defense-in-depth: even if a misconfigured route bypasses the controller
-//      attribute, the service will reject unauthorized access.
-// =============================================================================
+// 1. Upload to Cloudinary FIRST, then write to DB.
+// If the DB write fails, we call DeleteFileAsync to clean up Cloudinary.
+// This avoids orphaned files (files in Cloudinary with no DB record).
+
+// 2. Profile picture replacement: old URL is deleted from Cloudinary AFTER
+// the new upload succeeds and DB is updated. This prevents a window where
+// the user has no profile picture if the new upload fails.
+
+// 3. Authorization is enforced in this service, not just the controller.
+// Defense-in-depth: even if a misconfigured route bypasses the controller
+// attribute, the service will reject unauthorized access.
 
 using Microsoft.EntityFrameworkCore;
 using SmartClinic.API.Data;

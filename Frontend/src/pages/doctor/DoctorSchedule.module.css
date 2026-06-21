@@ -1,7 +1,7 @@
 .page {
   /* Provides a large scale gradient underlay so the glassmorphism blurs are visible */
   min-height: calc(100vh - 84px); /* Assuming nav is ~84px */
-  background: 
+  background:
     radial-gradient(circle at top left, rgba(14, 165, 233, 0.1) 0%, transparent 40%),
     radial-gradient(circle at bottom right, rgba(16, 185, 129, 0.05) 0%, transparent 40%);
   padding: 8px 0 24px 0;
@@ -48,7 +48,6 @@
   min-width: 380px;
 }
 
-/* ── Mobile ── */
 @media (max-width: 768px) {
   .page {
     padding: 8px 12px 100px; /* Bottom tab bar clearance */

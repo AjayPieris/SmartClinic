@@ -1,14 +1,12 @@
-// =============================================================================
 // src/components/availability/DayRow.jsx — One row in the weekly grid.
 //
 // Each row contains:
-//   - Day name label (Mon, Tue…)
-//   - Toggle switch (enables/disables the day)
-//   - Start time dropdown  } only visible when the day is enabled
-//   - End time dropdown    }
-//   - Inline error message if end ≤ start
-//   - Slot count badge (how many slots fit at the current duration)
-// =============================================================================
+// - Day name label (Mon, Tue…)
+// - Toggle switch (enables/disables the day)
+// - Start time dropdown  } only visible when the day is enabled
+// - End time dropdown    }
+// - Inline error message if end ≤ start
+// - Slot count badge (how many slots fit at the current duration)
 
 import { buildTimeOptions, countSlots, DAY_NAMES } from '../../utils/availabilityUtils';
 import styles from './DayRow.module.css';

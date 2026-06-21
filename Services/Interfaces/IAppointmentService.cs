@@ -1,6 +1,4 @@
-// =============================================================================
 // IAppointmentService.cs — Contract for appointment business logic.
-// =============================================================================
 
 using SmartClinic.API.DTOs.Appointments;
 

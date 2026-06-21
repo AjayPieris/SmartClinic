@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
-import { 
-  getPendingDoctorsApi, 
-  getAllDoctorsApi, 
-  approveDoctorApi, 
-  rejectDoctorApi 
+import {
+  getPendingDoctorsApi,
+  getAllDoctorsApi,
+  approveDoctorApi,
+  rejectDoctorApi
 } from '../../api/adminApi';
 import styles from './AdminDoctors.module.css';
 
@@ -19,8 +19,8 @@ export default function AdminDoctors() {
     try {
       setLoading(true);
       setError(null);
-      const data = activeTab === 'pending' 
-        ? await getPendingDoctorsApi() 
+      const data = activeTab === 'pending'
+        ? await getPendingDoctorsApi()
         : await getAllDoctorsApi();
       setDoctors(data);
     } catch (err) {
@@ -57,7 +57,7 @@ export default function AdminDoctors() {
       setActionLoadingId(id);
       await rejectDoctorApi(id, reason);
       await fetchDoctors();
-      
+
       setRejectReasons(prev => {
         const next = { ...prev };
         delete next[id];
@@ -81,9 +81,8 @@ export default function AdminDoctors() {
         <p className="page-subtitle">Review medical licenses and approve doctor registrations.</p>
       </header>
 
-      {/* ── Glass Tabs ─────────────────────────────────────────────────── */}
       <div className={styles.tabs}>
-        <button 
+        <button
           className={`${styles.tabBtn} ${activeTab === 'pending' ? styles.active : ''}`}
           onClick={() => setActiveTab('pending')}
         >
@@ -93,7 +92,7 @@ export default function AdminDoctors() {
             <span className={styles.badge}>{doctors.length}</span>
           )}
         </button>
-        <button 
+        <button
           className={`${styles.tabBtn} ${activeTab === 'all' ? styles.active : ''}`}
           onClick={() => setActiveTab('all')}
         >
@@ -108,7 +107,6 @@ export default function AdminDoctors() {
         </div>
       )}
 
-      {/* ── Main Content ─────────────────────────────────────────── */}
       {loading ? (
         <div className="screen-center" style={{ minHeight: '300px' }}>
           <div className="spinner" />
@@ -127,7 +125,7 @@ export default function AdminDoctors() {
           <div className={styles.pendingList}>
             {doctors.map(doctor => (
               <div key={doctor.doctorProfileId} className={styles.doctorCard}>
-                
+
                 {/* 1. Doctor Profile Info */}
                 <div className={styles.cardHeader}>
                   <div className={styles.avatarBox}>
@@ -152,10 +150,10 @@ export default function AdminDoctors() {
                 <div className={styles.verificationSection}>
                   <div className={styles.sectionTitle}>Verification Document</div>
                   {doctor.verificationDocumentUrl ? (
-                    <a 
-                      href={doctor.verificationDocumentUrl} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
+                    <a
+                      href={doctor.verificationDocumentUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className={styles.docLink}
                     >
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
@@ -166,8 +164,8 @@ export default function AdminDoctors() {
                       No document URL was provided during registration.
                     </p>
                   )}
-                  
-                  <textarea 
+
+                  <textarea
                     className={styles.rejectTextarea}
                     placeholder="Type rejection reason if denying application..."
                     value={rejectReasons[doctor.doctorProfileId] || ''}
@@ -177,14 +175,14 @@ export default function AdminDoctors() {
 
                 {/* 3. Actions */}
                 <div className={styles.cardActions}>
-                  <button 
+                  <button
                     className={styles.approveBtn}
                     onClick={() => handleApprove(doctor.doctorProfileId)}
                     disabled={actionLoadingId === doctor.doctorProfileId}
                   >
                     {actionLoadingId === doctor.doctorProfileId ? 'Processing...' : 'Approve Application'}
                   </button>
-                  <button 
+                  <button
                     className={styles.rejectBtn}
                     onClick={() => handleReject(doctor.doctorProfileId)}
                     disabled={actionLoadingId === doctor.doctorProfileId}

@@ -1,8 +1,6 @@
 // DTOs/Auth/AuthResponseDto.cs
-// =============================================================================
 // Outbound payload returned after successful login or registration.
 // Contains the JWT token and minimal user info for the React Context.
-// =============================================================================
 
 namespace SmartClinic.API.DTOs.Auth;
 

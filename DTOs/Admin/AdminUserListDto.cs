@@ -1,6 +1,4 @@
-// =============================================================================
 // AdminUserListDto.cs — Summarized user details for the Admin dashboard.
-// =============================================================================
 
 namespace SmartClinic.API.DTOs.Admin;
 

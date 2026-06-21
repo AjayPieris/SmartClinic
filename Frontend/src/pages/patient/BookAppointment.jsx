@@ -1,10 +1,8 @@
-// =============================================================================
 // src/pages/patient/BookAppointment.jsx — The full 4-step booking wizard.
 //
 // This page is just an orchestrator — it renders the correct step component
 // based on useBookingFlow().step, passing only the props each step needs.
 // No state lives here — it all lives in useBookingFlow.
-// =============================================================================
 
 // Removed unused imports
 import useBookingFlow from '../../hooks/useBookingFlow';

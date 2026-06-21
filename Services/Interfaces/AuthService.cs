@@ -1,13 +1,11 @@
-// =============================================================================
 // AuthService.cs — Handles registration and JWT token generation.
-//
+
 // Security decisions made here:
-//   - BCrypt with work factor 12 (slows brute-force significantly)
-//   - JWT signed with HS256 using a 256-bit secret from appsettings
-//   - Role is embedded as a standard "role" claim so [Authorize(Roles="Doctor")]
-//     works out of the box in controllers
-//   - Tokens expire after 8 hours — refresh token flow is Phase 2+
-// =============================================================================
+// - BCrypt with work factor 12 (slows brute-force significantly)
+// - JWT signed with HS256 using a 256-bit secret from appsettings
+// - Role is embedded as a standard "role" claim so [Authorize(Roles="Doctor")]
+// works out of the box in controllers
+// - Tokens expire after 8 hours — refresh token flow is Phase 2+
 
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

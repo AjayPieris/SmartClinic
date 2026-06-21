@@ -1,14 +1,12 @@
-// =============================================================================
 // src/components/documents/UploadForm.jsx
 //
 // Composes FileDropZone + the document name field + optional appointment link
 // + the UploadProgress bar into a single self-contained upload panel.
 //
 // Props:
-//   onUploadSuccess  — called with the new MedicalDocumentDto after 201
-//   appointments     — list of AppointmentResponseDto for the link dropdown
-//   isUploading, uploadProgress — passed through from useDocuments
-// =============================================================================
+// onUploadSuccess  — called with the new MedicalDocumentDto after 201
+// appointments     — list of AppointmentResponseDto for the link dropdown
+// isUploading, uploadProgress — passed through from useDocuments
 
 import { useState } from 'react';
 import FileDropZone    from './FileDropZone';

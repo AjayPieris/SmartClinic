@@ -254,23 +254,23 @@
   .drawer {
     width: 100vw;
   }
-  
+
   .sidebar {
     width: 100vw;
   }
-  
+
   .sidebarHiddenMobile {
     display: none;
   }
-  
+
   .chatHiddenMobile {
     display: none;
   }
-  
+
   .mobileBackBtn {
     display: flex;
   }
-  
+
   .chatArea {
     width: 100vw;
   }

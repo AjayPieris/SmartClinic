@@ -1,16 +1,14 @@
-// =============================================================================
 // src/components/guards/ProtectedRoute.jsx
 //
 // Gate 1: Is the user authenticated at all?
 //
 // Three states:
-//   isLoading = true  → show spinner (localStorage hydration in progress)
-//   user = null       → redirect to /login, preserving intended destination
-//   user exists       → render children
+// isLoading = true  → show spinner (localStorage hydration in progress)
+// user = null       → redirect to /login, preserving intended destination
+// user exists       → render children
 //
 // The `state={{ from: location }}` on the Navigate is picked up by the
 // LoginPage to redirect back after successful login (deep-link preservation).
-// =============================================================================
 
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';

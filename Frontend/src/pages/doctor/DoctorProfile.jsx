@@ -5,7 +5,6 @@ import { getMyDoctorProfileApi, submitVerificationDocumentApi } from '../../api/
 import { validateImageFile } from '../../utils/fileValidation';
 import styles from './DoctorProfile.module.css';
 
-// ── Inline mini ProfilePicture (left column) ───────────────────────────────
 function AvatarColumn() {
   const { user, updateUser } = useAuth();
   const [isUploading, setIsUploading] = useState(false);
@@ -140,7 +139,6 @@ function AvatarColumn() {
   );
 }
 
-// ── Main Page ──────────────────────────────────────────────────────────────
 export default function DoctorProfile() {
   const { user } = useAuth();
   const [profile, setProfile] = useState(null);
@@ -206,7 +204,7 @@ export default function DoctorProfile() {
   return (
     <div className={styles.page}>
 
-      {/* ── Page header ── */}
+      {/* Page header */}
       <header className={styles.header}>
         <div>
           <h1 className={styles.pageTitle}>My profile</h1>
@@ -222,7 +220,7 @@ export default function DoctorProfile() {
         )}
       </header>
 
-      {/* ── Body: avatar column + right panel ── */}
+      {/* Body: avatar column + right panel */}
       <div className={styles.body}>
 
         {/* Left: Avatar */}
@@ -342,7 +340,7 @@ export default function DoctorProfile() {
         </div>{/* /rightCol */}
       </div>{/* /body */}
 
-      {/* ── Availability CTA ── */}
+      {/* Availability CTA */}
       <Link
         to="/doctor/availability"
         className={styles.availCta}

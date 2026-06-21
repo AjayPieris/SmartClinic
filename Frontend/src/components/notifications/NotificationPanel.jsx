@@ -12,7 +12,7 @@ export default function NotificationPanel({ notifications, unreadCount, markAsRe
     if (!n.isRead) {
       markAsRead(n.id);
     }
-    
+
     // Auto-close dropdown
     onClose();
 
@@ -22,7 +22,7 @@ export default function NotificationPanel({ notifications, unreadCount, markAsRe
       navigate(route);
     } else if (n.type === 'Message') {
       // In option B, we will use the Chat Drawer, so just open the chat drawer.
-      // Easiest way in SPA without global state is dispatching a custom event, 
+      // Easiest way in SPA without global state is dispatching a custom event,
       // or we can handle this inside NavBar.
       const event = new CustomEvent('open-chat-drawer', { detail: { appointmentId: n.relatedEntityId } });
       window.dispatchEvent(event);
@@ -74,7 +74,7 @@ export default function NotificationPanel({ notifications, unreadCount, markAsRe
           </button>
         </div>
       </div>
-      
+
       <div className={styles.list}>
         {notifications.length === 0 ? (
           <div className={styles.empty}>
@@ -82,8 +82,8 @@ export default function NotificationPanel({ notifications, unreadCount, markAsRe
           </div>
         ) : (
           notifications.map((n) => (
-            <div 
-              key={n.id} 
+            <div
+              key={n.id}
               className={`${styles.item} ${!n.isRead ? styles.unread : ''}`}
               onClick={() => handleNotificationClick(n)}
             >

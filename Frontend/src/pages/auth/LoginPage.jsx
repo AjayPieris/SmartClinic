@@ -61,7 +61,7 @@ export default function LoginPage() {
   return (
     <div className={styles.authPage}>
 
-      {/* ── Left panel ── */}
+      {/* Left panel */}
       <div className={styles.authLeft}>
         <img src={leftBg} alt="" className={styles.authLeftBg} aria-hidden="true" />
         <div className={styles.authLeftOverlay} />
@@ -77,7 +77,7 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* ── Right panel ── */}
+      {/* Right panel */}
       <div className={styles.authRight}>
         {/* Liquid blobs */}
         <div className={styles.blob3} />

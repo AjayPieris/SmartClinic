@@ -94,13 +94,11 @@
   letter-spacing: 0.5px;
 }
 
-/* ── Colors (Icons and Text accents) ── */
 .default .iconWrap { color: #64748b; background: #f1f5f9; }
 .info .iconWrap    { color: #0ea5e9; background: #e0f2fe; }
 .success .iconWrap { color: #10b981; background: #d1fae5; }
 .warning .iconWrap { color: #f59e0b; background: #fef3c7; }
 
-/* ── Mobile ── */
 @media (max-width: 768px) {
   .wrap {
     padding: 18px;

@@ -1,17 +1,15 @@
-// =============================================================================
 // src/components/booking/CalendarPicker.jsx — Step 2: pick a date.
 //
 // A hand-rolled calendar grid — no external date-picker library needed.
 // Uses only the native Date API + date-fns for formatting.
 //
 // Features:
-//   - Month navigation (prev/next)
-//   - Greyed-out past dates (unclickable)
-//   - Greyed-out days where the doctor has no availability (dayOfWeek check)
-//   - Today highlighted with a ring
-//   - Selected date highlighted in primary colour
-//   - Limits future booking to 60 days out
-// =============================================================================
+// - Month navigation (prev/next)
+// - Greyed-out past dates (unclickable)
+// - Greyed-out days where the doctor has no availability (dayOfWeek check)
+// - Today highlighted with a ring
+// - Selected date highlighted in primary colour
+// - Limits future booking to 60 days out
 
 import { useMemo } from 'react';
 import {

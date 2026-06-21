@@ -51,9 +51,9 @@ export default function AppointmentDetailCard({
             <div className={styles.avatarFallback}>{appointment.patientFullName?.charAt(0) ?? '?'}</div>
           )}
         </div>
-        
+
         <h3 className={styles.patientName}>{appointment.patientFullName}</h3>
-        
+
         <div className={styles.statusRow}>
           <span className={`${styles.statusBadge} ${styles[`status${appointment.status}`]}`}>
             {appointment.status}

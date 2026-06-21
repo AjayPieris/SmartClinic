@@ -71,7 +71,6 @@
   max-width: 300px;
 }
 
-/* ── Mobile ── */
 @media (max-width: 768px) {
   .list {
     padding: 20px;

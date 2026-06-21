@@ -21,7 +21,6 @@ const DURATION_OPTIONS = [
   { value: 60, label: '1 hour' },
 ];
 
-// ── Toggle switch UI component ────────────────────────────────────────────
 function Toggle({ checked, onChange, disabled }) {
   return (
     <button
@@ -37,7 +36,6 @@ function Toggle({ checked, onChange, disabled }) {
   );
 }
 
-// ── Delete icon ───────────────────────────────────────────────────────────
 function TrashIcon() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -142,13 +140,13 @@ export default function DoctorAvailability() {
   return (
     <div className={styles.page}>
 
-      {/* ── Page header ── */}
+      {/* Page header */}
       <header className={styles.header}>
         <h1 className={styles.pageTitle}>Availability Schedule</h1>
         <p className={styles.pageSubtitle}>Configure your clinical consultation hours and session rules.</p>
       </header>
 
-      {/* ── Verification warning ── */}
+      {/* Verification warning */}
       {!isVerified && (
         <div className={styles.warnBanner}>
           <span className={styles.warnIcon}>
@@ -170,14 +168,14 @@ export default function DoctorAvailability() {
         </div>
       )}
 
-      {/* ── Save message ── */}
+      {/* Save message */}
       {message.text && (
         <div className={message.type === 'error' ? styles.errorMsg : styles.successMsg}>
           {message.type === 'error' ? '⚠ ' : '✓ '}{message.text}
         </div>
       )}
 
-      {/* ── Form card ── */}
+      {/* Form card */}
       <form
         onSubmit={handleSave}
         className={styles.formCard}
@@ -311,7 +309,7 @@ export default function DoctorAvailability() {
 
       </form>
 
-      {/* ── Stats strip ── */}
+      {/* Stats strip */}
       <div className={styles.statsStrip}>
         <div className={styles.statItem}>
           <span className={styles.statIcon}>

@@ -1,9 +1,7 @@
 // DTOs/Appointments/AppointmentResponseDto.cs
-// =============================================================================
 // Outbound payload for appointment reads.
 // We flatten the navigation properties here so the frontend doesn't need
 // to do multiple API calls to display a complete appointment card.
-// =============================================================================
 
 namespace SmartClinic.API.DTOs.Appointments;
 

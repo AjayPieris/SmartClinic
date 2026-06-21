@@ -1,5 +1,4 @@
 
-
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { getMyDocumentsApi, deleteDocumentApi } from '../api/documentsApi';
 
@@ -15,7 +14,6 @@ export default function useDocuments() {
   // Ref to allow cancelling in-flight XHR if component unmounts
   const xhrRef = useRef(null);
 
-  // ── Fetch documents on mount ────────────────────────────────────────────
   const fetchDocuments = useCallback(async () => {
     setIsLoading(true);
     setError('');
@@ -35,7 +33,6 @@ export default function useDocuments() {
     return () => xhrRef.current?.abort();
   }, [fetchDocuments]);
 
-  // ── Upload a document via XHR (for progress tracking) ──────────────────
   const uploadDocument = useCallback((file, documentName, appointmentId = null) => {
     return new Promise((resolve, reject) => {
       const formData = new FormData();
@@ -53,7 +50,6 @@ export default function useDocuments() {
       setUploadProgress(0);
       setError('');
 
-      // ── Progress events — fires as bytes are sent to the server ──────────
       // Note: progress reflects upload to your API server, not to Cloudinary.
       // The Cloudinary upload happens server-side after the API receives the file.
       xhr.upload.onprogress = (event) => {
@@ -65,7 +61,6 @@ export default function useDocuments() {
         }
       };
 
-      // ── Simulate the remaining 15% (Cloudinary + DB) ─────────────────────
       xhr.upload.onload = () => {
         // File has arrived at the API. Slowly tick 85 → 100 over ~1.5s.
         let pct = 85;
@@ -76,7 +71,6 @@ export default function useDocuments() {
         }, 150);
       };
 
-      // ── Response received ─────────────────────────────────────────────────
       xhr.onload = () => {
         setUploadProgress(100);
         setIsUploading(false);
@@ -102,7 +96,6 @@ export default function useDocuments() {
         }
       };
 
-      // ── Network error ─────────────────────────────────────────────────────
       xhr.onerror = () => {
         setIsUploading(false);
         setError('Network error. Please check your connection.');
@@ -110,7 +103,6 @@ export default function useDocuments() {
         reject(new Error('Network error'));
       };
 
-      // ── Abort ─────────────────────────────────────────────────────────────
       xhr.onabort = () => {
         setIsUploading(false);
         setUploadProgress(0);
@@ -126,7 +118,6 @@ export default function useDocuments() {
     });
   }, []);
 
-  // ── Delete a document ───────────────────────────────────────────────────
   const confirmDelete = useCallback(async () => {
     if (!pendingDelete) return;
 

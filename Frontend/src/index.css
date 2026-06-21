@@ -1,8 +1,5 @@
-/* =============================================================================
-   index.css — Global design tokens, resets, and utility classes.
-============================================================================= */
 
-/* ── Design tokens ──────────────────────────────────────────────────────── */
+
 :root {
   /* Brand palette */
   --color-primary:        #4f46e5;
@@ -59,7 +56,6 @@
   --transition: 150ms ease;
 }
 
-/* ── Reset ──────────────────────────────────────────────────────────────── */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -83,7 +79,6 @@ body {
   width: 100%;
 }
 
-/* ── Typography helpers ─────────────────────────────────────────────────── */
 .brand-heading {
   font-family: var(--font-brand);
   font-weight: 800;
@@ -123,7 +118,6 @@ input, textarea, select {
   font-size: 1rem;
 }
 
-/* ── Loading spinner ────────────────────────────────────────────────────── */
 .spinner {
   width: 2rem;
   height: 2rem;
@@ -144,7 +138,6 @@ input, textarea, select {
   min-height: 100vh;
 }
 
-/* ── Skeleton shimmer ───────────────────────────────────────────────────── */
 @keyframes shimmer {
   0%   { opacity: 0.3; }
   50%  { opacity: 0.55; }
@@ -169,7 +162,6 @@ input, textarea, select {
 .skeleton-text.medium { width: 65%; }
 .skeleton-text.long { width: 90%; }
 
-/* ── Role badge pill ────────────────────────────────────────────────────── */
 .role-badge {
   display: inline-flex;
   align-items: center;
@@ -184,7 +176,6 @@ input, textarea, select {
 .role-badge.doctor  { background: #ede9fe; color: var(--color-doctor);  }
 .role-badge.admin   { background: #fef3c7; color: var(--color-admin);   }
 
-/* ── Appointment status pills ───────────────────────────────────────────── */
 .status-pill {
   display: inline-flex;
   align-items: center;
@@ -201,7 +192,6 @@ input, textarea, select {
 .status-pill.completed { background: #d1fae5; color: #065f46; }
 .status-pill.cancelled { background: #fee2e2; color: #991b1b; }
 
-/* ── Error banner ───────────────────────────────────────────────────────── */
 .error-banner {
   background: #fef2f2;
   border: 1px solid #fecaca;
@@ -225,7 +215,6 @@ input, textarea, select {
 
 .error-banner button:hover { opacity: 1; }
 
-/* ── Success banner ─────────────────────────────────────────────────────── */
 .success-banner {
   background: #d1fae5;
   border: 1px solid #6ee7b7;
@@ -250,7 +239,6 @@ input, textarea, select {
 
 .success-banner button:hover { opacity: 1; }
 
-/* ── Card ───────────────────────────────────────────────────────────────── */
 .card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
@@ -258,7 +246,6 @@ input, textarea, select {
   box-shadow: var(--shadow-sm);
 }
 
-/* ── Primary button ─────────────────────────────────────────────────────── */
 .btn-primary {
   display: inline-flex;
   align-items: center;
@@ -287,7 +274,6 @@ input, textarea, select {
   cursor: not-allowed;
 }
 
-/* ── Secondary button ───────────────────────────────────────────────────── */
 .btn-secondary {
   display: inline-flex;
   align-items: center;
@@ -311,7 +297,6 @@ input, textarea, select {
   text-decoration: none;
 }
 
-/* ── Danger button ──────────────────────────────────────────────────────── */
 .btn-danger {
   display: inline-flex;
   align-items: center;
@@ -330,7 +315,6 @@ input, textarea, select {
 
 .btn-danger:hover { background: #b91c1c; }
 
-/* ── Standard input ─────────────────────────────────────────────────────── */
 .input {
   width: 100%;
   padding: var(--space-3) var(--space-4);
@@ -354,7 +338,6 @@ input, textarea, select {
   background: var(--color-bg);
 }
 
-/* ── Empty state ────────────────────────────────────────────────────────── */
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -382,7 +365,6 @@ input, textarea, select {
   margin-top: var(--space-2);
 }
 
-/* ── Page typography ────────────────────────────────────────────────────── */
 .page-title {
   font-family: var(--font-brand);
   font-weight: 800;

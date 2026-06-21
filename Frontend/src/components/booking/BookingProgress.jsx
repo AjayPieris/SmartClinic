@@ -1,7 +1,5 @@
-// =============================================================================
 // src/components/booking/BookingProgress.jsx — Visual step indicator.
 // Shows the patient exactly where they are in the 4-step flow.
-// =============================================================================
 
 import styles from './BookingProgress.module.css';
 

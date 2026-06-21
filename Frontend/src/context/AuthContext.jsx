@@ -1,18 +1,13 @@
 
-
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// ── Storage keys — namespaced to avoid collisions with other apps ─────────
 const TOKEN_KEY = 'sc_token';
 const USER_KEY  = 'sc_user';
 
-// ── Context shape (used by useAuth consumers) ─────────────────────────────
 const AuthContext = createContext(null);
 
-// =============================================================================
 // AuthProvider — wrap this around the entire <RouterProvider> / <App>
-// =============================================================================
 export function AuthProvider({ children }) {
   // null  = not logged in
   // {...} = logged-in user object
@@ -26,7 +21,6 @@ export function AuthProvider({ children }) {
 
   const navigate = useNavigate();
 
-  // ─── Hydrate from localStorage on first mount ──────────────────────────
   useEffect(() => {
     try {
       const storedToken = localStorage.getItem(TOKEN_KEY);
@@ -59,7 +53,6 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  // ─── login() — called after successful API response ────────────────────
   // Accepts the AuthResponseDto returned by the backend
   const login = useCallback((authResponse) => {
     const userObject = {
@@ -89,7 +82,6 @@ export function AuthProvider({ children }) {
     navigate(roleRoutes[authResponse.role] ?? '/', { replace: true });
   }, [navigate]);
 
-  // ─── logout() — clears everything and sends user to /login ─────────────
   const logout = useCallback(() => {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
@@ -98,7 +90,6 @@ export function AuthProvider({ children }) {
     navigate('/login', { replace: true });
   }, [navigate]);
 
-  // ─── updateUser() — partial update without re-logging in ───────────────
   // Used after profile picture upload: updates the avatar URL in context
   // so the NavBar reflects the new picture immediately without a full refresh.
   const updateUser = useCallback((partial) => {
@@ -111,7 +102,6 @@ export function AuthProvider({ children }) {
     });
   }, []);
 
-  // ─── Context value — memoised object shared to all consumers ───────────
   const value = {
     user,
     token,
@@ -129,15 +119,13 @@ export function AuthProvider({ children }) {
   );
 }
 
-// =============================================================================
 // useAuth — the hook every component uses to access auth state.
 //
 // Usage:
-//   const { user, isAuthenticated, login, logout } = useAuth();
+// const { user, isAuthenticated, login, logout } = useAuth();
 //
 // Throws if used outside an AuthProvider — this surfaces mis-usage early
 // rather than silently returning undefined values.
-// =============================================================================
 export function useAuth() {
   const context = useContext(AuthContext);
 

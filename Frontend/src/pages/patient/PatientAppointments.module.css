@@ -368,12 +368,10 @@
   border-top: 1px dashed rgba(0,0,0,0.1);
 }
 
-/* ── Tablet ── */
 @media (max-width: 1024px) {
   .layout { grid-template-columns: 220px 1fr; gap: 24px; }
 }
 
-/* ── Mobile ── */
 @media (max-width: 768px) {
   .page {
     padding: 16px 16px 100px; /* Bottom tab bar clearance */
@@ -420,7 +418,6 @@
   .successBanner { padding: 14px 16px; border-radius: 12px; }
 }
 
-/* ── Small mobile ── */
 @media (max-width: 480px) {
   .page { padding: 12px 12px 100px; }
 

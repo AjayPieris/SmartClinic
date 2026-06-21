@@ -1,22 +1,20 @@
-// =============================================================================
 // PusherService.cs — The ONLY file in the project that imports PusherServer.
-//
+
 // Channel naming convention used throughout this system:
-//   "appointment-{appointmentId}-chat"
-//
+// "appointment-{appointmentId}-chat"
+
 // Why this naming?
-//   - Scoped per appointment: Doctor and Patient in appointment X cannot
-//     accidentally receive messages from appointment Y.
-//   - Works directly with Pusher's channel filtering on the client side.
-//   - Predictable: both server and client derive the channel name the same way.
-//
+// - Scoped per appointment: Doctor and Patient in appointment X cannot
+// accidentally receive messages from appointment Y.
+// - Works directly with Pusher's channel filtering on the client side.
+// - Predictable: both server and client derive the channel name the same way.
+
 // Public vs Private channels:
-//   Currently using public channels for simplicity (no server auth step needed
-//   on the client). For production, upgrade to private channels ("private-..."
-//   prefix) so Pusher verifies the subscription via your /api/pusher/auth
-//   endpoint before allowing the client to listen. The AuthenticateChannel
-//   method below is already wired for that upgrade path.
-// =============================================================================
+// Currently using public channels for simplicity (no server auth step needed
+// on the client). For production, upgrade to private channels ("private-..."
+// prefix) so Pusher verifies the subscription via your /api/pusher/auth
+// endpoint before allowing the client to listen. The AuthenticateChannel
+// method below is already wired for that upgrade path.
 
 using PusherServer;
 using SmartClinic.API.Services.Interfaces;

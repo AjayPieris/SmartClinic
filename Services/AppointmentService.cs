@@ -1,19 +1,17 @@
-// =============================================================================
 // AppointmentService.cs — The scheduling engine.
-//
+
 // DOUBLE-BOOKING PREVENTION (two layers):
-//   Layer 1 (Application): Before inserting, query for overlapping appointments
-//                          in the same transaction using a SELECT ... FOR UPDATE
-//                          equivalent (achieved via EF Core + serializable txn).
-//   Layer 2 (Database):    The xmin concurrency token on Appointment means that
-//                          if two requests pass Layer 1 simultaneously and both
-//                          try to SaveChanges, only the first commit wins.
-//                          The second throws DbUpdateConcurrencyException,
-//                          which we catch and return as a 409 Conflict.
-//
+// Layer 1 (Application): Before inserting, query for overlapping appointments
+// in the same transaction using a SELECT ... FOR UPDATE
+// equivalent (achieved via EF Core + serializable txn).
+// Layer 2 (Database):    The xmin concurrency token on Appointment means that
+// if two requests pass Layer 1 simultaneously and both
+// try to SaveChanges, only the first commit wins.
+// The second throws DbUpdateConcurrencyException,
+// which we catch and return as a 409 Conflict.
+
 // This pattern is known as Optimistic Concurrency Control and is the
 // recommended approach for EF Core + Postgres.
-// =============================================================================
 
 using Microsoft.EntityFrameworkCore;
 using SmartClinic.API.Data;

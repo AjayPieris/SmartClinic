@@ -23,10 +23,8 @@ public class AdminController : ControllerBase
         _logger = logger;
     }
 
-    // =========================================================================
     // GET /api/admin/users?role=Patient&status=active
     // List all users with optional role and status filters
-    // =========================================================================
     [HttpGet("users")]
     public async Task<IActionResult> GetAllUsers(
         [FromQuery] string? role,
@@ -84,9 +82,7 @@ public class AdminController : ControllerBase
         return Ok(users);
     }
 
-    // =========================================================================
     // PATCH /api/admin/users/{id}/block
-    // =========================================================================
     [HttpPatch("users/{id:guid}/block")]
     public async Task<IActionResult> BlockUser(Guid id)
     {
@@ -106,9 +102,7 @@ public class AdminController : ControllerBase
         return Ok(new { message = $"{user.FirstName} {user.LastName} has been blocked." });
     }
 
-    // =========================================================================
     // PATCH /api/admin/users/{id}/unblock
-    // =========================================================================
     [HttpPatch("users/{id:guid}/unblock")]
     public async Task<IActionResult> UnblockUser(Guid id)
     {
@@ -124,10 +118,8 @@ public class AdminController : ControllerBase
         return Ok(new { message = $"{user.FirstName} {user.LastName} has been unblocked." });
     }
 
-    // =========================================================================
     // GET /api/admin/doctors
     // List ALL doctors with full verification info
-    // =========================================================================
     [HttpGet("doctors")]
     public async Task<IActionResult> GetAllDoctors([FromQuery] string? verificationStatus)
     {
@@ -169,10 +161,8 @@ public class AdminController : ControllerBase
         return Ok(doctors);
     }
 
-    // =========================================================================
     // GET /api/admin/doctors/pending
     // List only doctors awaiting approval
-    // =========================================================================
     [HttpGet("doctors/pending")]
     public async Task<IActionResult> GetPendingDoctors()
     {
@@ -205,9 +195,7 @@ public class AdminController : ControllerBase
         return Ok(doctors);
     }
 
-    // =========================================================================
     // PATCH /api/admin/doctors/{doctorProfileId}/approve
-    // =========================================================================
     [HttpPatch("doctors/{doctorProfileId:guid}/approve")]
     public async Task<IActionResult> ApproveDoctor(Guid doctorProfileId)
     {
@@ -231,9 +219,7 @@ public class AdminController : ControllerBase
         return Ok(new { message = $"Dr. {doctor.User.FirstName} {doctor.User.LastName} has been approved and verified." });
     }
 
-    // =========================================================================
     // PATCH /api/admin/doctors/{doctorProfileId}/reject
-    // =========================================================================
     [HttpPatch("doctors/{doctorProfileId:guid}/reject")]
     public async Task<IActionResult> RejectDoctor(
         Guid doctorProfileId,
@@ -259,10 +245,8 @@ public class AdminController : ControllerBase
         return Ok(new { message = $"Dr. {doctor.User.FirstName} {doctor.User.LastName} has been rejected." });
     }
 
-    // =========================================================================
     // GET /api/admin/stats
     // Summary statistics for the dashboard cards
-    // =========================================================================
     [HttpGet("stats")]
     public async Task<IActionResult> GetStats()
     {

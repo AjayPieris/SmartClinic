@@ -76,7 +76,7 @@ export default function DoctorNotes() {
 
   return (
     <div className={styles.pageWrap}>
-      
+
       <div className={styles.pageHeader}>
         <button onClick={() => navigate(-1)} className={styles.backBtn}>
           ← Back to Schedule
@@ -90,7 +90,7 @@ export default function DoctorNotes() {
       )}
 
       <div className={styles.layout}>
-        
+
         {/* Left Column: Context Card */}
         <div className={styles.leftCol}>
           <div className={styles.glassCard}>
@@ -100,7 +100,7 @@ export default function DoctorNotes() {
               </div>
               <h2 className={styles.cardTitle}>Consultation</h2>
             </div>
-            
+
             <div className={styles.contextGrid}>
               <div className={styles.contextRow}>
                 <span className={styles.contextLabel}>Patient</span>

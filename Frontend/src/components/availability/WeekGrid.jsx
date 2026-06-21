@@ -1,10 +1,8 @@
-// =============================================================================
 // src/components/availability/WeekGrid.jsx
 //
 // Renders 7 DayRow components — one per day of the week.
 // Also contains the consultation duration selector since it affects
 // the slot count shown in each row.
-// =============================================================================
 
 import DayRow from './DayRow';
 import styles from './WeekGrid.module.css';

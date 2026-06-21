@@ -1,7 +1,5 @@
-// =============================================================================
 // IDocumentService.cs — Business logic contract for document management.
 // Orchestrates between ICloudinaryService and the database.
-// =============================================================================
 
 using Microsoft.AspNetCore.Http;
 using SmartClinic.API.DTOs.Documents;

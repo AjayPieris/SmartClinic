@@ -37,7 +37,7 @@ export default function useNotifications() {
   // Subscribe to Pusher
   useEffect(() => {
     if (!user) return;
-    
+
     // Using simple public channels for MVP. In production, use private channels!
     const channelName = `private-user-${user.userId}-notifications`;
     const channel = pusherClient.subscribe(channelName);

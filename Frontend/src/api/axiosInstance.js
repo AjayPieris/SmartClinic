@@ -1,5 +1,4 @@
 
-
 import axios from 'axios';
 
 const axiosInstance = axios.create({
@@ -12,7 +11,6 @@ const axiosInstance = axios.create({
   timeout: 10_000,
 });
 
-// ─── REQUEST INTERCEPTOR ─────────────────────────────────────────────────────
 // Runs before every outgoing request.
 // Reads the JWT from localStorage and attaches it as a Bearer token.
 axiosInstance.interceptors.request.use(
@@ -28,7 +26,6 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// ─── RESPONSE INTERCEPTOR ────────────────────────────────────────────────────
 // Runs after every response (success and error).
 // Handles 401 Unauthorized globally — token expired or revoked.
 axiosInstance.interceptors.response.use(
@@ -36,7 +33,6 @@ axiosInstance.interceptors.response.use(
   (response) => response,
 
   (error) => {
-    // === STANDARD ERROR HANDLING ===
     if (error.response?.status === 401) {
       // Clear all auth state from storage
       localStorage.removeItem('sc_token');

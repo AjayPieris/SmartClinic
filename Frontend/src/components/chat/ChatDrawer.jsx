@@ -24,25 +24,25 @@ export default function ChatDrawer({ isOpen, onClose, initialAppointmentId, onCh
     const loadContacts = async () => {
       try {
         setIsLoading(true);
-        const appointments = user.role === 'Doctor' 
+        const appointments = user.role === 'Doctor'
           ? await getMyScheduleApi()
           : await getMyAppointmentsApi();
-        
+
         // Filter out cancelled
         const validAppts = appointments.filter(a => a.status !== 'Cancelled');
-        
+
         // Get unique contacts based on the other party
         // Sort by most recent appointment first
         validAppts.sort((a, b) => new Date(b.startTimeUtc) - new Date(a.startTimeUtc));
-        
+
         const uniqueContacts = [];
         const seenProfileIds = new Set();
-        
+
         for (const appt of validAppts) {
           const profileId = user.role === 'Doctor' ? appt.patientProfileId : appt.doctorProfileId;
           const name = user.role === 'Doctor' ? appt.patientFullName : appt.doctorFullName;
           const avatar = user.role === 'Doctor' ? appt.patientProfilePictureUrl : appt.doctorProfilePictureUrl;
-          
+
           if (!seenProfileIds.has(profileId)) {
             seenProfileIds.add(profileId);
             uniqueContacts.push({
@@ -55,7 +55,7 @@ export default function ChatDrawer({ isOpen, onClose, initialAppointmentId, onCh
             });
           }
         }
-        
+
         // Get history for each to find the last message
         const contactsWithMessages = await Promise.all(uniqueContacts.map(async (c) => {
           try {
@@ -73,9 +73,9 @@ export default function ChatDrawer({ isOpen, onClose, initialAppointmentId, onCh
           }
           return c;
         }));
-        
+
         setContacts(contactsWithMessages);
-        
+
         // Auto-select if requested
         if (selectedAppointmentId) {
           const contact = uniqueContacts.find(c => c.appointmentId === selectedAppointmentId);
@@ -85,7 +85,7 @@ export default function ChatDrawer({ isOpen, onClose, initialAppointmentId, onCh
           setSelectedAppointmentId(uniqueContacts[0].appointmentId);
           setSelectedContact(uniqueContacts[0]);
         }
-        
+
       } catch (err) {
         console.error('Failed to load chat contacts', err);
       } finally {
@@ -101,7 +101,7 @@ export default function ChatDrawer({ isOpen, onClose, initialAppointmentId, onCh
     if (selectedAppointmentId) {
       const contact = contacts.find(c => c.appointmentId === selectedAppointmentId);
       if (contact) setSelectedContact(contact);
-      
+
       // Clear notifications for this chat if function provided
       if (onChatOpened) {
         onChatOpened(selectedAppointmentId);
@@ -115,14 +115,14 @@ export default function ChatDrawer({ isOpen, onClose, initialAppointmentId, onCh
     <div className={styles.overlay}>
       <div className={styles.backdrop} onClick={onClose} />
       <div className={styles.drawer}>
-        
+
         {/* Contacts Sidebar */}
         <div className={`${styles.sidebar} ${selectedAppointmentId ? styles.sidebarHiddenMobile : ''}`}>
           <div className={styles.sidebarHeader}>
             <h2 className={styles.sidebarTitle}>Chats</h2>
             <button className={styles.closeBtn} onClick={onClose}>×</button>
           </div>
-          
+
           <div className={styles.contactList}>
             {isLoading ? (
               <div className={styles.skeletonWrap}>
@@ -134,8 +134,8 @@ export default function ChatDrawer({ isOpen, onClose, initialAppointmentId, onCh
               <p className={styles.noContacts}>No active appointments for chatting.</p>
             ) : (
               contacts.map(c => (
-                <div 
-                  key={c.appointmentId} 
+                <div
+                  key={c.appointmentId}
                   className={`${styles.contactItem} ${selectedAppointmentId === c.appointmentId ? styles.activeContact : ''}`}
                   onClick={() => setSelectedAppointmentId(c.appointmentId)}
                 >
@@ -166,18 +166,18 @@ export default function ChatDrawer({ isOpen, onClose, initialAppointmentId, onCh
           {selectedAppointmentId && selectedContact ? (
             <>
               {/* Mobile Back Button built into Chat Area */}
-              <button 
-                className={styles.mobileBackBtn} 
+              <button
+                className={styles.mobileBackBtn}
                 onClick={() => setSelectedAppointmentId(null)}
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
                 Back to Contacts
               </button>
-              
+
               <div className={styles.chatWrapper}>
-                <ChatBox 
-                  appointmentId={selectedAppointmentId} 
-                  appointmentStatus={selectedContact.status} 
+                <ChatBox
+                  appointmentId={selectedAppointmentId}
+                  appointmentStatus={selectedContact.status}
                   doctorName={selectedContact.name}
                   doctorAvatar={selectedContact.avatar}
                 />
@@ -192,7 +192,7 @@ export default function ChatDrawer({ isOpen, onClose, initialAppointmentId, onCh
             </div>
           )}
         </div>
-        
+
       </div>
     </div>
   );

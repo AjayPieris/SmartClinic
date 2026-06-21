@@ -25,9 +25,7 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // =====================================================================
         // User configuration
-        // =====================================================================
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(u => u.Id);
@@ -41,9 +39,7 @@ public class AppDbContext : DbContext
             entity.Property(u => u.Role).IsRequired().HasMaxLength(20);
         });
 
-        // =====================================================================
         // DoctorProfile — 1-to-1 with User
-        // =====================================================================
         modelBuilder.Entity<DoctorProfile>(entity =>
         {
             entity.HasKey(d => d.Id);
@@ -67,9 +63,7 @@ public class AppDbContext : DbContext
             entity.Ignore(d => d.IsVerified);
         });
 
-        // =====================================================================
         // PatientProfile — 1-to-1 with User
-        // =====================================================================
         modelBuilder.Entity<PatientProfile>(entity =>
         {
             entity.HasKey(p => p.Id);
@@ -80,9 +74,7 @@ public class AppDbContext : DbContext
                   .OnDelete(DeleteBehavior.Cascade);
         });
 
-        // =====================================================================
         // Appointment — many-to-many bridge between Doctor and Patient profiles
-        // =====================================================================
         modelBuilder.Entity<Appointment>(entity =>
         {
             entity.HasKey(a => a.Id);
@@ -113,9 +105,7 @@ public class AppDbContext : DbContext
             // DataAnnotations [Timestamp] in model handles this.
         });
 
-        // =====================================================================
         // ChatMessage
-        // =====================================================================
         modelBuilder.Entity<ChatMessage>(entity =>
         {
             entity.HasKey(c => c.Id);
@@ -135,9 +125,7 @@ public class AppDbContext : DbContext
             entity.Property(c => c.MessageText).HasMaxLength(4000);
         });
 
-        // =====================================================================
         // MedicalDocument
-        // =====================================================================
         modelBuilder.Entity<MedicalDocument>(entity =>
         {
             entity.HasKey(m => m.Id);
@@ -151,9 +139,7 @@ public class AppDbContext : DbContext
             entity.Property(m => m.DocumentName).HasMaxLength(500);
         });
 
-        // =====================================================================
         // Notification
-        // =====================================================================
         modelBuilder.Entity<Notification>(entity =>
         {
             entity.HasKey(n => n.Id);
@@ -167,10 +153,8 @@ public class AppDbContext : DbContext
             entity.Property(n => n.Type).IsRequired().HasMaxLength(50);
         });
 
-        // =====================================================================
         // Seed Data — a default Admin user so you can log in on day one.
         // Password: "Admin@123!" — CHANGE THIS before production.
-        // =====================================================================
         var adminId = Guid.Parse("00000000-0000-0000-0000-000000000001");
         modelBuilder.Entity<User>().HasData(new User
         {

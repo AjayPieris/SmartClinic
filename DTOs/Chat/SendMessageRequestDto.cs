@@ -1,10 +1,8 @@
-// =============================================================================
 // SendMessageRequestDto.cs — Inbound payload for POST /api/chat/send
-//
+
 // The sender's identity is NEVER taken from this body — it is always
 // extracted from the authenticated JWT claims in the controller.
 // Accepting a senderId from the client body would allow impersonation.
-// =============================================================================
 
 using System.ComponentModel.DataAnnotations;
 

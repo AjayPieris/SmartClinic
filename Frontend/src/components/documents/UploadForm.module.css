@@ -92,14 +92,14 @@
   box-shadow: 0 8px 20px rgba(14, 165, 233, 0.3);
 }
 
-.uploadBtn:hover:not(:disabled) { 
+.uploadBtn:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 12px 25px rgba(14, 165, 233, 0.4);
 }
 
-.uploadBtn:disabled { 
-  opacity: 0.6; 
-  cursor: not-allowed; 
+.uploadBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
   transform: none;
 }
 
@@ -114,7 +114,6 @@
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── Mobile ── */
 @media (max-width: 768px) {
   .form {
     padding: 20px;

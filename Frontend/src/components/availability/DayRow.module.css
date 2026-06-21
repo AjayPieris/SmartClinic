@@ -19,7 +19,6 @@
 /* Disabled day — muted */
 .rowDisabled { opacity: 0.65; }
 
-/* ── Day info (toggle + name) ────────────────────────────────────────────── */
 .dayInfo {
   display: flex;
   align-items: center;
@@ -87,7 +86,6 @@
 
 .dayNameActive { color: var(--color-primary); }
 
-/* ── Time row ────────────────────────────────────────────────────────────── */
 .timeRow {
   display: flex;
   align-items: center;

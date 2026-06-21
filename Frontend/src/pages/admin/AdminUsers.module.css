@@ -1,6 +1,6 @@
 .wrapper {
   /* Underlay that enables the deep blur to pop visually */
-  background: 
+  background:
     radial-gradient(circle at top right, rgba(14, 165, 233, 0.1) 0%, transparent 40%),
     radial-gradient(circle at bottom left, rgba(16, 185, 129, 0.05) 0%, transparent 40%);
   min-height: calc(100vh - 84px);
@@ -144,7 +144,6 @@
   border-radius: 50%;
 }
 
-
 /* Filter Bar Glass */
 .filterBar {
   background: rgba(255, 255, 255, 0.3);
@@ -209,7 +208,6 @@
   border-color: var(--color-primary);
   background: white;
 }
-
 
 /* Table Wrapper Glass */
 .tableCard {
@@ -386,7 +384,6 @@
   margin-top: 8px;
 }
 
-/* ── Mobile ── */
 @media (max-width: 768px) {
   .wrapper {
     padding: 20px 12px 100px; /* Bottom tab bar clearance */

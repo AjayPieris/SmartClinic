@@ -1,11 +1,9 @@
-// =============================================================================
 // ICloudinaryService.cs — Contract for all Cloudinary operations.
-//
+
 // Abstracted behind an interface so:
-//   a) Controllers and DocumentService never import CloudinaryDotNet directly
-//   b) We can swap to a mock in unit tests without touching business logic
-//   c) If we ever switch CDN providers, only this implementation changes
-// =============================================================================
+// a) Controllers and DocumentService never import CloudinaryDotNet directly
+// b) We can swap to a mock in unit tests without touching business logic
+// c) If we ever switch CDN providers, only this implementation changes
 
 using Microsoft.AspNetCore.Http;
 
@@ -28,11 +26,9 @@ public interface ICloudinaryService
     Task DeleteFileAsync(string publicId);
 }
 
-// =============================================================================
 // CloudinaryUploadResult — Internal result model (not exposed as a DTO).
 // Carries just the two fields we store in the database from Cloudinary's
 // much larger ImageUploadResult/RawUploadResult response object.
-// =============================================================================
 public record CloudinaryUploadResult(
     string SecureUrl,   // HTTPS CDN link — stored in DB, exposed in DTOs
     string PublicId,    // Cloudinary management key — stored in DB, never in DTOs

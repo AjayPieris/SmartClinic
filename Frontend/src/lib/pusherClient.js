@@ -1,5 +1,4 @@
 
-
 import Pusher from 'pusher-js';
 
 const pusherClient = new Pusher(import.meta.env.VITE_PUSHER_KEY, {
@@ -13,9 +12,9 @@ const pusherClient = new Pusher(import.meta.env.VITE_PUSHER_KEY, {
   // If we upgrade to private channels, uncomment this block:
   // authEndpoint: `${import.meta.env.VITE_API_BASE_URL}/pusher/auth`,
   // auth: {
-  //   headers: {
-  //     Authorization: `Bearer ${localStorage.getItem('sc_token')}`,
-  //   },
+  // headers: {
+  // Authorization: `Bearer ${localStorage.getItem('sc_token')}`,
+  // },
   // },
 });
 

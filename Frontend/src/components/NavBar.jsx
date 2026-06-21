@@ -86,7 +86,7 @@ export default function NavBar() {
     return () => window.removeEventListener('open-chat-drawer', handleOpenChat);
   }, []);
 
-  if (!user) return null; 
+  if (!user) return null;
 
   const links = NAV_LINKS[user.role] ?? [];
 
@@ -129,20 +129,20 @@ export default function NavBar() {
 
           {/* Actions: Notifications + Chat + User */}
           <div className={styles.navActions}>
-            
+
             {/* Notification Bell */}
             <div className={styles.panelWrapper}>
-              <button 
-                className={styles.iconBtn} 
+              <button
+                className={styles.iconBtn}
                 onClick={() => setNotifOpen(!notifOpen)}
                 aria-label="Notifications"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
                 {unreadOtherCount > 0 && <span className={styles.badge}>{unreadOtherCount > 9 ? '9+' : unreadOtherCount}</span>}
               </button>
-              
+
               {notifOpen && (
-                <NotificationPanel 
+                <NotificationPanel
                   notifications={otherNotifications}
                   unreadCount={unreadOtherCount}
                   markAsRead={markAsRead}
@@ -154,8 +154,8 @@ export default function NavBar() {
 
             {/* Chat Icon */}
             <div className={styles.panelWrapper}>
-              <button 
-                className={styles.iconBtn} 
+              <button
+                className={styles.iconBtn}
                 onClick={() => window.dispatchEvent(new CustomEvent('open-chat-drawer'))}
                 aria-label="Chat"
               >
@@ -271,15 +271,15 @@ export default function NavBar() {
           </NavLink>
         ))}
       </nav>
-      
+
       {/* ═══ Chat Drawer ═══ */}
-      <ChatDrawer 
-        isOpen={chatDrawerOpen} 
+      <ChatDrawer
+        isOpen={chatDrawerOpen}
         onClose={() => {
           setChatDrawerOpen(false);
           setChatDrawerApptId(null);
-        }} 
-        initialAppointmentId={chatDrawerApptId} 
+        }}
+        initialAppointmentId={chatDrawerApptId}
         onChatOpened={handleChatOpened}
         unreadCounts={unreadCountsByAppt}
       />

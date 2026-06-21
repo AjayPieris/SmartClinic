@@ -1,4 +1,3 @@
-// =============================================================================
 // src/components/documents/DeleteConfirmModal.jsx
 //
 // A lightweight modal that appears when the patient clicks the delete button
@@ -7,7 +6,6 @@
 // breaks iframe-based environments).
 //
 // Pressing Escape or clicking the backdrop dismisses without deleting.
-// =============================================================================
 
 import { useEffect } from 'react';
 import styles from './DeleteConfirmModal.module.css';

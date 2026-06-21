@@ -1,4 +1,3 @@
-/* ── BookingProgress Modern Glass 3D Style ─────────────────── */
 .progress {
   display: flex;
   align-items: center;
@@ -11,7 +10,7 @@
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.6);
   border-radius: 20px;
-  box-shadow: 
+  box-shadow:
     0 10px 30px rgba(0, 0, 0, 0.03),
     inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
@@ -34,8 +33,8 @@
   box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
 }
 
-.connectorDone { 
-  background: linear-gradient(90deg, var(--color-primary-light), var(--color-primary)); 
+.connectorDone {
+  background: linear-gradient(90deg, var(--color-primary-light), var(--color-primary));
   box-shadow: 0 0 8px rgba(var(--color-primary-rgb), 0.4);
 }
 
@@ -60,7 +59,7 @@
   font-size: 0.9rem;
   font-weight: 800;
   color: var(--color-text-muted);
-  box-shadow: 
+  box-shadow:
     0 4px 10px rgba(0,0,0,0.05),
     inset 0 -2px 4px rgba(0,0,0,0.05),
     inset 0 2px 4px rgba(255,255,255,1);
@@ -81,14 +80,14 @@
   background: linear-gradient(135deg, var(--color-primary), #115e59);
   color: #ffffff;
   transform: scale(1.15);
-  box-shadow: 
+  box-shadow:
     0 8px 20px rgba(17, 94, 89, 0.3),
     inset 0 2px 4px rgba(255,255,255,0.3);
 }
 
-.stepActive .stepLabel { 
-  color: var(--color-primary); 
-  font-weight: 800; 
+.stepActive .stepLabel {
+  color: var(--color-primary);
+  font-weight: 800;
   transform: translateY(2px);
 }
 
@@ -96,17 +95,16 @@
 .stepComplete .stepCircle {
   background: var(--color-primary-light);
   color: var(--color-primary);
-  box-shadow: 
+  box-shadow:
     0 4px 10px rgba(var(--color-primary-rgb), 0.1),
     inset 0 2px 4px rgba(255,255,255,0.8);
 }
 
-.stepComplete .stepLabel { 
-  color: var(--color-text-muted); 
+.stepComplete .stepLabel {
+  color: var(--color-text-muted);
   font-weight: 700;
 }
 
-/* ── Mobile ── */
 @media (max-width: 768px) {
   .progress {
     padding: 16px;
@@ -122,23 +120,23 @@
 
 @media (max-width: 480px) {
   .progress { padding: 12px 10px; border-radius: 16px; gap: 0; }
-  
+
   .connector { margin: 0 4px; height: 2px; }
-  
+
   .step { min-width: 30px; gap: 4px; }
   .stepCircle { width: 28px; height: 28px; font-size: 0.8rem; }
-  
+
   /* Hide text for inactive steps to prevent squishing the line */
   .step:not(.stepActive) .stepLabel {
     display: none;
   }
-  
+
   /* Make the active label absolute so it doesn't break flex layout */
   .stepActive {
     position: relative;
     padding-bottom: 20px;
   }
-  
+
   .stepActive .stepLabel {
     position: absolute;
     bottom: 0;

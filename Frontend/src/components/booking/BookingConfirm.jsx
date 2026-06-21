@@ -1,9 +1,7 @@
-// =============================================================================
 // src/components/booking/BookingConfirm.jsx — Step 4: review and confirm.
 //
 // Shows a summary card of everything selected. The patient can add a brief
 // reason for the visit and toggle telehealth vs in-person before confirming.
-// =============================================================================
 
 import { format } from 'date-fns';
 import styles from './BookingConfirm.module.css';

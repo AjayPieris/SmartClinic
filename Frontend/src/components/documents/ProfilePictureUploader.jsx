@@ -1,11 +1,9 @@
-// =============================================================================
 // src/components/documents/ProfilePictureUploader.jsx
 //
 // A compact avatar upload widget shown at the top of the profile page.
 // Clicking the avatar or the "Change photo" button opens a file picker.
 // On selection: client validates → XHR POST → updates AuthContext.user
 // so the NavBar avatar refreshes instantly with no page reload.
-// =============================================================================
 
 import { useState, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';

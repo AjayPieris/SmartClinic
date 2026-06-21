@@ -1,8 +1,7 @@
-/* ── SlotPicker Modern Glass 3D Style ─────────────────────── */
-.wrap { 
-  display: flex; 
-  flex-direction: column; 
-  gap: var(--space-5); 
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
   align-items: center;
   padding-bottom: 20px;
 }
@@ -55,7 +54,7 @@ section {
   cursor: pointer;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  box-shadow: 
+  box-shadow:
     0 4px 6px rgba(0,0,0,0.03),
     inset 0 1px 0 rgba(255, 255, 255, 0.9);
   transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -66,7 +65,7 @@ section {
   color: var(--color-primary);
   border-color: rgba(var(--color-primary-rgb), 0.3);
   transform: translateY(-3px);
-  box-shadow: 
+  box-shadow:
     0 8px 15px rgba(var(--color-primary-rgb), 0.08),
     0 2px 5px rgba(0,0,0,0.04);
 }
@@ -76,7 +75,7 @@ section {
   color: #ffffff;
   border-color: transparent;
   transform: scale(1.05) translateY(-2px);
-  box-shadow: 
+  box-shadow:
     0 10px 20px rgba(17, 94, 89, 0.25),
     inset 0 2px 5px rgba(255,255,255,0.2) !important;
   z-index: 2;
@@ -124,7 +123,6 @@ section {
 
 @keyframes shine { to { background-position-x: -200%; } }
 
-/* ── Mobile ── */
 @media (max-width: 480px) {
   .grid, .skeletonGrid {
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));

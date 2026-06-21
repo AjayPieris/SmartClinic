@@ -1,5 +1,4 @@
 
-
 import { formatDistanceToNow, format, isToday, isYesterday } from 'date-fns';
 import styles from './ChatBox.module.css';
 
@@ -97,7 +96,6 @@ export default function ChatMessage({ message, showSenderInfo }) {
   );
 }
 
-// ── Timestamp formatter ───────────────────────────────────────────────────────
 // Shows: "just now" / "5 min ago" / "Yesterday" / "Mar 22" depending on age
 function formatTimestamp(date) {
   const secondsAgo = (Date.now() - date.getTime()) / 1000;

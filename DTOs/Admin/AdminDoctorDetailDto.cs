@@ -1,6 +1,4 @@
-// =============================================================================
 // AdminDoctorDetailDto.cs — Full doctor details for admin verification panel.
-// =============================================================================
 
 namespace SmartClinic.API.DTOs.Admin;
 

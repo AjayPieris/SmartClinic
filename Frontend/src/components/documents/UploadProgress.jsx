@@ -1,4 +1,3 @@
-// =============================================================================
 // src/components/documents/UploadProgress.jsx
 //
 // Animated progress bar shown while isUploading is true.
@@ -7,7 +6,6 @@
 // Jumps to 100% when the API returns 201.
 //
 // Also renders an animated pulsing label that changes text at milestones.
-// =============================================================================
 
 import styles from './UploadProgress.module.css';
 

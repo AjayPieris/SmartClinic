@@ -1,5 +1,4 @@
 
-
 import axiosInstance from './axiosInstance';
 
 /** Patient: fetch their own upcoming and past appointments */

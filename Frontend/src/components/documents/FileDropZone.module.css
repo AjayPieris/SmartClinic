@@ -43,7 +43,6 @@
   pointer-events: none;
 }
 
-/* ── Content: Idle ────────────────────── */
 .idleContent {
   display: flex;
   flex-direction: column;
@@ -97,7 +96,6 @@
   opacity: 0.8;
 }
 
-/* ── Content: Has File ────────────────── */
 .filePreview {
   display: flex;
   align-items: center;
@@ -172,7 +170,6 @@
   text-align: center;
 }
 
-/* ── Mobile ── */
 @media (max-width: 768px) {
   .zone { border-radius: 16px; }
   .idleContent { padding: 28px 18px; }

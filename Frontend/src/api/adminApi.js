@@ -1,5 +1,4 @@
 
-
 import axiosInstance from './axiosInstance';
 
 /**
@@ -37,10 +36,10 @@ export const unblockUserApi = async (userId) => {
  * @param {string} verificationStatus - Optional filter ('Pending', 'Approved', 'Rejected')
  */
 export const getAllDoctorsApi = async (verificationStatus = '') => {
-  const url = verificationStatus 
+  const url = verificationStatus
     ? `/admin/doctors?verificationStatus=${verificationStatus}`
     : '/admin/doctors';
-  
+
   const response = await axiosInstance.get(url);
   return response.data;
 };

@@ -1,10 +1,8 @@
-// =============================================================================
 // src/components/booking/SlotPicker.jsx — Step 3: pick a time slot.
 //
 // Renders the generated SlotOption[] as a grid of buttons.
 // Available slots are clickable; booked/past slots are visually distinct
 // and disabled so patients understand the slot is taken (not just absent).
-// =============================================================================
 
 import { format } from 'date-fns';
 import styles from './SlotPicker.module.css';

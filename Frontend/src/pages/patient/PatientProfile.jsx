@@ -1,18 +1,15 @@
-// =============================================================================
 // src/pages/patient/PatientProfile.jsx
 // Redesigned to match the split-panel mockup:
-//   Left  — avatar column (inline uploader)
-//   Right — info card with Patient badge, name/email grid, secure-profile notice
-//           + action row (deactivate | cancel | save)
-//   Bottom — stats strip (Medical History, Emergency Contact, Insurance Policy)
-// =============================================================================
+// Left  — avatar column (inline uploader)
+// Right — info card with Patient badge, name/email grid, secure-profile notice
+// + action row (deactivate | cancel | save)
+// Bottom — stats strip (Medical History, Emergency Contact, Insurance Policy)
 
 import { useState, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { validateImageFile } from '../../utils/fileValidation';
 import styles from './PatientProfile.module.css';
 
-// ── Inline avatar uploader (same logic as ProfilePictureUploader) ──────────
 function AvatarColumn() {
   const { user, updateUser } = useAuth();
   const [isUploading, setIsUploading] = useState(false);
@@ -151,7 +148,6 @@ function AvatarColumn() {
   );
 }
 
-// ── Main page ──────────────────────────────────────────────────────────────
 export default function PatientProfile() {
   const { user } = useAuth();
   const [saving, setSaving] = useState(false);
@@ -170,7 +166,7 @@ export default function PatientProfile() {
   return (
     <div className={styles.page}>
 
-      {/* ── Page header ── */}
+      {/* Page header */}
       <header className={styles.header}>
         <div>
           <h1 className={styles.pageTitle}>My profile</h1>
@@ -186,7 +182,7 @@ export default function PatientProfile() {
         </span>
       </header>
 
-      {/* ── Body: avatar left + card right ── */}
+      {/* Body: avatar left + card right */}
       <div className={styles.body}>
 
         {/* Left — avatar */}
@@ -276,7 +272,7 @@ export default function PatientProfile() {
         </form>
       </div>
 
-      {/* ── Stats strip ── */}
+      {/* Stats strip */}
       <div className={styles.statsStrip}>
 
         <div className={styles.statCard}>

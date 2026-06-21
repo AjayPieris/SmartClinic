@@ -1,19 +1,17 @@
-// =============================================================================
 // ChatService.cs — Orchestrates message persistence and real-time delivery.
-//
+
 // The Send flow (in order):
-//   1. Load the appointment and verify the sender is a participant
-//   2. Confirm the appointment is in a state that allows chat
-//      (Confirmed or Pending — not Cancelled or Completed)
-//   3. Persist the ChatMessage to Neon via EF Core
-//   4. Trigger the Pusher event with the full ChatMessageDto as payload
-//   5. Return the DTO to the HTTP caller (the sender)
-//
+// 1. Load the appointment and verify the sender is a participant
+// 2. Confirm the appointment is in a state that allows chat
+// (Confirmed or Pending — not Cancelled or Completed)
+// 3. Persist the ChatMessage to Neon via EF Core
+// 4. Trigger the Pusher event with the full ChatMessageDto as payload
+// 5. Return the DTO to the HTTP caller (the sender)
+
 // Steps 3 and 4 are intentionally sequential (not parallel):
-//   - We must save to DB FIRST so the message exists even if Pusher fails.
-//   - If we triggered Pusher before saving and the DB write failed, the
-//     recipient would see a "ghost" message that doesn't exist in the DB.
-// =============================================================================
+// - We must save to DB FIRST so the message exists even if Pusher fails.
+// - If we triggered Pusher before saving and the DB write failed, the
+// recipient would see a "ghost" message that doesn't exist in the DB.
 
 using Microsoft.EntityFrameworkCore;
 using SmartClinic.API.Data;
@@ -47,11 +45,11 @@ public class ChatService : IChatService
     public async Task<ChatMessageDto> SendMessageAsync(
         SendMessageRequestDto request, Guid senderUserId)
     {
-        // ── 1. Load appointment with full participant data ───────────────────
+        // 1. Load appointment with full participant data
         // We need the appointment to:
-        //   a) Verify the sender is actually in this appointment
-        //   b) Check the appointment status allows chat
-        //   c) Build the Pusher channel name
+        // a) Verify the sender is actually in this appointment
+        // b) Check the appointment status allows chat
+        // c) Build the Pusher channel name
         var appointment = await _db.Appointments
             .Include(a => a.DoctorProfile).ThenInclude(d => d.User)
             .Include(a => a.PatientProfile).ThenInclude(p => p.User)
@@ -59,7 +57,7 @@ public class ChatService : IChatService
             ?? throw new KeyNotFoundException(
                 $"Appointment {request.AppointmentId} not found.");
 
-        // ── 2. Authorization: only the doctor or patient may chat ─────────────
+        // 2. Authorization: only the doctor or patient may chat
         var isDoctorParticipant  = appointment.DoctorProfile.UserId  == senderUserId;
         var isPatientParticipant = appointment.PatientProfile.UserId == senderUserId;
 
@@ -67,21 +65,21 @@ public class ChatService : IChatService
             throw new UnauthorizedAccessException(
                 "You are not a participant of this appointment's chat.");
 
-        // ── 3. Status gate: refuse chat on cancelled/completed appointments ───
+        // 3. Status gate: refuse chat on cancelled/completed appointments
         // Allow chat on Pending (pre-confirmation) and Confirmed appointments
         var chatableStatuses = new[] { AppointmentStatus.Pending, AppointmentStatus.Confirmed };
         if (!chatableStatuses.Contains(appointment.Status))
             throw new InvalidOperationException(
                 $"Chat is not available for appointments with status '{appointment.Status}'.");
 
-        // ── 4. Load the sender's User record for the response DTO ────────────
+        // 4. Load the sender's User record for the response DTO
         var senderUser = isDoctorParticipant
             ? appointment.DoctorProfile.User
             : appointment.PatientProfile.User;
 
         var senderRole = isDoctorParticipant ? "Doctor" : "Patient";
 
-        // ── 5. Persist the message to Neon ────────────────────────────────────
+        // 5. Persist the message to Neon
         var chatMessage = new ChatMessage
         {
             AppointmentId = request.AppointmentId,
@@ -97,7 +95,7 @@ public class ChatService : IChatService
             "ChatMessage {MsgId} saved for appointment {ApptId} from {Role} {UserId}",
             chatMessage.Id, request.AppointmentId, senderRole, senderUserId);
 
-        // ── 6. Build the DTO that becomes the Pusher payload ─────────────────
+        // 6. Build the DTO that becomes the Pusher payload
         // IsFromCurrentUser is set to FALSE here — the Pusher broadcast goes to
         // ALL subscribers including the sender themselves. The React ChatBox sets
         // this flag CLIENT-SIDE by comparing SenderId to the logged-in user's ID.
@@ -114,7 +112,7 @@ public class ChatService : IChatService
             IsFromCurrentUser     = false, // Set by client based on their own userId
         };
 
-        // ── 7. Trigger Pusher event ───────────────────────────────────────────
+        // 7. Trigger Pusher event
         // Channel name follows the convention: "appointment-{id}-chat"
         // BOTH the patient and the doctor subscribe to this same channel
         // so they both receive the event simultaneously.

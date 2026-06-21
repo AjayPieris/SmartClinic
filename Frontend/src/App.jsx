@@ -10,30 +10,25 @@ import RegisterPage from './pages/auth/RegisterPage';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 import NotFoundPage from './pages/NotFoundPage';
 
-// ── Lazy-loaded layouts ───────────────────────────────────────────
 const PatientLayout = lazy(() => import('./layouts/PatientLayout'));
 const DoctorLayout  = lazy(() => import('./layouts/DoctorLayout'));
 const AdminLayout   = lazy(() => import('./layouts/AdminLayout'));
 
-// ── Patient pages ─────────────────────────────────────────────────
 const PatientAppointments = lazy(() => import('./pages/patient/PatientAppointments'));
 const BookAppointment     = lazy(() => import('./pages/patient/BookAppointment'));
 const PatientChat         = lazy(() => import('./pages/patient/PatientChat'));
 const PatientDocuments    = lazy(() => import('./pages/patient/PatientDocuments'));
 const PatientProfile      = lazy(() => import('./pages/patient/PatientProfile'));
 
-// ── Doctor pages ──────────────────────────────────────────────────
 const DoctorSchedule     = lazy(() => import('./pages/doctor/DoctorSchedule'));
-const DoctorAvailability = lazy(() => import('./pages/doctor/DoctorAvailability')); // ✅ ADDED
+const DoctorAvailability = lazy(() => import('./pages/doctor/DoctorAvailability'));
 const DoctorChat         = lazy(() => import('./pages/doctor/DoctorChat'));
 const DoctorNotes        = lazy(() => import('./pages/doctor/DoctorNotes'));
 const DoctorProfile      = lazy(() => import('./pages/doctor/DoctorProfile'));
 
-// ── Admin pages ───────────────────────────────────────────────────
 const AdminUsers    = lazy(() => import('./pages/admin/AdminUsers'));
 const AdminDoctors  = lazy(() => import('./pages/admin/AdminDoctors'));
 
-// ── Loading Spinner ───────────────────────────────────────────────
 function SuspenseFallback() {
   return (
     <div className="screen-center">
@@ -42,13 +37,11 @@ function SuspenseFallback() {
   );
 }
 
-// =============================================================================
 export default function App() {
   return (
     <Suspense fallback={<SuspenseFallback />}>
       <Routes>
 
-        {/* ── Public routes ───────────────────────────────────────── */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/unauthorized" element={<UnauthorizedPage />} />
@@ -56,7 +49,6 @@ export default function App() {
         {/* Root redirect */}
         <Route path="/" element={<Navigate to="/login" replace />} />
 
-        {/* ── Patient routes ─────────────────────────────────────── */}
         <Route
           path="/patient"
           element={
@@ -75,7 +67,6 @@ export default function App() {
           <Route path="profile" element={<PatientProfile />} />
         </Route>
 
-        {/* ── Doctor routes ─────────────────────────────────────── */}
         <Route
           path="/doctor"
           element={
@@ -94,7 +85,6 @@ export default function App() {
           <Route path="profile" element={<DoctorProfile />} />
         </Route>
 
-        {/* ── Admin routes ──────────────────────────────────────── */}
         <Route
           path="/admin"
           element={
@@ -110,7 +100,6 @@ export default function App() {
           <Route path="doctors" element={<AdminDoctors />} />
         </Route>
 
-        {/* ── 404 ───────────────────────────────────────────────── */}
         <Route path="*" element={<NotFoundPage />} />
 
       </Routes>

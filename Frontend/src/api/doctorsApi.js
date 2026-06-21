@@ -1,5 +1,4 @@
 
-
 import axiosInstance from './axiosInstance';
 
 /**
@@ -30,7 +29,7 @@ export const saveAvailabilityApi = async (
 
 /**
  * Submit verification document URL.
- * @param {string} documentUrl 
+ * @param {string} documentUrl
  */
 export const submitVerificationDocumentApi = async (documentUrl) => {
   const response = await axiosInstance.patch('/doctors/me/verification-document', {

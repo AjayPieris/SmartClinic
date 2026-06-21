@@ -49,7 +49,6 @@ export function generateSlots(
   bookedSlots,
   durationMinutes
 ) {
-  // ── 1. Parse the availability JSON ───────────────────────────────────────
   let availability = [];
   try {
     availability = JSON.parse(availabilityJson);
@@ -60,7 +59,6 @@ export function generateSlots(
 
   if (!Array.isArray(availability) || availability.length === 0) return [];
 
-  // ── 2. Find the window for this day of week ───────────────────────────────
   // Use LOCAL day (.getDay()) because selectedDate is local-midnight.
   const dayOfWeek = selectedDate.getDay();
   const window = availability.find((w) => w.DayOfWeek === dayOfWeek);
@@ -68,7 +66,6 @@ export function generateSlots(
   // Doctor doesn't work on this day
   if (!window) return [];
 
-  // ── 3. Parse window start/end as LOCAL times on the selected date ─────────
   // Doctor entered "HH:MM" strings in their local browser timezone.
   // Build Date objects using the LOCAL-time constructor so they map to the
   // same wall-clock hour the doctor intended.
@@ -88,7 +85,6 @@ export function generateSlots(
     return [];
   }
 
-  // ── 4. Pre-process booked slots into Date objects ─────────────────────────
   const bookedRanges = bookedSlots.map((slot) => ({
     start: new Date(slot.startTimeUtc),
     end:   new Date(slot.endTimeUtc),
@@ -96,7 +92,6 @@ export function generateSlots(
 
   const now = new Date();
 
-  // ── 5. Walk the window in durationMinutes steps ───────────────────────────
   const slots = [];
   let cursor = new Date(windowStart);
 
@@ -128,8 +123,6 @@ export function generateSlots(
 
   return slots;
 }
-
-// ── Private helpers ───────────────────────────────────────────────────────────
 
 /**
  * Format a slot as a human-readable local-time label.

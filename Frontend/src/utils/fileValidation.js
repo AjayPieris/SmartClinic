@@ -1,10 +1,8 @@
-// =============================================================================
 // src/utils/fileValidation.js — Client-side file validation.
 //
 // These checks mirror the server-side whitelist in CloudinaryService.cs.
 // Client validation is UX only — the server always has the final say.
 // Never rely solely on client validation for security.
-// =============================================================================
 
 // Must match AllowedDocumentMimeTypes in CloudinaryService.cs
 export const ALLOWED_DOCUMENT_TYPES = new Set([
@@ -27,7 +25,7 @@ export const ALLOWED_IMAGE_TYPES = new Set([
 ]);
 
 export const MAX_DOCUMENT_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
-export const MAX_IMAGE_SIZE_BYTES    =  5 * 1024 * 1024; //  5 MB
+export const MAX_IMAGE_SIZE_BYTES    =  5 * 1024 * 1024; // 5 MB
 
 /**
  * Validate a file chosen for medical document upload.

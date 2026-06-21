@@ -1,19 +1,17 @@
-// =============================================================================
 // CloudinaryService.cs — The ONLY file in the project that imports CloudinaryDotNet.
-//
+
 // Security decisions:
-//   1. ALLOWED file types are whitelisted here — we reject anything not on the list.
-//      Never trust Content-Type from the client; we check the magic bytes via
-//      the file extension as a first pass (full magic byte check is an enhancement).
-//   2. MAX file size is enforced here as a second gate (ASP.NET request size
-//      limits in Program.cs are the first gate — see configuration below).
-//   3. Files are uploaded with a sanitized filename — the original name is
-//      stored in the DB but never used as the Cloudinary public_id to prevent
-//      path traversal or injection via crafted filenames.
-//   4. Medical documents go to the "medical-docs/{patientId}" Cloudinary folder.
-//      Profile pictures go to "avatars/{userId}".
-//      This folder structure makes it easy to audit access in Cloudinary's dashboard.
-// =============================================================================
+// 1. ALLOWED file types are whitelisted here — we reject anything not on the list.
+// Never trust Content-Type from the client; we check the magic bytes via
+// the file extension as a first pass (full magic byte check is an enhancement).
+// 2. MAX file size is enforced here as a second gate (ASP.NET request size
+// limits in Program.cs are the first gate — see configuration below).
+// 3. Files are uploaded with a sanitized filename — the original name is
+// stored in the DB but never used as the Cloudinary public_id to prevent
+// path traversal or injection via crafted filenames.
+// 4. Medical documents go to the "medical-docs/{patientId}" Cloudinary folder.
+// Profile pictures go to "avatars/{userId}".
+// This folder structure makes it easy to audit access in Cloudinary's dashboard.
 
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;

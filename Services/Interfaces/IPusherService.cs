@@ -1,11 +1,9 @@
-// =============================================================================
 // IPusherService.cs — Contract for all Pusher server-side operations.
-//
+
 // Abstracted behind an interface for the same reasons as ICloudinaryService:
-//   - Controllers and ChatService never import PusherServer directly
-//   - Mockable for unit tests
-//   - Swappable if we migrate to a different WebSocket provider (e.g. Ably)
-// =============================================================================
+// - Controllers and ChatService never import PusherServer directly
+// - Mockable for unit tests
+// - Swappable if we migrate to a different WebSocket provider (e.g. Ably)
 
 namespace SmartClinic.API.Services.Interfaces;
 

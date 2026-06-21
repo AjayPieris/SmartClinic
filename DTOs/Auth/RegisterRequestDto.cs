@@ -1,9 +1,7 @@
 // DTOs/Auth/RegisterRequestDto.cs
-// =============================================================================
 // Inbound payload for POST /api/auth/register
 // DataAnnotations provide server-side validation — ModelState.IsValid
 // will be false automatically if these rules are violated.
-// =============================================================================
 
 using System.ComponentModel.DataAnnotations;
 

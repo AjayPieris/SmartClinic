@@ -1,5 +1,4 @@
 
-
 import { useEffect, useRef } from 'react';
 import pusherClient from '../lib/pusherClient';
 
@@ -37,7 +36,7 @@ export default function usePusherChat(appointmentId, onNewMessage) {
         acc[camelKey] = data[key];
         return acc;
       }, {});
-      
+
       onNewMessage(normalizedData);
     });
 
@@ -51,7 +50,6 @@ export default function usePusherChat(appointmentId, onNewMessage) {
       });
     }
 
-    // ── Cleanup: runs when appointmentId changes or component unmounts ──────
     return () => {
       // Unbind our specific event listener first, then unsubscribe the channel.
       // Unsubscribing without unbinding first leaks the listener.

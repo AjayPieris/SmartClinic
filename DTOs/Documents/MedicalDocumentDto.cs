@@ -1,11 +1,9 @@
-// =============================================================================
 // MedicalDocumentDto.cs — Outbound representation of a stored document.
-//
+
 // We intentionally expose CloudinaryUrl (the HTTPS CDN link) here because
 // the patient and their doctor need to open/download the file.
 // The CloudinaryPublicId is NEVER exposed in DTOs — it is an internal
 // Cloudinary management key that should only be used server-side for deletion.
-// =============================================================================
 
 namespace SmartClinic.API.DTOs.Documents;
 

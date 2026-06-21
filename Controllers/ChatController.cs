@@ -29,10 +29,10 @@ public class ChatController : ControllerBase
         Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)
             ?? throw new InvalidOperationException("User ID claim missing."));
 
-    // ─────────────────────────────────────────────────────────────────────────
+
     // POST /api/chat/send
     // Both Patients and Doctors can send messages (role gating is in ChatService)
-    // ─────────────────────────────────────────────────────────────────────────
+
     [HttpPost("send")]
     [Authorize(Roles = "Patient,Doctor")]
     [ProducesResponseType(typeof(ChatMessageDto), StatusCodes.Status201Created)]
@@ -64,11 +64,11 @@ public class ChatController : ControllerBase
         }
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
+
     // GET /api/chat/{appointmentId}/history
     // Load paginated chat history for an appointment
     // Supports cursor-based scroll-up pagination via OlderThan query param
-    // ─────────────────────────────────────────────────────────────────────────
+
     [HttpGet("{appointmentId:guid}/history")]
     [Authorize(Roles = "Patient,Doctor")]
     [ProducesResponseType(typeof(IEnumerable<ChatMessageDto>), StatusCodes.Status200OK)]
@@ -103,20 +103,18 @@ public class ChatController : ControllerBase
     }
 }
 
-// =============================================================================
 // PusherAuthController — Handles private channel authentication.
-//
+
 // When pusher-js tries to subscribe to "private-appointment-{id}-chat",
 // it POSTs to this endpoint with socket_id and channel_name.
 // We verify the user is a participant of that appointment, then return
 // the Pusher auth signature so Pusher's server approves the subscription.
-//
+
 // This endpoint is REQUIRED only when using private channels.
 // For the current public channel setup it is optional, but wired here
 // so upgrading to private channels only requires:
-//   1. Change "appointment-" to "private-appointment-" in the channel name
-//   2. Uncomment the [Authorize] call in pusher-js on the React side
-// =============================================================================
+// 1. Change "appointment-" to "private-appointment-" in the channel name
+// 2. Uncomment the [Authorize] call in pusher-js on the React side
 [ApiController]
 [Route("api/pusher")]
 [Authorize]

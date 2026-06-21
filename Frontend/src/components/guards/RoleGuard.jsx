@@ -1,4 +1,3 @@
-// =============================================================================
 // src/components/guards/RoleGuard.jsx
 //
 // Gate 2: Does the authenticated user have the correct role?
@@ -7,15 +6,14 @@
 // the user is already authenticated. We only need to check the role.
 //
 // Usage:
-//   <ProtectedRoute>
-//     <RoleGuard allowedRoles={['Doctor']}>
-//       <DoctorDashboard />
-//     </RoleGuard>
-//   </ProtectedRoute>
+// <ProtectedRoute>
+// <RoleGuard allowedRoles={['Doctor']}>
+// <DoctorDashboard />
+// </RoleGuard>
+// </ProtectedRoute>
 //
 // allowedRoles is an array to support multi-role access in the future
 // (e.g. both Doctor AND Admin can access a specific route).
-// =============================================================================
 
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';

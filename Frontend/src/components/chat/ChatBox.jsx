@@ -154,7 +154,7 @@ export default function ChatBox({ appointmentId, appointmentStatus, doctorName, 
             </span>
           </div>
         </div>
-        
+
         <div className={styles.headerActions}>
           <span className={`${styles.statusPill} ${styles[appointmentStatus?.toLowerCase()]}`}>
             {appointmentStatus}

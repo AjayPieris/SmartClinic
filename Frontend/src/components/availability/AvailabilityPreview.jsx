@@ -1,15 +1,13 @@
-// =============================================================================
 // src/components/availability/AvailabilityPreview.jsx
 //
 // Right-hand panel that shows a live summary of the current schedule.
 // Updates immediately on every change — no save required to see the preview.
 //
 // Shows:
-//   - List of enabled days with their time range and slot count
-//   - Total weekly working hours
-//   - Total weekly appointment slots
-//   - Empty state if no days are enabled
-// =============================================================================
+// - List of enabled days with their time range and slot count
+// - Total weekly working hours
+// - Total weekly appointment slots
+// - Empty state if no days are enabled
 
 import {
   countSlots, totalWeeklyHours, formatTimeLabel, DAY_NAMES,

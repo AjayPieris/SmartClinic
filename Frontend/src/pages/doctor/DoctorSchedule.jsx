@@ -11,7 +11,7 @@ import styles from './DoctorSchedule.module.css';
 
 export default function DoctorSchedule() {
   const { user } = useAuth();
-  
+
   // Data state
   const [appointments, setAppointments] = useState([]);
   const [availability, setAvailability] = useState([]);
@@ -57,7 +57,7 @@ export default function DoctorSchedule() {
   const handlePrevWeek = () => setWeekStart((prev) => subWeeks(prev, 1));
   const handleNextWeek = () => setWeekStart((prev) => addWeeks(prev, 1));
 
-  const appointmentsForSelectedDate = appointments.filter((a) => 
+  const appointmentsForSelectedDate = appointments.filter((a) =>
     isSameDay(new Date(a.startTimeUtc), selectedDate)
   );
 
@@ -87,7 +87,7 @@ export default function DoctorSchedule() {
 
   return (
     <div className={styles.page}>
-      
+
       {error && (
         <div className="error-banner">
           <span>{error}</span>
@@ -97,10 +97,10 @@ export default function DoctorSchedule() {
 
       {/* Main Glassmorphism Layout */}
       <div className={styles.layoutBoard}>
-        
+
         {/* Top Strip */}
         <div className={styles.topSection}>
-          <DateStrip 
+          <DateStrip
             weekDates={weekDates}
             selectedDate={selectedDate}
             onDateSelect={(date) => { setSelectedDate(date); setSelectedApptId(null); }}
@@ -112,14 +112,14 @@ export default function DoctorSchedule() {
 
         {/* Content Columns */}
         <div className={styles.contentColumns}>
-          
+
           {/* Left Column: Summary + Timeline */}
           <div className={styles.leftCol}>
-            <DaySummary 
-              appointments={appointmentsForSelectedDate} 
-              selectedDate={selectedDate} 
+            <DaySummary
+              appointments={appointmentsForSelectedDate}
+              selectedDate={selectedDate}
             />
-            <ScheduleTimeline 
+            <ScheduleTimeline
               appointments={appointmentsForSelectedDate}
               availability={availability}
               selectedDate={selectedDate}
@@ -131,12 +131,12 @@ export default function DoctorSchedule() {
 
           {/* Right Column: Appointment Details */}
           <div className={styles.rightCol}>
-            <AppointmentDetailCard 
+            <AppointmentDetailCard
               appointment={selectedAppointment}
               onStatusUpdate={handleStatusChange}
             />
           </div>
-          
+
         </div>
 
       </div>

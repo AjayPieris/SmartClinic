@@ -1,5 +1,4 @@
 
-
 import { useState, useEffect, useCallback } from 'react';
 import {
   startOfWeek, addDays, isSameDay,
@@ -14,7 +13,6 @@ export default function useDoctorSchedule() {
   const [selectedAppt,  setSelectedAppt]  = useState(null);
   const [error,         setError]         = useState('');
 
-  // ── Week strip dates ────────────────────────────────────────────────────
   // Always start the strip on the Monday of the selected date's week
   const [weekStart, setWeekStart] = useState(
     () => startOfWeek(new Date(), { weekStartsOn: 1 }) // 1 = Monday
@@ -30,7 +28,6 @@ export default function useDoctorSchedule() {
     setWeekStart((prev) => addDays(prev, 7));
   }, []);
 
-  // ── Fetch appointments ──────────────────────────────────────────────────
   // getMyScheduleApi returns all upcoming appointments for the doctor.
   // We filter client-side by selectedDate — avoids re-fetching on every
   // date click while the doctor scans the week.
@@ -55,18 +52,15 @@ export default function useDoctorSchedule() {
     return () => { cancelled = true; };
   }, []); // Fetch once — re-fetch manually after status changes if needed
 
-  // ── Derive appointments for the selected date ───────────────────────────
   const appointments = allAppointments.filter((a) =>
     isSameDay(new Date(a.startTimeUtc), selectedDate)
   );
 
-  // ── Handle date selection ───────────────────────────────────────────────
   const handleDateSelect = useCallback((date) => {
     setSelectedDate(date);
     setSelectedAppt(null); // Clear detail card when switching days
   }, []);
 
-  // ── Optimistic status update ────────────────────────────────────────────
   const handleStatusUpdate = useCallback(async (appointmentId, newStatus) => {
     // 1. Capture the previous status for rollback
     const prevAppointments = allAppointments;
@@ -99,7 +93,6 @@ export default function useDoctorSchedule() {
     }
   }, [allAppointments]);
 
-  // ── Expose everything ───────────────────────────────────────────────────
   return {
     selectedDate,
     handleDateSelect,

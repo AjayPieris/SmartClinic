@@ -8,7 +8,7 @@ export default function PatientAppointments() {
   const [appointments, setAppointments] = useState([]);
   const [isLoading,    setIsLoading]    = useState(true);
   const [error,        setError]        = useState('');
-  
+
   // Track if we should show the success banner
   const [showSuccess, setShowSuccess] = useState(
     location.state?.bookingSuccess === true
@@ -27,8 +27,8 @@ export default function PatientAppointments() {
 
   // For the success banner, grab the doctor name from the most recent pending appointment
   const latestPending = appointments.find(a => a.status === 'Pending');
-  const doctorNameForBanner = latestPending 
-    ? latestPending.doctorFullName 
+  const doctorNameForBanner = latestPending
+    ? latestPending.doctorFullName
     : (location.state?.doctorName || 'YOUR DOCTOR');
 
   return (
@@ -124,9 +124,9 @@ export default function PatientAppointments() {
                 const isCompleted = appt.status === 'Completed';
 
                 return (
-                  <div 
-                    key={appt.id} 
-                    className={`${styles.apptCard} ${styles.animateEnter}`} 
+                  <div
+                    key={appt.id}
+                    className={`${styles.apptCard} ${styles.animateEnter}`}
                     style={{ '--delay': i + 4 }}
                   >
                     <div className={styles.apptHeader}>

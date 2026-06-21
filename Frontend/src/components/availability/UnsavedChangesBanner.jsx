@@ -1,10 +1,8 @@
-// =============================================================================
 // src/components/availability/UnsavedChangesBanner.jsx
 //
 // A sticky warning strip shown when isDirty is true.
 // Gives the doctor two quick actions: Save or Discard.
 // Sticky positioning keeps it visible even when the schedule grid is long.
-// =============================================================================
 
 import styles from './UnsavedChangesBanner.module.css';
 

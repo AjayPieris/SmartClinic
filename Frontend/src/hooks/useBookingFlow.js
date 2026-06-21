@@ -1,5 +1,4 @@
 
-
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -15,33 +14,26 @@ const STEPS = ['doctor', 'date', 'slot', 'confirm'];
 export default function useBookingFlow() {
   const navigate = useNavigate();
 
-  // ── Step tracking ───────────────────────────────────────────────────────
   const [step, setStep] = useState('doctor');
 
-  // ── Step 1: Doctor selection ────────────────────────────────────────────
   const [doctors,          setDoctors]          = useState([]);
   const [isDoctorsLoading, setIsDoctorsLoading] = useState(true);
   const [selectedDoctor,   setSelectedDoctor]   = useState(null);
 
-  // ── Step 2: Date selection ──────────────────────────────────────────────
   // currentMonth controls what the calendar renders (not necessarily selected)
   const [currentMonth,   setCurrentMonth]   = useState(new Date());
   const [selectedDate,   setSelectedDate]   = useState(null);
 
-  // ── Step 3: Slot selection ──────────────────────────────────────────────
   const [slots,         setSlots]         = useState([]);
   const [isSlotsLoading, setIsSlotsLoading] = useState(false);
   const [selectedSlot,  setSelectedSlot]  = useState(null);
 
-  // ── Step 4: Confirm ─────────────────────────────────────────────────────
   const [patientReason,  setPatientReason]  = useState('');
   const [isTelehealth,   setIsTelehealth]   = useState(true);
   const [isSubmitting,   setIsSubmitting]   = useState(false);
 
-  // ── Global error ────────────────────────────────────────────────────────
   const [error, setError] = useState('');
 
-  // ── Load doctors on mount ───────────────────────────────────────────────
   useEffect(() => {
     const load = async () => {
       try {
@@ -56,7 +48,6 @@ export default function useBookingFlow() {
     load();
   }, []);
 
-  // ── Load booked slots whenever doctor + date both selected ───────────────
   useEffect(() => {
     if (!selectedDoctor || !selectedDate) return;
 
@@ -68,7 +59,7 @@ export default function useBookingFlow() {
       try {
         // Format date as YYYY-MM-DD using LOCAL date parts, NOT toISOString()
         // (toISOString converts to UTC first — in IST a local midnight becomes
-        //  the previous UTC day, so the API would query the wrong date)
+        // the previous UTC day, so the API would query the wrong date)
         const y   = selectedDate.getFullYear();
         const mo  = String(selectedDate.getMonth() + 1).padStart(2, '0');
         const day = String(selectedDate.getDate()).padStart(2, '0');
@@ -94,7 +85,6 @@ export default function useBookingFlow() {
     load();
   }, [selectedDoctor, selectedDate]);
 
-  // ── Navigation helpers ──────────────────────────────────────────────────
   const goNext = useCallback(() => {
     const currentIndex = STEPS.indexOf(step);
     if (currentIndex < STEPS.length - 1) {
@@ -111,7 +101,6 @@ export default function useBookingFlow() {
     }
   }, [step]);
 
-  // ── Step action handlers ────────────────────────────────────────────────
   const handleDoctorSelect = useCallback((doctor) => {
     setSelectedDoctor(doctor);
     setSelectedDate(null);    // Reset downstream selections
@@ -132,7 +121,6 @@ export default function useBookingFlow() {
     goNext();
   }, [goNext]);
 
-  // ── Final submission ────────────────────────────────────────────────────
   const handleConfirm = useCallback(async () => {
     if (!selectedDoctor || !selectedSlot) return;
 
@@ -173,7 +161,6 @@ export default function useBookingFlow() {
     }
   }, [selectedDoctor, selectedSlot, patientReason, isTelehealth, navigate]);
 
-  // ── Expose everything the UI needs ─────────────────────────────────────
   return {
     // Step tracking
     step,

@@ -1,14 +1,12 @@
-// =============================================================================
 // Program.cs — The DI composition root and middleware pipeline for .NET 8.
-//
+
 // Order of middleware matters in ASP.NET Core:
-//   1. Exception handler (must be first to catch everything below it)
-//   2. HTTPS redirection
-//   3. CORS (must be before Auth)
-//   4. Authentication (validates the JWT)
-//   5. Authorization (checks the role claims)
-//   6. Controller routing
-// =============================================================================
+// 1. Exception handler (must be first to catch everything below it)
+// 2. HTTPS redirection
+// 3. CORS (must be before Auth)
+// 4. Authentication (validates the JWT)
+// 5. Authorization (checks the role claims)
+// 6. Controller routing
 
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -22,9 +20,7 @@ using SmartClinic.API.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// =============================================================================
 // SERVICE REGISTRATIONS (the DI container)
-// =============================================================================
 
 // --- Database ---
 // Npgsql reads the Neon connection string and configures EF Core for Postgres
@@ -137,9 +133,7 @@ builder.WebHost.ConfigureKestrel(options =>
     options.Limits.MaxRequestBodySize = 10 * 1024 * 1024; // 10 MB
 });
 
-// =============================================================================
 // BUILD & MIDDLEWARE PIPELINE
-// =============================================================================
 var app = builder.Build();
 
 // --- Apply pending EF Core migrations automatically on startup ---

@@ -1,10 +1,8 @@
-// =============================================================================
 // ChatHistoryRequestDto.cs — Query params for GET /api/chat/{appointmentId}/history
-//
+
 // Supports cursor-based pagination so loading a long chat history does not
 // return thousands of rows in a single query. The React ChatBox loads the
 // latest N messages on mount, then fetches older pages as the user scrolls up.
-// =============================================================================
 
 namespace SmartClinic.API.DTOs.Chat;
 

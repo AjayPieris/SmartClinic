@@ -1,11 +1,9 @@
-// =============================================================================
 // src/components/booking/DoctorPicker.jsx — Step 1: choose a doctor.
 //
 // Features:
-//   - Search/filter by name or specialization
-//   - Shows profile picture, name, specialization, consultation duration
-//   - Skeleton loading cards while the API call completes
-// =============================================================================
+// - Search/filter by name or specialization
+// - Shows profile picture, name, specialization, consultation duration
+// - Skeleton loading cards while the API call completes
 
 import { useState } from 'react';
 import styles from './DoctorPicker.module.css';

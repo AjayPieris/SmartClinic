@@ -1,6 +1,4 @@
-// =============================================================================
 // IChatService.cs — Business logic contract for the chat feature.
-// =============================================================================
 
 using SmartClinic.API.DTOs.Chat;
 

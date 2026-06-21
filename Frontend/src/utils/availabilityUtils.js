@@ -1,9 +1,7 @@
-// =============================================================================
 // src/utils/availabilityUtils.js
 //
 // Pure utility functions used by the AvailabilityPreview panel.
 // No API calls, no React — just data transformations.
-// =============================================================================
 
 /**
  * Count how many slots fit in a given time window at a given duration.
