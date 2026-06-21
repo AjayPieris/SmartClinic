@@ -1,16 +1,3 @@
-// src/components/documents/FileDropZone.jsx
-//
-// A drag-and-drop upload area with a fallback file picker button.
-//
-// States:
-// idle      — default dashed border, upload icon, helper text
-// dragOver  — highlighted border + background when a file is dragged over
-// hasFile   — shows the selected file's name and size with a "change" option
-//
-// Accessibility:
-// The hidden <input type="file"> is triggered by clicking the zone or
-// pressing Enter/Space on the focusable zone div.
-// The drag-and-drop events are supplemented with keyboard equivalents.
 
 import { useState, useRef, useCallback } from 'react';
 import { validateDocumentFile, formatBytes } from '../../utils/fileValidation';

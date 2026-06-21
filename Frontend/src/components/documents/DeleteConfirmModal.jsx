@@ -1,10 +1,7 @@
-// src/components/documents/DeleteConfirmModal.jsx
-//
 // A lightweight modal that appears when the patient clicks the delete button
 // on a DocumentCard. Uses a portal-free approach — the modal sits inside the
 // page flow inside a full-viewport overlay div (not position:fixed, which
 // breaks iframe-based environments).
-//
 // Pressing Escape or clicking the backdrop dismisses without deleting.
 
 import { useEffect } from 'react';

@@ -1,17 +1,4 @@
-// DocumentService.cs — Orchestrates Cloudinary uploads and DB persistence.
 
-// Key design decisions:
-// 1. Upload to Cloudinary FIRST, then write to DB.
-// If the DB write fails, we call DeleteFileAsync to clean up Cloudinary.
-// This avoids orphaned files (files in Cloudinary with no DB record).
-
-// 2. Profile picture replacement: old URL is deleted from Cloudinary AFTER
-// the new upload succeeds and DB is updated. This prevents a window where
-// the user has no profile picture if the new upload fails.
-
-// 3. Authorization is enforced in this service, not just the controller.
-// Defense-in-depth: even if a misconfigured route bypasses the controller
-// attribute, the service will reject unauthorized access.
 
 using Microsoft.EntityFrameworkCore;
 using SmartClinic.API.Data;
@@ -37,9 +24,7 @@ public class DocumentService : IDocumentService
         _logger = logger;
     }
 
-    // -------------------------------------------------------------------------
     // UploadDocumentAsync
-    // -------------------------------------------------------------------------
     public async Task<MedicalDocumentDto> UploadDocumentAsync(
         UploadDocumentRequestDto request, Guid patientUserId)
     {
@@ -49,7 +34,7 @@ public class DocumentService : IDocumentService
             ?? throw new KeyNotFoundException("Patient profile not found.");
 
         // 2. Upload to Cloudinary first
-        // Folder: "medical-docs/{patientProfileId}" — scoped per patient
+
         // This makes it easy to find all files for a patient in Cloudinary's dashboard
         var folder = $"medical-docs/{patientProfile.Id}";
         CloudinaryUploadResult uploadResult;
@@ -61,7 +46,7 @@ public class DocumentService : IDocumentService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Cloudinary upload failed for patient {PatientId}", patientProfile.Id);
-            throw; // Re-throw — controller will return 400 via GlobalExceptionMiddleware
+            throw;
         }
 
         // 3. Persist metadata to DB
@@ -85,12 +70,11 @@ public class DocumentService : IDocumentService
         }
         catch (Exception ex)
         {
-            // DB write failed — delete the Cloudinary file to prevent orphaning
+
             _logger.LogError(ex,
                 "DB write failed after Cloudinary upload. Cleaning up {PublicId}",
                 uploadResult.PublicId);
 
-            // Best-effort cleanup — if this also fails, log it but don't mask the original error
             try { await _cloudinary.DeleteFileAsync(uploadResult.PublicId); }
             catch (Exception cleanupEx)
             {
@@ -109,9 +93,7 @@ public class DocumentService : IDocumentService
         return MapToDto(document);
     }
 
-    // -------------------------------------------------------------------------
     // GetPatientDocumentsAsync
-    // -------------------------------------------------------------------------
     public async Task<IEnumerable<MedicalDocumentDto>> GetPatientDocumentsAsync(Guid patientUserId)
     {
         var documents = await _db.MedicalDocuments
@@ -124,9 +106,7 @@ public class DocumentService : IDocumentService
         return documents.Select(MapToDto);
     }
 
-    // -------------------------------------------------------------------------
     // DeleteDocumentAsync
-    // -------------------------------------------------------------------------
     public async Task DeleteDocumentAsync(
         Guid documentId, Guid requestingUserId, string requestingUserRole)
     {
@@ -153,7 +133,7 @@ public class DocumentService : IDocumentService
 
         // 2. Delete from Cloudinary after DB success
         // If Cloudinary deletion fails, the file becomes orphaned in Cloudinary
-        // but the DB record is gone — this is acceptable (Cloudinary costs pennies,
+
         // data consistency is more important). Log for periodic cleanup.
         try
         {
@@ -170,12 +150,10 @@ public class DocumentService : IDocumentService
             "Document {DocId} deleted by user {UserId}", documentId, requestingUserId);
     }
 
-    // -------------------------------------------------------------------------
     // UploadProfilePictureAsync
-    // -------------------------------------------------------------------------
     public async Task<string> UploadProfilePictureAsync(IFormFile file, Guid userId)
     {
-        // Load the user — we need to know their existing picture URL for cleanup
+
         var user = await _db.Users.FindAsync(userId)
             ?? throw new KeyNotFoundException("User not found.");
 
@@ -184,7 +162,7 @@ public class DocumentService : IDocumentService
             : null;
 
         // Upload new image to Cloudinary
-        // Folder: "avatars/{userId}" — one folder per user, easy to manage
+
         var folder = $"avatars/{userId}";
         var uploadResult = await _cloudinary.UploadFileAsync(file, folder);
 
@@ -208,13 +186,10 @@ public class DocumentService : IDocumentService
 
         _logger.LogInformation("Profile picture updated for user {UserId}", userId);
 
-        // Return the new secure URL — React stores this in AuthContext
         return uploadResult.SecureUrl;
     }
 
-    // -------------------------------------------------------------------------
     // Private helpers
-    // -------------------------------------------------------------------------
 
     // Map EF Core entity to outbound DTO
     private static MedicalDocumentDto MapToDto(MedicalDocument doc) => new()
@@ -249,7 +224,6 @@ public class DocumentService : IDocumentService
             var afterUpload = segments.Skip(uploadIndex + 2); // +2 skips "upload" and version
             var publicIdWithExt = string.Join("/", afterUpload);
 
-            // Strip the file extension — Cloudinary public_ids don't include it
             var dotIndex = publicIdWithExt.LastIndexOf('.');
             return dotIndex > 0 ? publicIdWithExt[..dotIndex] : publicIdWithExt;
         }

@@ -1,5 +1,3 @@
-// src/components/documents/DocumentList.jsx
-//
 // Renders the patient's document library — skeleton while loading,
 // empty state when the list is clear, document cards otherwise.
 

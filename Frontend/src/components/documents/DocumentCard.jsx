@@ -1,9 +1,6 @@
-// src/components/documents/DocumentCard.jsx
-//
 // Renders a single document row in the document list.
 // Shows: file type badge · document name · file size · upload date ·
 // open link (Cloudinary URL) · delete button.
-//
 // The "Open" link targets the Cloudinary secure_url — the browser handles
 // display (PDFs open inline, images open in a new tab).
 

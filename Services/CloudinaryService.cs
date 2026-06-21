@@ -1,17 +1,4 @@
-// CloudinaryService.cs — The ONLY file in the project that imports CloudinaryDotNet.
 
-// Security decisions:
-// 1. ALLOWED file types are whitelisted here — we reject anything not on the list.
-// Never trust Content-Type from the client; we check the magic bytes via
-// the file extension as a first pass (full magic byte check is an enhancement).
-// 2. MAX file size is enforced here as a second gate (ASP.NET request size
-// limits in Program.cs are the first gate — see configuration below).
-// 3. Files are uploaded with a sanitized filename — the original name is
-// stored in the DB but never used as the Cloudinary public_id to prevent
-// path traversal or injection via crafted filenames.
-// 4. Medical documents go to the "medical-docs/{patientId}" Cloudinary folder.
-// Profile pictures go to "avatars/{userId}".
-// This folder structure makes it easy to audit access in Cloudinary's dashboard.
 
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
@@ -56,7 +43,7 @@ public class CloudinaryService : ICloudinaryService
         _logger = logger;
 
         // Cloudinary account credentials come from appsettings.json / env vars
-        // Never hardcode credentials here — they must come from configuration
+
         var cloudName = config["Cloudinary:CloudName"]
             ?? throw new InvalidOperationException("Cloudinary:CloudName is not configured.");
         var apiKey = config["Cloudinary:ApiKey"]
@@ -64,7 +51,6 @@ public class CloudinaryService : ICloudinaryService
         var apiSecret = config["Cloudinary:ApiSecret"]
             ?? throw new InvalidOperationException("Cloudinary:ApiSecret is not configured.");
 
-        // Account wraps the credentials — passed into every SDK operation
         var account = new Account(cloudName, apiKey, apiSecret);
         _cloudinary = new Cloudinary(account)
         {
@@ -73,12 +59,9 @@ public class CloudinaryService : ICloudinaryService
         };
     }
 
-    // -------------------------------------------------------------------------
     // UploadFileAsync
-    // -------------------------------------------------------------------------
     public async Task<CloudinaryUploadResult> UploadFileAsync(IFormFile file, string folder)
     {
-        // --- Server-side validation (do NOT rely on client-side validation alone) ---
 
         // 1. Check file size
         if (file.Length > MaxFileSizeBytes)
@@ -100,8 +83,6 @@ public class CloudinaryService : ICloudinaryService
                 $"File type '{file.ContentType}' is not permitted. " +
                 $"Allowed types: {string.Join(", ", allowedTypes)}");
 
-        // --- Build the Cloudinary upload parameters ---
-
         // Generate a safe, unique public_id to avoid filename-based attacks.
         // Cloudinary public_id format: "folder/timestamp-guid"
         var safePublicId = $"{folder}/{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}-{Guid.NewGuid():N}";
@@ -117,7 +98,6 @@ public class CloudinaryService : ICloudinaryService
             "Uploading file to Cloudinary: {OriginalName}, {Size}, folder: {Folder}",
             file.FileName, FormatBytes(file.Length), folder);
 
-        // Open the file stream and upload — this streams directly to Cloudinary,
         // the full file is NOT buffered into a byte array in memory
         await using var stream = file.OpenReadStream();
 
@@ -128,7 +108,7 @@ public class CloudinaryService : ICloudinaryService
             {
                 File = new FileDescription(file.FileName, stream),
                 PublicId = safePublicId,
-                Overwrite = false, // Never overwrite — each upload is a new resource
+                Overwrite = false,
 
                 // For profile pictures: auto-crop to a square face-focused thumbnail
                 // For documents: no transformation
@@ -188,9 +168,7 @@ public class CloudinaryService : ICloudinaryService
         }
     }
 
-    // -------------------------------------------------------------------------
     // DeleteFileAsync
-    // -------------------------------------------------------------------------
     public async Task DeleteFileAsync(string publicId)
     {
         // We need to determine the resource type from the public_id prefix
@@ -217,9 +195,6 @@ public class CloudinaryService : ICloudinaryService
         }
     }
 
-    // -------------------------------------------------------------------------
-    // Private helper — format bytes into a human-readable string
-    // -------------------------------------------------------------------------
     private static string FormatBytes(long bytes) => bytes switch
     {
         < 1024 => $"{bytes} B",
