@@ -1,5 +1,3 @@
-
-
 using Microsoft.EntityFrameworkCore;
 using SmartClinic.API.Data;
 using SmartClinic.API.Data.Models;
@@ -24,18 +22,13 @@ public class DocumentService : IDocumentService
         _logger = logger;
     }
 
-    // UploadDocumentAsync
     public async Task<MedicalDocumentDto> UploadDocumentAsync(
         UploadDocumentRequestDto request, Guid patientUserId)
     {
-        // 1. Resolve the patient's profile (needed for the folder path and FK)
         var patientProfile = await _db.PatientProfiles
             .FirstOrDefaultAsync(p => p.UserId == patientUserId)
             ?? throw new KeyNotFoundException("Patient profile not found.");
 
-        // 2. Upload to Cloudinary first
-
-        // This makes it easy to find all files for a patient in Cloudinary's dashboard
         var folder = $"medical-docs/{patientProfile.Id}";
         CloudinaryUploadResult uploadResult;
 
@@ -49,8 +42,6 @@ public class DocumentService : IDocumentService
             throw;
         }
 
-        // 3. Persist metadata to DB
-        // If this fails, we must clean up the Cloudinary file to avoid orphans
         var document = new MedicalDocument
         {
             PatientProfileId = patientProfile.Id,
@@ -70,7 +61,6 @@ public class DocumentService : IDocumentService
         }
         catch (Exception ex)
         {
-
             _logger.LogError(ex,
                 "DB write failed after Cloudinary upload. Cleaning up {PublicId}",
                 uploadResult.PublicId);
@@ -83,7 +73,7 @@ public class DocumentService : IDocumentService
                     uploadResult.PublicId);
             }
 
-            throw; // Re-throw the original DB exception
+            throw;
         }
 
         _logger.LogInformation(
@@ -93,7 +83,6 @@ public class DocumentService : IDocumentService
         return MapToDto(document);
     }
 
-    // GetPatientDocumentsAsync
     public async Task<IEnumerable<MedicalDocumentDto>> GetPatientDocumentsAsync(Guid patientUserId)
     {
         var documents = await _db.MedicalDocuments
@@ -106,35 +95,25 @@ public class DocumentService : IDocumentService
         return documents.Select(MapToDto);
     }
 
-    // DeleteDocumentAsync
     public async Task DeleteDocumentAsync(
         Guid documentId, Guid requestingUserId, string requestingUserRole)
     {
-        // Load document with its patient profile for ownership verification
         var document = await _db.MedicalDocuments
             .Include(d => d.PatientProfile)
             .FirstOrDefaultAsync(d => d.Id == documentId)
             ?? throw new KeyNotFoundException("Document not found.");
 
-        // Authorization: patients can only delete their own documents
         var isOwner = document.PatientProfile.UserId == requestingUserId;
         var isAdmin = requestingUserRole == "Admin";
 
         if (!isOwner && !isAdmin)
-            throw new UnauthorizedAccessException(
-                "You are not authorized to delete this document.");
+            throw new UnauthorizedAccessException("You are not authorized to delete this document.");
 
-        // Capture public_id before removing from DB
         var publicId = document.CloudinaryPublicId;
 
-        // 1. Remove from DB first
         _db.MedicalDocuments.Remove(document);
         await _db.SaveChangesAsync();
 
-        // 2. Delete from Cloudinary after DB success
-        // If Cloudinary deletion fails, the file becomes orphaned in Cloudinary
-
-        // data consistency is more important). Log for periodic cleanup.
         try
         {
             await _cloudinary.DeleteFileAsync(publicId);
@@ -150,10 +129,8 @@ public class DocumentService : IDocumentService
             "Document {DocId} deleted by user {UserId}", documentId, requestingUserId);
     }
 
-    // UploadProfilePictureAsync
     public async Task<string> UploadProfilePictureAsync(IFormFile file, Guid userId)
     {
-
         var user = await _db.Users.FindAsync(userId)
             ?? throw new KeyNotFoundException("User not found.");
 
@@ -161,26 +138,20 @@ public class DocumentService : IDocumentService
             ? ExtractPublicIdFromUrl(user.ProfilePictureUrl)
             : null;
 
-        // Upload new image to Cloudinary
-
         var folder = $"avatars/{userId}";
         var uploadResult = await _cloudinary.UploadFileAsync(file, folder);
 
-        // Update the User record with the new URL
         user.ProfilePictureUrl = uploadResult.SecureUrl;
         user.UpdatedAtUtc = DateTime.UtcNow;
 
         await _db.SaveChangesAsync();
 
-        // Delete the OLD profile picture AFTER the new one is saved
-        // This ensures we never have a window where the user has no picture
         if (oldPublicId is not null)
         {
             try { await _cloudinary.DeleteFileAsync(oldPublicId); }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex,
-                    "Old profile picture cleanup failed for {PublicId}", oldPublicId);
+                _logger.LogWarning(ex, "Old profile picture cleanup failed for {PublicId}", oldPublicId);
             }
         }
 
@@ -189,9 +160,6 @@ public class DocumentService : IDocumentService
         return uploadResult.SecureUrl;
     }
 
-    // Private helpers
-
-    // Map EF Core entity to outbound DTO
     private static MedicalDocumentDto MapToDto(MedicalDocument doc) => new()
     {
         Id = doc.Id,
@@ -204,24 +172,17 @@ public class DocumentService : IDocumentService
         UploadedAtUtc = doc.UploadedAtUtc,
     };
 
-    // Extract the Cloudinary public_id from a secure_url
-    // Cloudinary URLs follow: https://res.cloudinary.com/{cloud}/{type}/upload/{version}/{public_id}.{ext}
-    // We need the public_id portion (without extension) for the deletion API.
     private static string? ExtractPublicIdFromUrl(string secureUrl)
     {
         try
         {
             var uri = new Uri(secureUrl);
-            // Path segments example: ["", "mycloud", "image", "upload", "v123", "avatars", "userid", "filename.jpg"]
             var segments = uri.AbsolutePath.Split('/');
 
-            // Find the "upload" segment index and take everything after it,
-            // skipping the version segment (v1234567890)
             var uploadIndex = Array.IndexOf(segments, "upload");
             if (uploadIndex < 0) return null;
 
-            // Join remaining segments after "upload" and the version number
-            var afterUpload = segments.Skip(uploadIndex + 2); // +2 skips "upload" and version
+            var afterUpload = segments.Skip(uploadIndex + 2);
             var publicIdWithExt = string.Join("/", afterUpload);
 
             var dotIndex = publicIdWithExt.LastIndexOf('.');
@@ -229,7 +190,7 @@ public class DocumentService : IDocumentService
         }
         catch
         {
-            return null; // If URL is malformed, skip cleanup
+            return null;
         }
     }
 

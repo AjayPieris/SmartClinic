@@ -21,15 +21,11 @@ namespace SmartClinic.API.Data.Models
 
         [Required]
         [MaxLength(50)]
-        public string Type { get; set; } = string.Empty; // "Appointment", "Message", etc.
-
-        public Guid? RelatedEntityId { get; set; } // E.g., AppointmentId or ChatMessageId
-
+        public string Type { get; set; } = string.Empty;
+        public Guid? RelatedEntityId { get; set; }
         public bool IsRead { get; set; } = false;
-
         public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
 
-        // Navigation properties
         [ForeignKey(nameof(UserId))]
         public User User { get; set; } = null!;
     }

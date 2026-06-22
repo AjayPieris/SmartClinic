@@ -1,5 +1,3 @@
-
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,8 +21,6 @@ public class AdminController : ControllerBase
         _logger = logger;
     }
 
-    // GET /api/admin/users?role=Patient&status=active
-    // List all users with optional role and status filters
     [HttpGet("users")]
     public async Task<IActionResult> GetAllUsers(
         [FromQuery] string? role,
@@ -36,18 +32,15 @@ public class AdminController : ControllerBase
             .Include(u => u.DoctorProfile)
             .AsQueryable();
 
-        // Filter by role
         if (!string.IsNullOrWhiteSpace(role))
             query = query.Where(u => u.Role == role);
 
-        // Filter by status
         if (!string.IsNullOrWhiteSpace(status))
         {
             var isActive = status.Equals("active", StringComparison.OrdinalIgnoreCase);
             query = query.Where(u => u.IsActive == isActive);
         }
 
-        // Search by name or email
         if (!string.IsNullOrWhiteSpace(search))
         {
             var searchLower = search.ToLower();
@@ -82,7 +75,6 @@ public class AdminController : ControllerBase
         return Ok(users);
     }
 
-    // PATCH /api/admin/users/{id}/block
     [HttpPatch("users/{id:guid}/block")]
     public async Task<IActionResult> BlockUser(Guid id)
     {
@@ -90,7 +82,6 @@ public class AdminController : ControllerBase
         if (user is null)
             return NotFound(new { message = "User not found." });
 
-        // Prevent admins from blocking themselves
         if (user.Role == "Admin")
             return BadRequest(new { message = "Cannot block an admin account." });
 
@@ -102,7 +93,6 @@ public class AdminController : ControllerBase
         return Ok(new { message = $"{user.FirstName} {user.LastName} has been blocked." });
     }
 
-    // PATCH /api/admin/users/{id}/unblock
     [HttpPatch("users/{id:guid}/unblock")]
     public async Task<IActionResult> UnblockUser(Guid id)
     {
@@ -118,8 +108,6 @@ public class AdminController : ControllerBase
         return Ok(new { message = $"{user.FirstName} {user.LastName} has been unblocked." });
     }
 
-    // GET /api/admin/doctors
-    // List ALL doctors with full verification info
     [HttpGet("doctors")]
     public async Task<IActionResult> GetAllDoctors([FromQuery] string? verificationStatus)
     {
@@ -128,7 +116,6 @@ public class AdminController : ControllerBase
             .Include(d => d.User)
             .AsQueryable();
 
-        // Filter by verification status
         if (!string.IsNullOrWhiteSpace(verificationStatus) &&
             Enum.TryParse<VerificationStatus>(verificationStatus, true, out var parsedStatus))
         {
@@ -161,8 +148,6 @@ public class AdminController : ControllerBase
         return Ok(doctors);
     }
 
-    // GET /api/admin/doctors/pending
-    // List only doctors awaiting approval
     [HttpGet("doctors/pending")]
     public async Task<IActionResult> GetPendingDoctors()
     {
@@ -170,7 +155,7 @@ public class AdminController : ControllerBase
             .AsNoTracking()
             .Include(d => d.User)
             .Where(d => d.VerificationStatus == VerificationStatus.Pending)
-            .OrderBy(d => d.User.CreatedAtUtc) // oldest first
+            .OrderBy(d => d.User.CreatedAtUtc)
             .Select(d => new AdminDoctorDetailDto
             {
                 DoctorProfileId = d.Id,
@@ -195,7 +180,6 @@ public class AdminController : ControllerBase
         return Ok(doctors);
     }
 
-    // PATCH /api/admin/doctors/{doctorProfileId}/approve
     [HttpPatch("doctors/{doctorProfileId:guid}/approve")]
     public async Task<IActionResult> ApproveDoctor(Guid doctorProfileId)
     {
@@ -208,7 +192,7 @@ public class AdminController : ControllerBase
 
         doctor.VerificationStatus = VerificationStatus.Approved;
         doctor.VerifiedAtUtc = DateTime.UtcNow;
-        doctor.RejectionReason = null; // clear any previous rejection
+        doctor.RejectionReason = null;
         doctor.User.UpdatedAtUtc = DateTime.UtcNow;
 
         await _db.SaveChangesAsync();
@@ -219,7 +203,6 @@ public class AdminController : ControllerBase
         return Ok(new { message = $"Dr. {doctor.User.FirstName} {doctor.User.LastName} has been approved and verified." });
     }
 
-    // PATCH /api/admin/doctors/{doctorProfileId}/reject
     [HttpPatch("doctors/{doctorProfileId:guid}/reject")]
     public async Task<IActionResult> RejectDoctor(
         Guid doctorProfileId,
@@ -245,8 +228,6 @@ public class AdminController : ControllerBase
         return Ok(new { message = $"Dr. {doctor.User.FirstName} {doctor.User.LastName} has been rejected." });
     }
 
-    // GET /api/admin/stats
-    // Summary statistics for the dashboard cards
     [HttpGet("stats")]
     public async Task<IActionResult> GetStats()
     {

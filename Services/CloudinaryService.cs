@@ -1,5 +1,3 @@
-
-
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Http;
@@ -12,10 +10,8 @@ public class CloudinaryService : ICloudinaryService
     private readonly Cloudinary _cloudinary;
     private readonly ILogger<CloudinaryService> _logger;
 
-    // Maximum allowed file size: 10 MB
     private const long MaxFileSizeBytes = 10 * 1024 * 1024;
 
-    // Whitelisted MIME types for medical documents
     private static readonly HashSet<string> AllowedDocumentMimeTypes = new(StringComparer.OrdinalIgnoreCase)
     {
         "application/pdf",
@@ -23,12 +19,10 @@ public class CloudinaryService : ICloudinaryService
         "image/jpg",
         "image/png",
         "image/webp",
-        // Common medical imaging formats
         "application/dicom",
         "image/tiff",
     };
 
-    // Whitelisted MIME types for profile pictures (images only)
     private static readonly HashSet<string> AllowedImageMimeTypes = new(StringComparer.OrdinalIgnoreCase)
     {
         "image/jpeg",
@@ -42,8 +36,6 @@ public class CloudinaryService : ICloudinaryService
     {
         _logger = logger;
 
-        // Cloudinary account credentials come from appsettings.json / env vars
-
         var cloudName = config["Cloudinary:CloudName"]
             ?? throw new InvalidOperationException("Cloudinary:CloudName is not configured.");
         var apiKey = config["Cloudinary:ApiKey"]
@@ -54,42 +46,27 @@ public class CloudinaryService : ICloudinaryService
         var account = new Account(cloudName, apiKey, apiSecret);
         _cloudinary = new Cloudinary(account)
         {
-            // Enforce HTTPS for all API calls to Cloudinary
             Api = { Secure = true }
         };
     }
 
-    // UploadFileAsync
     public async Task<CloudinaryUploadResult> UploadFileAsync(IFormFile file, string folder)
     {
-
-        // 1. Check file size
         if (file.Length > MaxFileSizeBytes)
-            throw new InvalidOperationException(
-                $"File size {FormatBytes(file.Length)} exceeds the 10 MB limit.");
+            throw new InvalidOperationException($"File size {FormatBytes(file.Length)} exceeds the 10 MB limit.");
 
-        // 2. Check file is not empty
         if (file.Length == 0)
             throw new InvalidOperationException("Cannot upload an empty file.");
 
-        // 3. Validate MIME type based on folder context
-        // "avatars" folder = image only; anything else = full document list
         var allowedTypes = folder.StartsWith("avatars", StringComparison.OrdinalIgnoreCase)
             ? AllowedImageMimeTypes
             : AllowedDocumentMimeTypes;
 
         if (!allowedTypes.Contains(file.ContentType))
-            throw new InvalidOperationException(
-                $"File type '{file.ContentType}' is not permitted. " +
-                $"Allowed types: {string.Join(", ", allowedTypes)}");
+            throw new InvalidOperationException($"File type '{file.ContentType}' is not permitted.");
 
-        // Generate a safe, unique public_id to avoid filename-based attacks.
-        // Cloudinary public_id format: "folder/timestamp-guid"
         var safePublicId = $"{folder}/{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}-{Guid.NewGuid():N}";
 
-        // Determine the resource type:
-        // "image" for images (enables Cloudinary transformations like resize/crop)
-        // "raw" for PDFs and other non-image binary files
         var resourceType = file.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase)
             ? ResourceType.Image
             : ResourceType.Raw;
@@ -98,10 +75,8 @@ public class CloudinaryService : ICloudinaryService
             "Uploading file to Cloudinary: {OriginalName}, {Size}, folder: {Folder}",
             file.FileName, FormatBytes(file.Length), folder);
 
-        // the full file is NOT buffered into a byte array in memory
         await using var stream = file.OpenReadStream();
 
-        // Build upload parameters based on resource type
         if (resourceType == ResourceType.Image)
         {
             var imageParams = new ImageUploadParams
@@ -110,8 +85,6 @@ public class CloudinaryService : ICloudinaryService
                 PublicId = safePublicId,
                 Overwrite = false,
 
-                // For profile pictures: auto-crop to a square face-focused thumbnail
-                // For documents: no transformation
                 Transformation = folder.StartsWith("avatars")
                     ? new Transformation()
                         .Width(400).Height(400)
@@ -121,7 +94,6 @@ public class CloudinaryService : ICloudinaryService
                         .FetchFormat("auto")
                     : null,
 
-                // Tag uploads for easy filtering in Cloudinary's media library
                 Tags = folder.StartsWith("avatars") ? "avatar" : "medical-document",
             };
 
@@ -130,8 +102,7 @@ public class CloudinaryService : ICloudinaryService
             if (imageResult.Error != null)
             {
                 _logger.LogError("Cloudinary upload error: {Message}", imageResult.Error.Message);
-                throw new InvalidOperationException(
-                    $"File upload failed: {imageResult.Error.Message}");
+                throw new InvalidOperationException($"File upload failed: {imageResult.Error.Message}");
             }
 
             return new CloudinaryUploadResult(
@@ -142,7 +113,6 @@ public class CloudinaryService : ICloudinaryService
         }
         else
         {
-            // Raw upload for PDFs, DICOM, etc.
             var rawParams = new RawUploadParams
             {
                 File = new FileDescription(file.FileName, stream),
@@ -156,8 +126,7 @@ public class CloudinaryService : ICloudinaryService
             if (rawResult.Error != null)
             {
                 _logger.LogError("Cloudinary upload error: {Message}", rawResult.Error.Message);
-                throw new InvalidOperationException(
-                    $"File upload failed: {rawResult.Error.Message}");
+                throw new InvalidOperationException($"File upload failed: {rawResult.Error.Message}");
             }
 
             return new CloudinaryUploadResult(
@@ -168,12 +137,9 @@ public class CloudinaryService : ICloudinaryService
         }
     }
 
-    // DeleteFileAsync
     public async Task DeleteFileAsync(string publicId)
     {
-        // We need to determine the resource type from the public_id prefix
-        // Cloudinary requires the correct resource type for deletion
-        var isRaw = !publicId.Contains("avatars"); // crude but effective for our folder structure
+        var isRaw = !publicId.Contains("avatars");
         var resourceType = isRaw ? ResourceType.Raw : ResourceType.Image;
 
         var deleteParams = new DeletionParams(publicId)

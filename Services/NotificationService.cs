@@ -38,7 +38,6 @@ namespace SmartClinic.API.Services
 
             var dto = MapToDto(notification);
 
-            // Fire Pusher event to the user's private notification channel
             var channelName = $"private-user-{userId}-notifications";
             await _pusherService.TriggerAsync(channelName, "new-notification", dto);
 

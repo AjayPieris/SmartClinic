@@ -1,5 +1,3 @@
-
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +18,6 @@ public class DoctorsController : ControllerBase
 
     public DoctorsController(AppDbContext db) => _db = db;
 
-    // GET /api/doctors
     [HttpGet]
     [Authorize(Roles = "Patient,Admin")]
     public async Task<IActionResult> GetAllDoctors()
@@ -48,7 +45,6 @@ public class DoctorsController : ControllerBase
         return Ok(doctors);
     }
 
-    // GET /api/doctors/{id}/booked-slots
     [HttpGet("{id:guid}/booked-slots")]
     [Authorize(Roles = "Patient,Admin")]
     public async Task<IActionResult> GetBookedSlots(Guid id, [FromQuery] string date)
@@ -72,7 +68,6 @@ public class DoctorsController : ControllerBase
         return Ok(booked);
     }
 
-    // PATCH /api/doctors/availability
     [HttpPatch("availability")]
     [Authorize(Roles = "Doctor")]
     public async Task<IActionResult> UpdateAvailability(
@@ -133,7 +128,6 @@ public class DoctorsController : ControllerBase
         return NoContent();
     }
 
-    // GET /api/doctors/me
     [HttpGet("me")]
     [Authorize(Roles = "Doctor")]
     public async Task<IActionResult> GetMyProfile()
@@ -165,7 +159,6 @@ public class DoctorsController : ControllerBase
         });
     }
 
-    // PATCH /api/doctors/me/verification-document
     [HttpPatch("me/verification-document")]
     [Authorize(Roles = "Doctor")]
     public async Task<IActionResult> SubmitVerificationDocument([FromBody] DTOs.Doctors.SubmitVerificationDocumentDto request)
@@ -177,14 +170,13 @@ public class DoctorsController : ControllerBase
 
         profile.VerificationDocumentUrl = request.DocumentUrl;
         profile.VerificationStatus = Data.Models.VerificationStatus.Pending;
-        profile.RejectionReason = null; // Clear previous rejection reasons
+        profile.RejectionReason = null;
 
         await _db.SaveChangesAsync();
 
         return Ok(new { message = "Verification document submitted successfully. Pending admin approval." });
     }
 
-    // DTOs
     public record UpdateAvailabilityDto(
         string AvailabilityJson,
         int ConsultationDurationMinutes

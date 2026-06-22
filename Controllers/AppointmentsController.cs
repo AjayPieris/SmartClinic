@@ -1,5 +1,3 @@
-
-
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +10,7 @@ namespace SmartClinic.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize] // All routes require authentication
+[Authorize]
 public class AppointmentsController : ControllerBase
 {
     private readonly IAppointmentService _appointmentService;
@@ -26,8 +24,6 @@ public class AppointmentsController : ControllerBase
         _notificationService = notificationService;
     }
 
-    // Helper: extract the authenticated user's ID from JWT claims
-    // This is always the canonical source — never trust body params for identity
     private Guid GetCurrentUserId() =>
         Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)
             ?? throw new InvalidOperationException("User ID claim missing."));
@@ -36,9 +32,6 @@ public class AppointmentsController : ControllerBase
         User.FindFirstValue(ClaimTypes.Role)
             ?? throw new InvalidOperationException("Role claim missing.");
 
-    // ------------------------------------------------------------------
-    // POST /api/appointments — Patient books a new appointment
-    // ------------------------------------------------------------------
     [HttpPost]
     [Authorize(Roles = "Patient")]
     [ProducesResponseType(typeof(AppointmentResponseDto), StatusCodes.Status201Created)]
@@ -53,7 +46,6 @@ public class AppointmentsController : ControllerBase
         }
         catch (InvalidOperationException ex)
         {
-            // Double-booking and concurrency conflicts come through here
             return Conflict(new { message = ex.Message });
         }
         catch (KeyNotFoundException ex)
@@ -62,9 +54,6 @@ public class AppointmentsController : ControllerBase
         }
     }
 
-    // ------------------------------------------------------------------
-    // GET /api/appointments/my-schedule — Doctor sees their daily schedule
-    // ------------------------------------------------------------------
     [HttpGet("my-schedule")]
     [Authorize(Roles = "Doctor")]
     [ProducesResponseType(typeof(IEnumerable<AppointmentResponseDto>), StatusCodes.Status200OK)]
@@ -74,9 +63,6 @@ public class AppointmentsController : ControllerBase
         return Ok(appointments);
     }
 
-    // ------------------------------------------------------------------
-    // GET /api/appointments/my-appointments — Patient sees their bookings
-    // ------------------------------------------------------------------
     [HttpGet("my-appointments")]
     [Authorize(Roles = "Patient")]
     [ProducesResponseType(typeof(IEnumerable<AppointmentResponseDto>), StatusCodes.Status200OK)]
@@ -86,9 +72,6 @@ public class AppointmentsController : ControllerBase
         return Ok(appointments);
     }
 
-    // ------------------------------------------------------------------
-    // PATCH /api/appointments/{id}/status — Update appointment status
-    // ------------------------------------------------------------------
     [HttpPatch("{id:guid}/status")]
     [ProducesResponseType(typeof(AppointmentResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -100,7 +83,6 @@ public class AppointmentsController : ControllerBase
             var result = await _appointmentService.UpdateStatusAsync(
                 id, request.Status, GetCurrentUserId(), GetCurrentUserRole());
 
-            // --- Notification Trigger ---
             var appointment = await _db.Appointments
                 .Include(a => a.DoctorProfile)
                 .Include(a => a.PatientProfile)
@@ -157,7 +139,6 @@ public class AppointmentsController : ControllerBase
         if (appointment is null)
             return NotFound(new { message = "Appointment not found." });
 
-        // Verify the requesting doctor owns this appointment
         var doctorUserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         if (appointment.DoctorProfile.UserId != doctorUserId)
             return Forbid();
@@ -166,12 +147,9 @@ public class AppointmentsController : ControllerBase
         appointment.UpdatedAtUtc = DateTime.UtcNow;
 
         await _db.SaveChangesAsync();
-        return NoContent(); // 204 — success with no body
+        return NoContent();
     }
 }
 
-// Inline DTO for the PATCH status endpoint
 public record UpdateStatusRequestDto(string Status);
-
-// Inline DTO for the notes endpoint
 public record UpdateNotesRequestDto(string? Notes);

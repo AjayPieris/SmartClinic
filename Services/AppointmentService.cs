@@ -1,18 +1,3 @@
-// AppointmentService.cs — The scheduling engine.
-
-// DOUBLE-BOOKING PREVENTION (two layers):
-// Layer 1 (Application): Before inserting, query for overlapping appointments
-// in the same transaction using a SELECT ... FOR UPDATE
-// equivalent (achieved via EF Core + serializable txn).
-// Layer 2 (Database):    The xmin concurrency token on Appointment means that
-// if two requests pass Layer 1 simultaneously and both
-// try to SaveChanges, only the first commit wins.
-// The second throws DbUpdateConcurrencyException,
-// which we catch and return as a 409 Conflict.
-
-// This pattern is known as Optimistic Concurrency Control and is the
-// recommended approach for EF Core + Postgres.
-
 using Microsoft.EntityFrameworkCore;
 using SmartClinic.API.Data;
 using SmartClinic.API.Data.Models;
@@ -32,38 +17,25 @@ public class AppointmentService : IAppointmentService
         _logger = logger;
     }
 
-    // -------------------------------------------------------------------------
-    // BookAppointmentAsync
-    // -------------------------------------------------------------------------
     public async Task<AppointmentResponseDto> BookAppointmentAsync(
         BookAppointmentRequestDto request, Guid patientUserId)
     {
-        // --- 1. Load required entities ---
-
-        // Load DoctorProfile (needed for ConsultationDurationMinutes)
         var doctorProfile = await _db.DoctorProfiles
             .Include(d => d.User)
             .FirstOrDefaultAsync(d => d.Id == request.DoctorProfileId)
             ?? throw new KeyNotFoundException("Doctor not found.");
 
-        // Load PatientProfile for the requesting user
         var patientProfile = await _db.PatientProfiles
             .Include(p => p.User)
             .FirstOrDefaultAsync(p => p.UserId == patientUserId)
             ?? throw new KeyNotFoundException("Patient profile not found.");
 
-        // --- 2. Calculate end time from doctor's consultation duration ---
-        // All time math is done in UTC
         var startUtc = request.StartTimeUtc.ToUniversalTime();
         var endUtc = startUtc.AddMinutes(doctorProfile.ConsultationDurationMinutes);
 
-        // Reject bookings in the past
         if (startUtc < DateTime.UtcNow)
             throw new InvalidOperationException("Cannot book an appointment in the past.");
 
-        // --- 3. Check for overlapping appointments (Layer 1 protection) ---
-        // An overlap exists when: existing.Start < newEnd AND existing.End > newStart
-        // This covers all overlap cases: partial left, partial right, total encapsulation
         var hasConflict = await _db.Appointments
             .AnyAsync(a =>
                 a.DoctorProfileId == request.DoctorProfileId &&
@@ -72,10 +44,8 @@ public class AppointmentService : IAppointmentService
                 a.EndTimeUtc > startUtc);
 
         if (hasConflict)
-            throw new InvalidOperationException(
-                "This time slot is already booked. Please choose a different time.");
+            throw new InvalidOperationException("This time slot is already booked. Please choose a different time.");
 
-        // --- 4. Create and persist the appointment ---
         var appointment = new Appointment
         {
             DoctorProfileId = doctorProfile.Id,
@@ -91,15 +61,12 @@ public class AppointmentService : IAppointmentService
 
         try
         {
-            // SaveChanges will throw DbUpdateConcurrencyException if xmin changed
-            // since we read (Layer 2 protection for race conditions)
             await _db.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException ex)
         {
             _logger.LogWarning(ex, "Concurrency conflict booking appointment for slot {Start}", startUtc);
-            throw new InvalidOperationException(
-                "This slot was just booked by someone else. Please choose a different time.");
+            throw new InvalidOperationException("This slot was just booked by someone else. Please choose a different time.");
         }
 
         _logger.LogInformation(
@@ -109,9 +76,6 @@ public class AppointmentService : IAppointmentService
         return MapToResponseDto(appointment, doctorProfile, patientProfile);
     }
 
-    // -------------------------------------------------------------------------
-    // GetDoctorAppointmentsAsync
-    // -------------------------------------------------------------------------
     public async Task<IEnumerable<AppointmentResponseDto>> GetDoctorAppointmentsAsync(Guid doctorUserId)
     {
         var appointments = await _db.Appointments
@@ -120,17 +84,13 @@ public class AppointmentService : IAppointmentService
             .Include(a => a.PatientProfile).ThenInclude(p => p.User)
             .Where(a =>
                 a.DoctorProfile.UserId == doctorUserId &&
-                a.StartTimeUtc >= DateTime.UtcNow.Date) // today onwards
+                a.StartTimeUtc >= DateTime.UtcNow.Date)
             .OrderBy(a => a.StartTimeUtc)
             .ToListAsync();
 
-        return appointments.Select(a =>
-            MapToResponseDto(a, a.DoctorProfile, a.PatientProfile));
+        return appointments.Select(a => MapToResponseDto(a, a.DoctorProfile, a.PatientProfile));
     }
 
-    // -------------------------------------------------------------------------
-    // GetPatientAppointmentsAsync
-    // -------------------------------------------------------------------------
     public async Task<IEnumerable<AppointmentResponseDto>> GetPatientAppointmentsAsync(Guid patientUserId)
     {
         var appointments = await _db.Appointments
@@ -141,13 +101,9 @@ public class AppointmentService : IAppointmentService
             .OrderByDescending(a => a.StartTimeUtc)
             .ToListAsync();
 
-        return appointments.Select(a =>
-            MapToResponseDto(a, a.DoctorProfile, a.PatientProfile));
+        return appointments.Select(a => MapToResponseDto(a, a.DoctorProfile, a.PatientProfile));
     }
 
-    // -------------------------------------------------------------------------
-    // UpdateStatusAsync — status machine transitions
-    // -------------------------------------------------------------------------
     public async Task<AppointmentResponseDto> UpdateStatusAsync(
         Guid appointmentId, string newStatus, Guid requestingUserId, string requestingUserRole)
     {
@@ -157,7 +113,6 @@ public class AppointmentService : IAppointmentService
             .FirstOrDefaultAsync(a => a.Id == appointmentId)
             ?? throw new KeyNotFoundException("Appointment not found.");
 
-        // Authorization check: ensure the requesting user owns this appointment
         var isDoctor = requestingUserRole == "Doctor" &&
                        appointment.DoctorProfile.UserId == requestingUserId;
         var isPatient = requestingUserRole == "Patient" &&
@@ -167,7 +122,6 @@ public class AppointmentService : IAppointmentService
         if (!isDoctor && !isPatient && !isAdmin)
             throw new UnauthorizedAccessException("You are not authorized to modify this appointment.");
 
-        // Parse and validate the status transition
         if (!Enum.TryParse<AppointmentStatus>(newStatus, ignoreCase: true, out var parsedStatus))
             throw new InvalidOperationException($"Invalid status: {newStatus}");
 
@@ -179,9 +133,6 @@ public class AppointmentService : IAppointmentService
         return MapToResponseDto(appointment, appointment.DoctorProfile, appointment.PatientProfile);
     }
 
-    // -------------------------------------------------------------------------
-    // Private mapper — converts EF entities to DTOs
-    // -------------------------------------------------------------------------
     private static AppointmentResponseDto MapToResponseDto(
         Appointment a, DoctorProfile doctor, PatientProfile patient) => new()
     {

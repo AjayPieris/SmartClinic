@@ -1,18 +1,8 @@
-// Program.cs — The DI composition root and middleware pipeline for .NET 8.
-
-// Order of middleware matters in ASP.NET Core:
-// 1. Exception handler (must be first to catch everything below it)
-// 2. HTTPS redirection
-// 3. CORS (must be before Auth)
-// 4. Authentication (validates the JWT)
-// 5. Authorization (checks the role claims)
-// 6. Controller routing
-
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
+using Microsoft.OpenApi.Models;
 using SmartClinic.API.Data;
 using SmartClinic.API.Middleware;
 using SmartClinic.API.Services;
@@ -20,23 +10,17 @@ using SmartClinic.API.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// SERVICE REGISTRATIONS (the DI container)
-
-// --- Database ---
-// Npgsql reads the Neon connection string and configures EF Core for Postgres
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
         npgsqlOptions =>
         {
-            // Retry on transient failures (network hiccups with Neon serverless)
             npgsqlOptions.EnableRetryOnFailure(
                 maxRetryCount: 3,
                 maxRetryDelay: TimeSpan.FromSeconds(5),
                 errorCodesToAdd: null);
         }));
 
-// --- Authentication: JWT Bearer ---
 var jwtSecret = builder.Configuration["Jwt:Secret"]
     ?? throw new InvalidOperationException("Jwt:Secret is required.");
 
@@ -56,23 +40,20 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)),
-        // Reject tokens within 5 seconds of expiry to handle clock skew
         ClockSkew = TimeSpan.FromSeconds(5),
     };
 });
 
-// --- Authorization ---
 builder.Services.AddAuthorization();
 
-// --- CORS — allow React dev server during development ---
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("ReactFrontend", policy =>
     {
         policy.WithOrigins(
-                "http://localhost:5173",  // Vite default dev port
-                "http://localhost:5174",  // Vite fallback port
-                "http://localhost:3000"   // CRA fallback
+                "http://localhost:5173",
+                "http://localhost:5174",
+                "http://localhost:3000"
               )
               .SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost")
               .AllowAnyHeader()
@@ -81,17 +62,12 @@ builder.Services.AddCors(options =>
     });
 });
 
-// --- Application Services (N-Tier: Controller → Service → DbContext) ---
-// AddScoped = one instance per HTTP request (correct for EF Core DbContext pattern)
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 
-// --- API Infrastructure ---
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
-// --- Swagger with JWT support ---
-// Allows you to click "Authorize" in Swagger UI and paste your JWT token
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
@@ -102,51 +78,32 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-// Register the Cloudinary service (singleton — one Cloudinary client instance)
-// Singleton is appropriate here because Cloudinary is stateless and thread-safe
 builder.Services.AddSingleton<ICloudinaryService, CloudinaryService>();
-
-// Register the Document service (scoped — one per request, uses scoped DbContext)
 builder.Services.AddScoped<IDocumentService, DocumentService>();
-
-// Pusher client is stateless and thread-safe — Singleton is correct here
 builder.Services.AddSingleton<IPusherService, PusherService>();
-
-// ChatService uses DbContext (scoped) so it must also be scoped
 builder.Services.AddScoped<IChatService, ChatService>();
-
-// NotificationService for backend triggers and read state
 builder.Services.AddScoped<INotificationService, NotificationService>();
 
 builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
 {
-    // 10 MB max body size for form parsing
     options.MultipartBodyLengthLimit = 10 * 1024 * 1024;
-    // 100 MB header limit (default is fine, set explicitly for clarity)
     options.MemoryBufferThreshold = int.MaxValue;
 });
 
-// Configure Kestrel's transport-level request size limit
-// This is the hard limit — ASP.NET never even reads past this
 builder.WebHost.ConfigureKestrel(options =>
 {
-    options.Limits.MaxRequestBodySize = 10 * 1024 * 1024; // 10 MB
+    options.Limits.MaxRequestBodySize = 10 * 1024 * 1024;
 });
 
-// BUILD & MIDDLEWARE PIPELINE
 var app = builder.Build();
 
-// --- Apply pending EF Core migrations automatically on startup ---
-// In production you'd run `dotnet ef database update` in your CI/CD pipeline.
-// For development, auto-migrate saves a manual step.
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     await db.Database.MigrateAsync();
 }
 
-// Middleware pipeline — ORDER IS CRITICAL
-app.UseMiddleware<GlobalExceptionMiddleware>(); // 1. Catch all exceptions first
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
@@ -154,11 +111,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SmartClinic API v1"));
 }
 
-app.UseHttpsRedirection();  // 2. Force HTTPS
-app.UseCors("ReactFrontend"); // 3. CORS headers before auth
-app.UseAuthentication();      // 4. Validate the JWT Bearer token
-app.UseAuthorization();       // 5. Check [Authorize] role claims
-
-app.MapControllers();         // 6. Route to controllers
+app.UseHttpsRedirection();
+app.UseCors("ReactFrontend");
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapControllers();
 
 app.Run();
